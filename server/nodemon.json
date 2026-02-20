@@ -1,0 +1,10 @@
+{
+    "watch": [
+        "src"
+    ],
+    "ext": "js,json,hbs",
+    "ignore": [
+        ".tmp/",
+        "node_modules/"
+    ]
+}

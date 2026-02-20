@@ -1,0 +1,48 @@
+{
+  "project": "Project Name",
+  "branchName": "feature/feature-name",
+  "description": "Short description of the feature or epic",
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Setup database schema",
+      "description": "Create the necessary tables and migrations.",
+      "acceptanceCriteria": [
+        "Migration file created",
+        "Schema applied successfully",
+        "Types generated"
+      ],
+      "priority": 1,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-002",
+      "title": "Create API endpoint",
+      "description": "Implement the backend logic.",
+      "acceptanceCriteria": [
+        "API endpoint handles POST requests",
+        "Validates input",
+        "Returns correct response",
+        "Tests pass"
+      ],
+      "priority": 2,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-003",
+      "title": "Build UI Component",
+      "description": "Create the frontend visual element.",
+      "acceptanceCriteria": [
+        "Component renders correctly",
+        "Responsive design",
+        "Matches design system",
+        "Browser verification passes"
+      ],
+      "priority": 3,
+      "passes": false,
+      "notes": ""
+    }
+  ]
+}

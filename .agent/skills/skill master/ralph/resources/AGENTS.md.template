@@ -1,0 +1,13 @@
+# Agent Instructions (AGENTS.md)
+
+This file contains instructions and context for AI agents working in this directory.
+
+## Patterns & Conventions
+- [Add patterns here, e.g., "Use functional components with hooks"]
+- [e.g., "All API calls must use the `apiClient` wrapper"]
+
+## Gotchas
+- [Add warnings here, e.g., "Do not modify the `utils.ts` file without checking dependencies"]
+
+## Testing
+- [How to run tests for this module]
