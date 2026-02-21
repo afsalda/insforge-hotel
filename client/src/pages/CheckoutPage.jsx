@@ -176,12 +176,12 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="checkout-page" style={{ maxWidth: '1120px', margin: '0 auto', padding: '120px 24px 80px', fontFamily: 'var(--font-sans)', color: 'var(--text-charcoal)' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
-                <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} className="hover-bg-gray">
+        <div className="checkout-page-content" style={{ maxWidth: '1120px', margin: '0 auto', padding: '120px 24px 80px', fontFamily: 'var(--font-sans)', color: 'var(--text-charcoal)' }}>
+            <div className="checkout-header" style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '40px' }}>
+                <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: '-8px' }} className="hover-bg-gray checkout-back">
                     <ChevronLeft size={24} />
                 </button>
-                <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', letterSpacing: '0.02em', margin: 0, textTransform: 'uppercase' }}>
+                <h1 className="checkout-title" style={{ fontFamily: 'var(--font-serif)', fontSize: '2.4rem', letterSpacing: '0.02em', margin: 0, textTransform: 'uppercase' }}>
                     Confirm and pay
                 </h1>
             </div>
@@ -204,7 +204,7 @@ export default function CheckoutPage() {
                         {step === 1 ? (
                             <div>
                                 <p style={{ color: '#717171', marginBottom: '20px' }}>Please provide your details below to securely log your reservation.</p>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                                <div className="checkout-form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                     <div className="form-group" style={{ margin: 0 }}>
                                         <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 700, marginBottom: '6px' }}>Full Name *</label>
                                         <input type="text" value={guestName} onChange={e => setGuestName(e.target.value)} style={{ width: '100%', padding: '14px', border: '1px solid #B0B0B0', borderRadius: '8px', fontSize: '1rem' }} placeholder="Jane Doe" />
@@ -349,12 +349,27 @@ export default function CheckoutPage() {
 
             <style>{`
                 @media (max-width: 900px) {
+                    .checkout-page-content {
+                        padding: 100px 16px 80px !important;
+                    }
+                    .checkout-header {
+                        margin-bottom: 24px !important;
+                        gap: 8px !important;
+                    }
+                    .checkout-title {
+                        font-size: 1.8rem !important;
+                        line-height: 1.2 !important;
+                    }
                     .checkout-layout {
-                        flex-direction: column-reverse;
+                        flex-direction: column;
+                        gap: 32px !important;
+                    }
+                    .checkout-form-grid {
+                        grid-template-columns: 1fr !important;
                     }
                     .booking-sidebar {
                         width: 100% !important;
-                        margin-bottom: 32px;
+                        margin-bottom: 0;
                     }
                 }
                 .hover-bg-gray:hover {
