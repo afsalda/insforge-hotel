@@ -33,6 +33,15 @@ export default function CheckoutPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [bookingStatus, setBookingStatus] = useState('idle');
 
+    // Play premium success sound effect when booking is confirmed
+    useEffect(() => {
+        if (step === 4 && bookingStatus === 'success') {
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magical-win-confirmation-2033.mp3');
+            audio.volume = 0.5;
+            audio.play().catch(err => console.log('Audio playback prevented by browser:', err));
+        }
+    }, [step, bookingStatus]);
+
     const handleConfirmDetails = () => {
         if (!guestName.trim() || !guestEmail.trim()) {
             setErrorMsg('Name and email are required to continue.');
