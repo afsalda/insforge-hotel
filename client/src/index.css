@@ -1406,7 +1406,7 @@ img {
   }
 
   .footer-inner {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     padding: 40px 20px 30px;
   }
 
@@ -2743,6 +2743,115 @@ body {
 
   .testimonials-dots .dot.active {
     width: 20px !important;
+  }
+
+  /* 10. FOOTER - COMPACT MOBILE */
+  .footer-inner {
+    grid-template-columns: 1fr !important;
+    padding: 24px 16px !important;
+    gap: 16px !important;
+  }
+
+  .footer-brand {
+    margin-bottom: 0 !important;
+  }
+
+  .footer-brand .footer-logo {
+    margin-bottom: 4px !important;
+  }
+
+  .footer-brand .footer-arabic-tagline {
+    margin-bottom: 8px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .footer-brand p {
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    margin-bottom: 16px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    max-width: 100% !important;
+  }
+
+  /* Side by side menu/features */
+  .footer-inner {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Create the 2-column container for the middle columns */
+  .footer-col:nth-child(2),
+  .footer-col:nth-child(3) {
+    display: block !important;
+  }
+
+  /* Apply the grid to the columns flow */
+  @supports (display: grid) {
+    .footer-inner {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+    }
+
+    /* We need to restructure the flow for the 2-col part */
+    .footer-col-group-mobile {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 16px !important;
+      width: 100% !important;
+    }
+  }
+
+  /* CSS only approach to make the 2 columns side-by-side without changing JSX if possible */
+  /* Since I can't easily wrap them in CSS, I will use grid on the parent and span the brand/social */
+  .footer-inner {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px 20px !important;
+  }
+
+  .footer-brand,
+  .footer-col:nth-child(4) {
+    /* Connect/Social col */
+    grid-column: span 2 !important;
+  }
+
+  .footer-col h4 {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .footer-col a {
+    font-size: 13px !important;
+    line-height: 1.8 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .footer-social {
+    margin-top: 4px !important;
+    justify-content: center !important;
+  }
+
+  /* Decorative row height reduction */
+  .star-border {
+    height: 32px !important;
+    background-size: 16px !important;
+    overflow: hidden !important;
+  }
+
+  .footer-bottom {
+    padding: 12px 16px !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+  }
+
+  .footer-bottom span {
+    font-size: 11px !important;
+    opacity: 0.6 !important;
+    display: block !important;
   }
 }
 
