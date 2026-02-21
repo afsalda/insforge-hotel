@@ -2085,30 +2085,21 @@ img {
 
 @media (max-width: 900px) {
   .detail-gallery {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    gap: 12px;
-    border-radius: 0;
-    margin-left: -16px;
-    margin-right: -16px;
-    padding: 0 16px;
-    scrollbar-width: none;
-    grid-template-columns: unset;
-    grid-template-rows: unset;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 260px 130px 130px;
+    gap: 6px;
+    border-radius: 16px;
+    margin-bottom: 24px;
   }
 
-  .detail-gallery::-webkit-scrollbar {
-    display: none;
+  .detail-gallery .main-img {
+    grid-column: 1 / -1;
+    grid-row: 1;
   }
 
-  .detail-gallery .main-img,
   .detail-gallery>img {
-    flex: 0 0 90%;
-    scroll-snap-align: center;
-    aspect-ratio: 4/3;
     display: block;
-    border-radius: 12px;
   }
 
   .detail-body {
