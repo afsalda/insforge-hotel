@@ -79,8 +79,8 @@ export default function CheckoutPage() {
 
     if (step === 4 && bookingStatus === 'success') {
         return (
-            <div className="checkout-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '160px', paddingBottom: '80px', fontFamily: 'var(--font-sans)', color: 'var(--text-charcoal)' }}>
-                <div className="success-modal-animated" style={{ textAlign: 'center', padding: '50px 30px', background: 'white', borderRadius: '24px', border: '1px solid #EBEBEB', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', maxWidth: '500px', width: '100%' }}>
+            <div className="checkout-page success-page-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '160px', paddingBottom: '80px', fontFamily: 'var(--font-sans)', color: 'var(--text-charcoal)' }}>
+                <div className="success-modal-animated checkout-success-card" style={{ textAlign: 'center', padding: '50px 30px', background: 'white', borderRadius: '24px', border: '1px solid #EBEBEB', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', maxWidth: '500px', width: '100%' }}>
 
                     <div className="icon-container" style={{ margin: '0 auto 24px', width: '100px', height: '100px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <svg className="animated-check-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -92,14 +92,14 @@ export default function CheckoutPage() {
                     <h2 className="success-title" style={{ fontSize: '2.2rem', marginBottom: '8px', fontFamily: 'var(--font-serif)', color: '#222' }}>Booking Confirmed!</h2>
 
                     <div className="success-details">
-                        <p style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '1.2rem', fontWeight: 500 }}>
+                        <p className="success-room-type" style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '1.2rem', fontWeight: 500 }}>
                             {listing.title}
                         </p>
-                        <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
-                            {checkIn} → {checkOut} · {guestsCount} guest{guestsCount > 1 ? 's' : ''} · <strong style={{ color: '#222' }}>₹{total}</strong>
+                        <p className="success-booking-info" style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+                            {checkIn} → {checkOut} · {guestsCount} guest{guestsCount > 1 ? 's' : ''} · <strong className="success-price" style={{ color: '#222' }}>₹{total}</strong>
                         </p>
-                        <p style={{ fontSize: '0.95rem', marginTop: '24px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                            Your reservation has been securely saved to the Al-Baith systems. A confirmation email has been sent to <strong style={{ color: '#222' }}>{guestEmail}</strong>.
+                        <p className="success-confirmation-msg" style={{ fontSize: '0.95rem', marginTop: '24px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                            Your reservation has been securely saved to the Al-Baith systems. A confirmation email has been sent to <strong className="success-email" style={{ color: '#222' }}>{guestEmail}</strong>.
                         </p>
                     </div>
 
