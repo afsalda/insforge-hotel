@@ -185,6 +185,7 @@ export default function HomePage() {
     };
 
     const [activeRoomIndex, setActiveRoomIndex] = useState(0);
+    const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
 
     const handleRoomsScroll = (e) => {
         if (window.innerWidth > 768) return;
@@ -193,6 +194,15 @@ export default function HomePage() {
         const itemWidth = scrollWidth / totalItems;
         const index = Math.round(scrollLeft / itemWidth);
         if (index !== activeRoomIndex) setActiveRoomIndex(index);
+    };
+
+    const handleTestimonialsScroll = (e) => {
+        if (window.innerWidth > 768) return;
+        const { scrollLeft, scrollWidth } = e.target;
+        const totalItems = 3; // Static number of testimonials
+        const itemWidth = scrollWidth / totalItems;
+        const index = Math.round(scrollLeft / itemWidth);
+        if (index !== activeTestimonialIndex) setActiveTestimonialIndex(index);
     };
 
     return (
@@ -318,7 +328,7 @@ export default function HomePage() {
                     <p className="section-subtitle">Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
                 </div>
 
-                <div className="testimonials-grid">
+                <div className="testimonials-grid" onScroll={handleTestimonialsScroll}>
                     <div className="testimonial-card visible">
                         <div className="testimonial-quote">«</div>
                         <blockquote>An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!</blockquote>
@@ -357,9 +367,13 @@ export default function HomePage() {
                 </div>
 
                 <div className="testimonials-dots">
-                    <button className="dot active" aria-label="Page 1"></button>
-                    <button className="dot" aria-label="Page 2"></button>
-                    <button className="dot" aria-label="Page 3"></button>
+                    {[0, 1, 2].map((idx) => (
+                        <button
+                            key={idx}
+                            className={`dot ${activeTestimonialIndex === idx ? 'active' : ''}`}
+                            aria-label={`Page ${idx + 1}`}
+                        />
+                    ))}
                 </div>
             </section>
         </div >
