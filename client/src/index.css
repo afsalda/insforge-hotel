@@ -2853,6 +2853,114 @@ body {
     opacity: 0.6 !important;
     display: block !important;
   }
+
+  /* 11. CHECKOUT / CONFIRM & PAY — COMPACT MOBILE */
+  .checkout-page-content {
+    padding: 80px 16px 40px !important;
+  }
+
+  .checkout-header {
+    padding: 12px 0 !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .checkout-title {
+    font-size: 20px !important;
+  }
+
+  .checkout-step-card {
+    padding: 16px !important;
+    border-radius: 12px !important;
+    gap: 12px !important;
+  }
+
+  .checkout-step-title {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+  }
+
+  .checkout-success-badge {
+    font-size: 13px !important;
+    gap: 4px !important;
+  }
+
+  .checkout-connected-text {
+    font-size: 12px !important;
+    margin-top: 4px !important;
+    opacity: 0.7 !important;
+  }
+
+  /* Payment Card Special Fix */
+  .payment-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .payment-title {
+    font-size: 15px !important;
+    font-weight: 600 !important;
+  }
+
+  .payment-header button {
+    width: 100% !important;
+    height: 44px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    background: #1a1a1a !important;
+    color: white !important;
+  }
+
+  .checkout-secure-text {
+    font-size: 12px !important;
+    color: #717171 !important;
+    margin-top: 4px !important;
+  }
+
+  /* Locked Review Card */
+  .review-step-card[style*="opacity: 0.6"] .checkout-step-title {
+    font-size: 15px !important;
+    opacity: 0.5 !important;
+  }
+
+  .checkout-lock-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* Room Summary Card */
+  .checkout-room-summary-card {
+    padding: 16px !important;
+  }
+
+  .summary-room-info {
+    gap: 12px !important;
+    align-items: center !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .summary-room-img {
+    width: 80px !important;
+    height: 80px !important;
+    border-radius: 8px !important;
+  }
+
+  .summary-label {
+    font-size: 11px !important;
+    opacity: 0.6 !important;
+  }
+
+  .summary-title {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .summary-details div:last-child {
+    font-size: 12px !important;
+  }
 }
 
 .hide-desktop {

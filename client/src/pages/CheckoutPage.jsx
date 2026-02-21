@@ -191,11 +191,11 @@ export default function CheckoutPage() {
                 <div style={{ flex: 1, display: 'flex', gap: '24px', flexDirection: 'column' }}>
 
                     {/* STEP 1 */}
-                    <div style={{ border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: step === 1 ? '24px' : '8px' }}>
-                            <h2 style={{ fontSize: '1.35rem', margin: 0 }}>1. Log in or sign up</h2>
+                    <div className="checkout-step-card login-step-card" style={{ border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white' }}>
+                        <div className="checkout-step-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: step === 1 ? '24px' : '8px' }}>
+                            <h2 className="checkout-step-title" style={{ fontSize: '1.35rem', margin: 0 }}>1. Log in or sign up</h2>
                             {step > 1 && (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontWeight: 600, fontSize: '1rem' }}>
+                                <div className="checkout-success-badge" style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontWeight: 600, fontSize: '1rem' }}>
                                     <CheckCircle2 size={20} /> Logged in
                                 </div>
                             )}
@@ -226,14 +226,14 @@ export default function CheckoutPage() {
                                 </button>
                             </div>
                         ) : (
-                            <p style={{ color: '#717171', margin: 0, fontSize: '1rem' }}>Connected as {guestEmail}</p>
+                            <p className="checkout-connected-text" style={{ color: '#717171', margin: 0, fontSize: '1rem' }}>Connected as {guestEmail}</p>
                         )}
                     </div>
 
                     {/* STEP 2 */}
-                    <div style={{ border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white', opacity: step >= 2 ? 1 : 0.6 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <h2 style={{ fontSize: '1.35rem', margin: 0, color: step >= 2 ? '#222' : '#B0B0B0' }}>2. Add a payment method</h2>
+                    <div className="checkout-step-card payment-step-card" style={{ border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white', opacity: step >= 2 ? 1 : 0.6 }}>
+                        <div className="checkout-step-header payment-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h2 className="checkout-step-title payment-title" style={{ fontSize: '1.35rem', margin: 0, color: step >= 2 ? '#222' : '#B0B0B0' }}>2. Add a payment method</h2>
                             {step === 2 && (
                                 <button
                                     onClick={handleConfirmPayment}
@@ -249,18 +249,18 @@ export default function CheckoutPage() {
                             )}
                         </div>
                         {step === 2 && (
-                            <p style={{ color: '#717171', margin: '16px 0 0 0', fontSize: '1rem' }}>Secure payment via Al-Baith encrypted gateway.</p>
+                            <p className="checkout-secure-text" style={{ color: '#717171', margin: '16px 0 0 0', fontSize: '1rem' }}>Secure payment via Al-Baith encrypted gateway.</p>
                         )}
                         {step > 2 && (
-                            <p style={{ color: '#717171', margin: '8px 0 0 0', fontSize: '1rem' }}>Card ending in •••• 1234</p>
+                            <p className="checkout-paid-text" style={{ color: '#717171', margin: '8px 0 0 0', fontSize: '1rem' }}>Card ending in •••• 1234</p>
                         )}
                     </div>
 
                     {/* STEP 3 */}
-                    <div style={{ border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white', opacity: step >= 3 ? 1 : 0.6 }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: step === 3 ? '16px' : '0' }}>
-                            <h2 style={{ fontSize: '1.35rem', margin: 0, color: step >= 3 ? '#222' : '#B0B0B0' }}>3. Review your reservation</h2>
-                            {step < 3 && <Lock size={24} color="#B0B0B0" />}
+                    <div className="checkout-step-card review-step-card" style={{ border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white', opacity: step >= 3 ? 1 : 0.6 }}>
+                        <div className="checkout-step-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: step === 3 ? '16px' : '0' }}>
+                            <h2 className="checkout-step-title" style={{ fontSize: '1.35rem', margin: 0, color: step >= 3 ? '#222' : '#B0B0B0' }}>3. Review your reservation</h2>
+                            {step < 3 && <Lock size={24} color="#B0B0B0" className="checkout-lock-icon" />}
                         </div>
 
                         {step === 3 && (
@@ -309,12 +309,12 @@ export default function CheckoutPage() {
 
                 {/* Right Column (Booking Details Card) */}
                 <div className="booking-sidebar" style={{ width: '400px', flexShrink: 0 }}>
-                    <div style={{ position: 'sticky', top: '120px', border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white', boxShadow: '0 6px 16px rgba(0,0,0,0.06)' }}>
-                        <div style={{ display: 'flex', gap: '16px', borderBottom: '1px solid #EBEBEB', paddingBottom: '24px', marginBottom: '24px' }}>
-                            <img src={listing.images[0]} alt={listing.title} style={{ width: '120px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
-                            <div>
-                                <p style={{ fontSize: '0.85rem', color: '#717171', margin: '0 0 4px 0' }}>{listing.location}</p>
-                                <h3 style={{ fontSize: '1rem', margin: '0 0 8px 0', fontWeight: 500, lineHeight: 1.3 }}>{listing.title}</h3>
+                    <div className="checkout-room-summary-card" style={{ position: 'sticky', top: '120px', border: '1px solid #EBEBEB', borderRadius: '16px', padding: '24px', background: 'white', boxShadow: '0 6px 16px rgba(0,0,0,0.06)' }}>
+                        <div className="summary-room-info" style={{ display: 'flex', gap: '16px', borderBottom: '1px solid #EBEBEB', paddingBottom: '24px', marginBottom: '24px' }}>
+                            <img src={listing.images[0]} alt={listing.title} className="summary-room-img" style={{ width: '120px', height: '100px', objectFit: 'cover', borderRadius: '8px' }} />
+                            <div className="summary-details">
+                                <p className="summary-label" style={{ fontSize: '0.85rem', color: '#717171', margin: '0 0 4px 0' }}>{listing.location === 'Al Baith Hotel' ? 'Al Baith Hotel' : listing.location}</p>
+                                <h3 className="summary-title" style={{ fontSize: '1rem', margin: '0 0 8px 0', fontWeight: 500, lineHeight: 1.3 }}>{listing.title}</h3>
                                 <div style={{ fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <Star size={12} fill="#222" /> <strong>{listing.rating}</strong> ({listing.reviews} reviews)
                                 </div>
