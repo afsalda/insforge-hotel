@@ -2464,6 +2464,9 @@ body {
   .rooms-grid-wrapper {
     padding: 0 !important;
     overflow: visible !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
   }
 
   .rooms-grid-layout {
@@ -2562,8 +2565,9 @@ body {
     display: flex !important;
     justify-content: center !important;
     gap: 8px !important;
-    margin-top: 8px !important;
-    padding-bottom: 16px !important;
+    margin-top: 16px !important;
+    padding-bottom: 24px !important;
+    width: 100% !important;
   }
 
   .scroll-dot {
