@@ -184,14 +184,23 @@ export default function HomePage() {
         }
     };
 
+    const [activeRoomIndex, setActiveRoomIndex] = useState(0);
+
+    const handleRoomsScroll = (e) => {
+        if (window.innerWidth > 768) return;
+        const { scrollLeft, scrollWidth } = e.target;
+        const totalItems = Object.keys(ROOM_DATA).length;
+        const itemWidth = scrollWidth / totalItems;
+        const index = Math.round(scrollLeft / itemWidth);
+        if (index !== activeRoomIndex) setActiveRoomIndex(index);
+    };
+
     return (
         <div ref={mainRef}>
             {/* Page Load Curtain */}
             <div className="page-curtain">
                 <span className="curtain-logo">AL BAITH</span>
             </div>
-
-
 
             {/* ══════════════════════════════════════════
           1. HERO SECTION
@@ -245,6 +254,7 @@ export default function HomePage() {
                 <div className="rooms-grid-wrapper">
                     <motion.div
                         className="rooms-grid-layout"
+                        onScroll={handleRoomsScroll}
                         variants={roomContainerVariants}
                         initial="hidden"
                         whileInView="show"
@@ -286,6 +296,14 @@ export default function HomePage() {
                             </motion.div>
                         ))}
                     </motion.div>
+                    <div className="rooms-scroll-dots hide-desktop">
+                        {Object.values(ROOM_DATA).map((_, idx) => (
+                            <div
+                                key={idx}
+                                className={`scroll-dot ${activeRoomIndex === idx ? 'active' : ''}`}
+                            />
+                        ))}
+                    </div>
                 </div>
 
             </section>
