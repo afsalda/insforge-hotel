@@ -2666,6 +2666,84 @@ body {
   table {
     min-width: 600px !important;
   }
+
+  /* 9. TESTIMONIALS SECTION - COMPACT */
+  .testimonials-section {
+    padding: 32px 16px !important;
+  }
+
+  .testimonials-grid {
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 16px !important;
+    padding: 8px 0 24px 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    scrollbar-width: none !important;
+  }
+
+  .testimonials-grid::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .testimonial-card {
+    min-width: 85vw !important;
+    max-width: 85vw !important;
+    flex-shrink: 0 !important;
+    scroll-snap-align: center !important;
+    padding: 24px 20px !important;
+    margin: 0 !important;
+  }
+
+  .testimonial-quote {
+    font-size: 1.5rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .testimonial-card blockquote {
+    font-size: 0.85rem !important;
+    line-height: 1.5 !important;
+    margin-bottom: 12px !important;
+  }
+
+  .testimonial-stars {
+    margin-bottom: 12px !important;
+    gap: 2px !important;
+  }
+
+  .testimonial-stars svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .testimonial-avatar {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  .testimonial-author-info h5 {
+    font-size: 0.9rem !important;
+  }
+
+  .testimonial-author-info span {
+    font-size: 0.7rem !important;
+  }
+
+  .testimonials-dots {
+    margin-top: 0 !important;
+    gap: 8px !important;
+  }
+
+  .testimonials-dots .dot {
+    width: 8px !important;
+    height: 8px !important;
+  }
+
+  .testimonials-dots .dot.active {
+    width: 20px !important;
+  }
 }
 
 .hide-desktop {
