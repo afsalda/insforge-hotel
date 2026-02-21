@@ -13,7 +13,7 @@ export default function ApartmentsPage() {
         <div style={{ paddingTop: '100px', minHeight: '100vh', background: 'var(--bg-off-white)', paddingBottom: '60px' }}>
             <div className="section-header">
                 <span className="section-arabic-label">شقق فندقية</span>
-                <h2 className="section-title">Luxury Apartments</h2>
+                <h2 className="section-title">Apartments</h2>
                 <p className="section-subtitle">Extended stay private apartments.</p>
             </div>
 

@@ -79,27 +79,98 @@ export default function CheckoutPage() {
 
     if (step === 4 && bookingStatus === 'success') {
         return (
-            <div className="checkout-page" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ textAlign: 'center', padding: '40px 20px', background: 'white', borderRadius: '16px', border: '1px solid #EBEBEB', boxShadow: '0 10px 30px rgba(0,0,0,0.05)', maxWidth: '500px', width: '100%' }}>
-                    <CheckCircle size={64} color="#10b981" style={{ marginBottom: '16px', display: 'inline-block' }} />
-                    <h2 style={{ fontSize: '2rem', marginBottom: '8px', fontFamily: 'var(--font-serif)' }}>Booking Confirmed!</h2>
-                    <p style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '1.1rem' }}>
-                        {listing.title}
-                    </p>
-                    <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
-                        {checkIn} → {checkOut} · {guestsCount} guest{guestsCount > 1 ? 's' : ''} · <strong>₹{total}</strong>
-                    </p>
-                    <p style={{ fontSize: '0.9rem', marginTop: '24px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-                        Your reservation has been securely saved to the Al-Baith systems. A confirmation email has been sent to <strong>{guestEmail}</strong>.
-                    </p>
-                    <button
-                        className="reserve-btn"
-                        style={{ marginTop: '32px', maxWidth: '300px' }}
-                        onClick={() => navigate('/')}
-                    >
-                        Return Home
-                    </button>
+            <div className="checkout-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '160px', paddingBottom: '80px', fontFamily: 'var(--font-sans)', color: 'var(--text-charcoal)' }}>
+                <div className="success-modal-animated" style={{ textAlign: 'center', padding: '50px 30px', background: 'white', borderRadius: '24px', border: '1px solid #EBEBEB', boxShadow: '0 20px 40px rgba(0,0,0,0.08)', maxWidth: '500px', width: '100%' }}>
+
+                    <div className="icon-container" style={{ margin: '0 auto 24px', width: '100px', height: '100px', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <svg className="animated-check-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+
+                    <h2 className="success-title" style={{ fontSize: '2.2rem', marginBottom: '8px', fontFamily: 'var(--font-serif)', color: '#222' }}>Booking Confirmed!</h2>
+
+                    <div className="success-details">
+                        <p style={{ color: 'var(--text-secondary)', marginBottom: '8px', fontSize: '1.2rem', fontWeight: 500 }}>
+                            {listing.title}
+                        </p>
+                        <p style={{ fontSize: '1rem', color: 'var(--text-secondary)' }}>
+                            {checkIn} → {checkOut} · {guestsCount} guest{guestsCount > 1 ? 's' : ''} · <strong style={{ color: '#222' }}>₹{total}</strong>
+                        </p>
+                        <p style={{ fontSize: '0.95rem', marginTop: '24px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                            Your reservation has been securely saved to the Al-Baith systems. A confirmation email has been sent to <strong style={{ color: '#222' }}>{guestEmail}</strong>.
+                        </p>
+                    </div>
+
+                    <div className="success-btn-container">
+                        <button
+                            className="reserve-btn success-btn"
+                            style={{ marginTop: '32px', maxWidth: '300px', padding: '16px', borderRadius: '12px', fontSize: '1.1rem', fontWeight: 600, border: 'none', background: 'var(--accent-gold)', color: 'white', cursor: 'pointer' }}
+                            onClick={() => navigate('/')}
+                        >
+                            Return Home
+                        </button>
+                    </div>
                 </div>
+
+                <style>{`
+                    /* Success Animation Styles */
+                    .checkout-page {
+                        min-height: calc(100vh - 80px); /* Account for navbar */
+                    }
+                    .success-modal-animated {
+                        animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                    }
+                    .icon-container {
+                        animation: scaleBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+                        opacity: 0;
+                        transform: scale(0.5);
+                    }
+                    .animated-check-icon {
+                        overflow: visible;
+                    }
+                    .animated-check-icon path,
+                    .animated-check-icon polyline {
+                        /* Provide a large dash array ensuring it covers any SVG path length */
+                        stroke-dasharray: 250;
+                        stroke-dashoffset: 250;
+                        animation: drawCheck 0.8s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+                    }
+                    .success-title {
+                        opacity: 0;
+                        transform: translateY(15px);
+                        animation: fadeUp 0.5s ease-out 0.8s forwards;
+                    }
+                    .success-details {
+                        opacity: 0;
+                        transform: translateY(15px);
+                        animation: fadeUp 0.5s ease-out 0.9s forwards;
+                    }
+                    .success-btn-container {
+                        opacity: 0;
+                        transform: translateY(15px);
+                        animation: fadeUp 0.5s ease-out 1s forwards;
+                    }
+                    
+                    @keyframes slideUpFade {
+                        0% { opacity: 0; transform: translateY(40px) scale(0.96); }
+                        100% { opacity: 1; transform: translateY(0) scale(1); }
+                    }
+                    @keyframes scaleBounce {
+                        0% { opacity: 0; transform: scale(0.5); }
+                        60% { opacity: 1; transform: scale(1.1); }
+                        100% { opacity: 1; transform: scale(1); }
+                    }
+                    @keyframes drawCheck {
+                        0% { stroke-dashoffset: 250; }
+                        100% { stroke-dashoffset: 0; }
+                    }
+                    @keyframes fadeUp {
+                        0% { opacity: 0; transform: translateY(15px); }
+                        100% { opacity: 1; transform: translateY(0); }
+                    }
+                `}</style>
             </div>
         );
     }
@@ -299,6 +370,56 @@ export default function CheckoutPage() {
                 @keyframes fadeIn {
                     from { opacity: 0; transform: translateY(10px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+
+                /* Success Animation Styles */
+                .success-modal-animated {
+                    animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+                }
+                .icon-container {
+                    animation: scaleBounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards;
+                    opacity: 0;
+                    transform: scale(0.5);
+                }
+                .animated-check-icon path,
+                .animated-check-icon circle,
+                .animated-check-icon polyline {
+                    stroke-dasharray: 200;
+                    stroke-dashoffset: 200;
+                    animation: drawCheck 0.8s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+                }
+                .success-title {
+                    opacity: 0;
+                    transform: translateY(15px);
+                    animation: fadeUp 0.5s ease-out 0.8s forwards;
+                }
+                .success-details {
+                    opacity: 0;
+                    transform: translateY(15px);
+                    animation: fadeUp 0.5s ease-out 0.9s forwards;
+                }
+                .success-btn-container {
+                    opacity: 0;
+                    transform: translateY(15px);
+                    animation: fadeUp 0.5s ease-out 1s forwards;
+                }
+                
+                @keyframes slideUpFade {
+                    0% { opacity: 0; transform: translateY(40px) scale(0.96); }
+                    100% { opacity: 1; transform: translateY(0) scale(1); }
+                }
+                @keyframes scaleBounce {
+                    0% { opacity: 0; transform: scale(0.5); }
+                    60% { opacity: 1; transform: scale(1.1); }
+                    100% { opacity: 1; transform: scale(1); }
+                }
+                @keyframes drawCheck {
+                    0% { stroke-dashoffset: 200; }
+                    100% { stroke-dashoffset: 0; }
+                }
+                @keyframes fadeUp {
+                    0% { opacity: 0; transform: translateY(15px); }
+                    100% { opacity: 1; transform: translateY(0); }
                 }
             `}</style>
         </div>

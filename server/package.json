@@ -9,6 +9,7 @@
         "seed": "node src/seeds/index.js"
     },
     "dependencies": {
+        "@getbrevo/brevo": "^4.0.1",
         "@insforge/sdk": "latest",
         "bcryptjs": "^2.4.3",
         "cloudinary": "^2.0.1",

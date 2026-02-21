@@ -61,6 +61,10 @@ const env = {
     SMTP_PASS: process.env.SMTP_PASS || '',
     EMAIL_FROM: process.env.EMAIL_FROM || 'StayBnB <noreply@staybnb.com>',
 
+    // Brevo
+    BREVO_API_KEY: process.env.BREVO_API_KEY || '',
+    HOTEL_EMAIL: process.env.HOTEL_EMAIL || 'albaith.booking@gmail.com',
+
     isProd: process.env.NODE_ENV === 'production',
     isDev: process.env.NODE_ENV !== 'production',
 };

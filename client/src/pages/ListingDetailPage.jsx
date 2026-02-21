@@ -55,7 +55,7 @@ export const LISTING_DATA = {
         price: 1800, cleaningFee: 250, serviceFee: 200
     },
     'suite_room': {
-        title: 'Premium Suite Room',
+        title: 'Suite Room',
         location: 'Penthouse Level, Al Baith Hotel',
         rating: 5.0, reviews: 89,
         host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
@@ -71,7 +71,12 @@ export const LISTING_DATA = {
         amenities: [
             { label: 'WiFi', icon: <Wifi size={24} /> },
             { label: 'Air conditioning', icon: <Snowflake size={24} /> },
+            { label: 'Smart TV', icon: <Tv size={24} /> },
+            { label: 'Heater', icon: <Snowflake size={24} /> },
+            { label: 'Power Backup', icon: <KeyRound size={24} /> },
+            { label: 'Lift', icon: <ArrowLeft size={24} /> },
             { label: 'Mini Kitchen', icon: <CookingPot size={24} /> },
+            { label: 'Mini Fridge', icon: <Snowflake size={24} /> },
             { label: 'Jacuzzi', icon: <Waves size={24} /> },
             { label: 'Panoramic View', icon: <Trees size={24} /> }
         ],
@@ -100,7 +105,7 @@ export const LISTING_DATA = {
         price: 2500, cleaningFee: 250, serviceFee: 200
     },
     'apartments_1bhk': {
-        title: '1BHK Luxury Apartment',
+        title: '1BHK Apartment',
         location: 'Residential Wing, Al Baith',
         rating: 4.88, reviews: 54,
         host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
@@ -227,6 +232,7 @@ export default function ListingDetailPage() {
     const [checkOut, setCheckOut] = useState(toDateStr(fiveDaysLater));
     const [guestsCount, setGuestsCount] = useState(1);
     const [activePicker, setActivePicker] = useState(null); // 'in', 'out', or null
+    const [showAllAmenities, setShowAllAmenities] = useState(false);
 
     const formatDisplayDate = (dateStr) => {
         if (!dateStr) return null;
@@ -258,6 +264,40 @@ export default function ListingDetailPage() {
         }
     };
 
+    const handleShare = async () => {
+        const shareData = {
+            title: listing.title,
+            text: `Check out this amazing stay at Al Baith: ${listing.title}`,
+            url: window.location.href,
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                console.error('Error sharing:', err);
+                // Fallback to clipboard if share fails
+                try {
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('Link copied to clipboard!');
+                } catch (copyErr) {
+                    console.error('Clipboard copy failed:', copyErr);
+                }
+            }
+        }
+    };
+
+    const [isSaved, setIsSaved] = useState(false);
+    const handleSave = () => {
+        setIsSaved(!isSaved);
+        // In a real app, you would sync this with a backend or local storage
+    };
+
     return (
         <>
             <div className="detail-page">
@@ -276,8 +316,16 @@ export default function ListingDetailPage() {
                         <span>{listing.location}</span>
                     </div>
                     <div className="detail-actions">
-                        <button className="detail-action-btn"><Share2 size={16} /> Share</button>
-                        <button className="detail-action-btn"><Heart size={16} /> Save</button>
+                        <button className="detail-action-btn" onClick={handleShare}>
+                            <Share2 size={16} /> Share
+                        </button>
+                        <button
+                            className={`detail-action-btn ${isSaved ? 'saved' : ''}`}
+                            onClick={handleSave}
+                        >
+                            <Heart size={16} fill={isSaved ? '#FF385C' : 'transparent'} color={isSaved ? '#FF385C' : 'currentColor'} />
+                            {isSaved ? 'Saved' : 'Save'}
+                        </button>
                     </div>
                 </div>
 
@@ -330,15 +378,43 @@ export default function ListingDetailPage() {
                         <div className="amenities-section">
                             <h3>What this place offers</h3>
                             <div className="amenities-grid">
-                                {listing.amenities.map((a, idx) => (
+                                {listing.amenities.slice(0, 6).map((a, idx) => (
                                     <div className="amenity-row" key={idx}>
                                         {a.icon}
                                         <span>{a.label}</span>
                                     </div>
                                 ))}
                             </div>
-                            <button className="show-amenities-btn">Show all {listing.amenities.length} amenities</button>
+                            {listing.amenities.length > 6 && (
+                                <button className="show-amenities-btn" onClick={() => setShowAllAmenities(true)}>
+                                    Show all {listing.amenities.length} amenities
+                                </button>
+                            )}
                         </div>
+
+                        {/* Amenities Modal */}
+                        {showAllAmenities && (
+                            <div className="amenities-modal-overlay" onClick={() => setShowAllAmenities(false)}>
+                                <div className="amenities-modal-container" onClick={e => e.stopPropagation()}>
+                                    <div className="amenities-modal-header">
+                                        <button className="modal-close-btn" onClick={() => setShowAllAmenities(false)}>
+                                            <X size={24} />
+                                        </button>
+                                        <h2>What this place offers</h2>
+                                    </div>
+                                    <div className="amenities-modal-list">
+                                        {listing.amenities.map((a, idx) => (
+                                            <div className="amenity-modal-item" key={idx}>
+                                                <div className="amenity-icon">{a.icon}</div>
+                                                <div className="amenity-info">
+                                                    <span className="amenity-label">{a.label}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
 
                     {/* Booking Sidebar */}

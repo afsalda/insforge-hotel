@@ -91,7 +91,7 @@ export default function AdminLoginPage() {
                 }
                 .login-input {
                     width: 100%;
-                    padding: 12px 14px 12px 42px;
+                    padding: 12px 14px 12px 42px !important;
                     border: 1.5px solid var(--border);
                     border-radius: 12px;
                     font-size: 1rem;

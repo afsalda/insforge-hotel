@@ -75,7 +75,7 @@ const ROOM_DATA = {
     standard: { id: 'standard_room', name: 'Standard Room', arabic: 'غرفة قياسية', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift'], extraBedAvailable: false, img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80' },
     deluxe: { id: 'deluxe_room', name: 'Deluxe Room', arabic: 'غرفة ديلوكس', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80' },
     suite: { id: 'suite_room', name: 'Suite Room', arabic: 'جناح فاخر', price: '₹5,000 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80' },
-    apartments: { id: 'apartments', name: 'Luxury Apartments', arabic: 'شقق فاخرة', price: 'Starting from ₹3,500', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' }
+    apartments: { id: 'apartments', name: 'Apartments', arabic: 'شقق', price: '₹3,500 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' }
 };
 
 
@@ -256,30 +256,30 @@ export default function HomePage() {
                                     <div className="room-badge">{room.arabic}</div>
                                     <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
                                 </div>
-                                <div className="room-card-content" style={{ padding: '24px' }}>
-                                    <div className="room-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                        <h3 className="room-card-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', color: 'var(--text-charcoal)', margin: 0 }}>{room.name}</h3>
-                                        <span className="room-card-price" style={{ fontSize: '1.25rem', color: 'var(--accent-gold)' }}>{room.price}</span>
+                                <div className="room-card-content">
+                                    <div className="room-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px', minHeight: '50px' }}>
+                                        <h3 className="room-card-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--text-charcoal)', margin: 0, fontWeight: 500 }}>{room.name}</h3>
+                                        <span className="room-card-price" style={{ fontSize: '1.1rem', color: 'var(--accent-gold)', fontWeight: 600, whiteSpace: 'nowrap' }}>{room.price}</span>
                                     </div>
-                                    <p className="room-card-desc" style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginBottom: '20px', lineHeight: 1.6 }}>{room.desc}</p>
+                                    <p className="room-card-desc" style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px', lineHeight: 1.6, flexGrow: 1 }}>{room.desc}</p>
 
                                     <div className="room-amenities-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
                                         {room.amenities.slice(0, 4).map((amenity, idx) => (
-                                            <div key={idx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.85rem', color: 'var(--text-charcoal)' }}>
+                                            <div key={idx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-charcoal)', fontWeight: 500 }}>
                                                 <span className="amenity-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-gold)' }}></span>
                                                 {amenity}
                                             </div>
                                         ))}
                                     </div>
 
-                                    <div className="room-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
-                                        <div className="room-guests" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.9rem', color: 'var(--text-muted)' }}>
-                                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    <div className="room-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.05)', marginTop: 'auto' }}>
+                                        <div className="room-guests" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                             Up to {room.maxGuests} Guests
                                         </div>
-                                        <button className="btn-view-room" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)} style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent-gold)', background: 'none', border: 'none', fontSize: '0.95rem', fontWeight: 500, cursor: 'pointer', transition: 'color 0.2s' }}>
-                                            View Details
-                                            <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                        <button className="btn-view-room" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
+                                            <span>View Room</span>
+                                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
                                         </button>
                                     </div>
                                 </div>

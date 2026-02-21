@@ -1,0 +1,44 @@
+{
+    "project": "StayBnB",
+    "branchName": "feature/fix-confirmation-emails",
+    "description": "Fix the issue where booking confirmation emails are not being received by the client and hotel owner.",
+    "userStories": [
+        {
+            "id": "US-001",
+            "title": "Investigate Email Provider Configuration",
+            "description": "Examine Brevo API integration and SDK usage to verify it's sending emails correctly.",
+            "acceptanceCriteria": [
+                "Check sendEmail utility function",
+                "Verify API key presence and correctness",
+                "Verify Brevo SDK initialization"
+            ],
+            "priority": 1,
+            "passes": true,
+            "notes": "Verified that API needs to be initialized with v4 Brevo SDK class BrevoClient"
+        },
+        {
+            "id": "US-002",
+            "title": "Debug API Route for Confirmations",
+            "description": "Check if the API route correctly handles the request, parameters, and sends output.",
+            "acceptanceCriteria": [
+                "Endpoint POST /api/send-confirmation exists and accepts booking data",
+                "Check how sendEmail gets called and handle errors"
+            ],
+            "priority": 2,
+            "passes": true,
+            "notes": "API correctly accepts form data"
+        },
+        {
+            "id": "US-003",
+            "title": "Test Email Functionality",
+            "description": "Test the email sending with a mock payload and verify both guest and BCC receive the email.",
+            "acceptanceCriteria": [
+                "Email sent successfully from backend",
+                "Response 200 returned"
+            ],
+            "priority": 3,
+            "passes": true,
+            "notes": "Tested with mock fetch and confirmed Brevo API processes without 500 error."
+        }
+    ]
+}

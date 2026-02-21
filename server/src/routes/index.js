@@ -12,6 +12,7 @@ import wishlistRoutes from './wishlist.routes.js';
 import uploadRoutes from './upload.routes.js';
 import paymentRoutes from './payment.routes.js';
 import notificationRoutes from './notification.routes.js';
+import emailRoutes from './email.routes.js';
 import adminRoutes from './admin/index.js';
 
 const router = Router();
@@ -26,6 +27,7 @@ router.use('/wishlists', wishlistRoutes);
 router.use('/uploads', uploadRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/', emailRoutes);
 router.use('/admin', adminRoutes);
 
 export default router;

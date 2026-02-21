@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import {
     CreditCard, Users, Calendar, LayoutDashboard, Hotel,
     Settings, Bell, CheckCircle, Clock, ArrowLeft, Trash2,
-    RefreshCw, DollarSign, LogOut
+    RefreshCw, DollarSign, LogOut, Menu, X
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as api from '../lib/api.js';
@@ -13,6 +13,7 @@ export default function AdminDashboardPage() {
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('dashboard');
     const [refreshing, setRefreshing] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -75,26 +76,44 @@ export default function AdminDashboardPage() {
 
     return (
         <div className="dashboard-container">
+            {/* Mobile Menu Overlay */}
+            {mobileMenuOpen && (
+                <div
+                    className="admin-sidebar-overlay"
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000 }}
+                />
+            )}
+
             {/* Sidebar */}
-            <div className="sidebar">
-                <Link to="/" className="admin-brand">
-                    <Hotel size={28} />
-                    <span>Al Baith</span>
-                </Link>
+            <div className={`sidebar ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                    <Link to="/" className="admin-brand">
+                        <Hotel size={28} />
+                        <span>Al Baith</span>
+                    </Link>
+                    <button
+                        className="mobile-close-btn"
+                        onClick={() => setMobileMenuOpen(false)}
+                        style={{ background: 'none', border: 'none', color: 'white', display: 'none' }}
+                    >
+                        <X size={24} />
+                    </button>
+                </div>
                 <nav>
-                    <div className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => setActiveTab('dashboard')}>
+                    <div className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}>
                         <LayoutDashboard size={20} />
                         <span>Dashboard</span>
                     </div>
-                    <div className={`nav-link ${activeTab === 'bookings' ? 'active' : ''}`} onClick={() => setActiveTab('bookings')}>
+                    <div className={`nav-link ${activeTab === 'bookings' ? 'active' : ''}`} onClick={() => { setActiveTab('bookings'); setMobileMenuOpen(false); }}>
                         <Calendar size={20} />
                         <span>Bookings</span>
                     </div>
-                    <div className={`nav-link ${activeTab === 'guests' ? 'active' : ''}`} onClick={() => setActiveTab('guests')}>
+                    <div className={`nav-link ${activeTab === 'guests' ? 'active' : ''}`} onClick={() => { setActiveTab('guests'); setMobileMenuOpen(false); }}>
                         <Users size={20} />
                         <span>Guests</span>
                     </div>
-                    <div className="nav-link">
+                    <div className={`nav-link ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => { setActiveTab('settings'); setMobileMenuOpen(false); }}>
                         <Settings size={20} />
                         <span>Settings</span>
                     </div>
@@ -114,13 +133,23 @@ export default function AdminDashboardPage() {
             {/* Main Content */}
             <main className="dashboard-content">
                 <div className="dashboard-header">
-                    <div>
-                        <h1 className="page-title">
-                            {activeTab === 'dashboard' && 'Dashboard Overview'}
-                            {activeTab === 'bookings' && 'All Bookings'}
-                            {activeTab === 'guests' && 'Guest Directory'}
-                        </h1>
-                        <p style={{ color: 'var(--text-secondary)' }}>Welcome back, Admin</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <button
+                            className="mobile-menu-btn"
+                            onClick={() => setMobileMenuOpen(true)}
+                            style={{ background: 'none', border: 'none', display: 'none' }}
+                        >
+                            <Menu size={24} />
+                        </button>
+                        <div>
+                            <h1 className="page-title">
+                                {activeTab === 'dashboard' && 'Dashboard Overview'}
+                                {activeTab === 'bookings' && 'All Bookings'}
+                                {activeTab === 'guests' && 'Guest Directory'}
+                                {activeTab === 'settings' && 'System Settings'}
+                            </h1>
+                            <p style={{ color: 'var(--text-secondary)' }}>Welcome back, Admin</p>
+                        </div>
                     </div>
                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                         <button
@@ -347,6 +376,47 @@ export default function AdminDashboardPage() {
                                             })}
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Settings Tab */}
+                        {activeTab === 'settings' && (
+                            <div className="table-container" style={{ padding: '2rem' }}>
+                                <div style={{ maxWidth: '600px' }}>
+                                    <h3 style={{ marginBottom: '1.5rem' }}>General Settings</h3>
+
+                                    <div style={{ display: 'grid', gap: '1.5rem' }}>
+                                        <div className="form-group">
+                                            <label className="form-label" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Hotel Name</label>
+                                            <input
+                                                type="text"
+                                                defaultValue="Al Baith Hotel & Resort"
+                                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: '#f9fafb' }}
+                                                readOnly
+                                            />
+                                        </div>
+
+                                        <div className="form-group">
+                                            <label className="form-label" style={{ display: 'block', marginBottom: '8px', fontWeight: 600 }}>Admin Contact Email</label>
+                                            <input
+                                                type="email"
+                                                defaultValue="albaith.booking@gmail.com"
+                                                style={{ width: '100%', padding: '12px', borderRadius: '8px', border: '1px solid var(--border)', background: '#f9fafb' }}
+                                                readOnly
+                                            />
+                                        </div>
+
+
+
+                                        <div style={{ borderTop: '1px solid var(--border-light)', pt: '1.5rem', marginTop: '1rem' }}>
+                                            <button
+                                                style={{ padding: '12px 24px', background: 'var(--primary)', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 600, opacity: 0.7, cursor: 'not-allowed' }}
+                                            >
+                                                Save Changes (Coming Soon)
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
