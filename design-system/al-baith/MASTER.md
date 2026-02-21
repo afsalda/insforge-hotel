@@ -7,7 +7,7 @@
 ---
 
 **Project:** Al Baith
-**Generated:** 2026-02-20 22:53:45
+**Generated:** 2026-02-21 16:55:28
 **Category:** Hotel/Hospitality
 
 ---
@@ -28,9 +28,15 @@
 
 ### Typography
 
-- **Heading Font:** Inter
+- **Heading Font:** Playfair Display
 - **Body Font:** Inter
-- **Mood:** Elegant + Welcoming typography
+- **Mood:** elegant, luxury, sophisticated, timeless, premium, editorial
+- **Google Fonts:** [Playfair Display + Inter](https://fonts.google.com/share?selection.family=Inter:wght@300;400;500;600;700|Playfair+Display:wght@400;500;600;700)
+
+**CSS Import:**
+```css
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
+```
 
 ### Spacing Variables
 
