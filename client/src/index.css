@@ -2083,66 +2083,6 @@ img {
   display: none;
 }
 
-@media (max-width: 900px) {
-  .detail-gallery {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 260px 130px 130px;
-    gap: 6px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-  }
-
-  .detail-gallery .main-img {
-    grid-column: 1 / -1;
-    grid-row: 1;
-  }
-
-  .detail-gallery>img {
-    display: block;
-  }
-
-  .detail-body {
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .booking-card {
-    display: block;
-    position: static;
-    width: 100%;
-    margin-top: 16px;
-    margin-bottom: 80px;
-    padding: 24px 16px;
-    box-shadow: none;
-    border: 1px solid #EBEBEB;
-  }
-
-  .detail-bottom-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: white;
-    padding: 16px 24px;
-    border-top: 1px solid #EBEBEB;
-    z-index: 100;
-  }
-
-  .detail-bottom-reserve {
-    background: var(--accent-gold);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    border: none;
-    font-weight: 600;
-  }
-}
-
-/* Modal form style overrides */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -2586,5 +2526,216 @@ body {
 
   table {
     min-width: 600px !important;
+  }
+}
+.hide-desktop {
+  display: none !important;
+}
+.calendar-confirm-btn {
+  display: none;
+}
+.detail-header-compact {
+  margin-bottom: 24px;
+}
+.gallery-dots {
+  display: none;
+}
+.desc-text.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bottom-sheet-overlay { display: none; }
+.sheet-drag-handle { display: none; }
+.detail-gallery-container { position: relative; }
+
+@media (max-width: 900px) {
+  .detail-gallery {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 0 !important;
+    border-radius: 0 !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding: 0 !important;
+    scrollbar-width: none !important;
+    grid-template-columns: unset !important;
+    grid-template-rows: unset !important;
+  }
+  .detail-gallery::-webkit-scrollbar {
+    display: none !important;
+  }
+  .detail-gallery > img {
+    flex: 0 0 100% !important;
+    scroll-snap-align: center !important;
+    height: 250px !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 0 !important;
+  }
+  
+  .detail-title {
+    font-size: 24px !important;
+    margin-bottom: 8px;
+  }
+  .detail-meta {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .hide-mobile {
+    display: none !important;
+  }
+  .detail-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .detail-action-btn {
+    padding: 0;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-weight: 500;
+  }
+  
+  .gallery-dots {
+    display: flex !important;
+    justify-content: center;
+    gap: 6px;
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    width: 100%;
+  }
+  .gallery-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+  }
+  .gallery-dot.active {
+    background: white;
+  }
+  
+  .amenities-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .amenity-row {
+    gap: 12px !important;
+  }
+  
+  .booking-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1002 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+  .booking-container.sheet-open {
+    transform: translateY(0) !important;
+  }
+  .bottom-sheet-overlay {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,0.5) !important;
+    z-index: -1 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s !important;
+    height: 100vh !important;
+    top: 0 !important;
+  }
+  .booking-container.sheet-open .bottom-sheet-overlay {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .booking-card {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 24px 16px 48px 16px !important;
+    border: none !important;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.1) !important;
+    top: 0 !important;
+  }
+  .sheet-drag-handle {
+    display: flex !important;
+    justify-content: center !important;
+    padding-bottom: 24px !important;
+  }
+  .drag-bar {
+    width: 40px !important;
+    height: 4px !important;
+    background: #DDDDDD !important;
+    border-radius: 2px !important;
+  }
+  .hide-mobile-sheet {
+    display: none !important;
+  }
+  
+  .calendar-popover {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    padding: 24px 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: white !important;
+    z-index: 2000 !important;
+  }
+  .hide-desktop {
+    display: flex !important;
+  }
+  .calendar-confirm-btn {
+    display: block !important;
+    width: 100% !important;
+    padding: 14px !important;
+    background: var(--accent-gold) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    margin-top: 16px !important;
+  }
+  
+  .detail-info {
+    margin-bottom: 80px !important;
+  }
+
+  .detail-bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 16px 24px;
+    border-top: 1px solid #EBEBEB;
+    z-index: 1000;
+  }
+  .detail-bottom-reserve {
+    background: var(--accent-gold);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
   }
 }

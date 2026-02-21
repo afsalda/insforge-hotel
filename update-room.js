@@ -1,223 +1,12 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import {
-    ArrowLeft, Star, Share2, Heart, Award, KeyRound, Wifi,
-    Car, Snowflake, CookingPot, Tv, WashingMachine, Waves,
-    Trees, ChevronRight, CheckCircle, Loader2, X
-} from 'lucide-react';
-import { createBooking } from '../lib/api.js';
-import BookingCalendar from '../components/BookingCalendar';
+const fs = require('fs');
+const path = require('path');
 
-export const LISTING_DATA = {
-    'standard_room': {
-        title: 'Standard Room',
-        location: 'Al Baith Hotel',
-        rating: 4.85, reviews: 142,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80',
-            'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
-            'https://images.unsplash.com/photo-1584132967334-10e028b1db15?w=800&q=80',
-            'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80'
-        ],
-        guests: 2, bedrooms: 1, beds: 1, baths: 1,
-        description: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Smart TV', icon: <Tv size={24} /> },
-            { label: 'Power Backup', icon: <KeyRound size={24} /> }
-        ],
-        price: 1500, cleaningFee: 200, serviceFee: 150
-    },
-    'deluxe_room': {
-        title: 'Deluxe Room',
-        location: 'Upper Levels, Al Baith Hotel',
-        rating: 4.95, reviews: 312,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80',
-            'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&q=80',
-            'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&q=80',
-            'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80',
-            'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80'
-        ],
-        guests: 3, bedrooms: 1, beds: 2, baths: 1,
-        description: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed available for small families.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Smart TV', icon: <Tv size={24} /> },
-            { label: 'City View', icon: <Tv size={24} /> },
-            { label: 'Extra Bed (Free)', icon: <Trees size={24} /> }
-        ],
-        price: 1800, cleaningFee: 250, serviceFee: 200
-    },
-    'suite_room': {
-        title: 'Suite Room',
-        location: 'Penthouse Level, Al Baith Hotel',
-        rating: 5.0, reviews: 89,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80',
-            'https://images.unsplash.com/photo-1561501878-aabd62634533?w=800&q=80',
-            'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80',
-            'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-            'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=800&q=80'
-        ],
-        guests: 4, bedrooms: 2, beds: 2, baths: 2,
-        description: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Smart TV', icon: <Tv size={24} /> },
-            { label: 'Heater', icon: <Snowflake size={24} /> },
-            { label: 'Power Backup', icon: <KeyRound size={24} /> },
-            { label: 'Lift', icon: <ArrowLeft size={24} /> },
-            { label: 'Mini Kitchen', icon: <CookingPot size={24} /> },
-            { label: 'Mini Fridge', icon: <Snowflake size={24} /> },
-            { label: 'Jacuzzi', icon: <Waves size={24} /> },
-            { label: 'Panoramic View', icon: <Trees size={24} /> }
-        ],
-        price: 5000, cleaningFee: 350, serviceFee: 400
-    },
-    'executive_room': {
-        title: 'Executive Room',
-        location: 'Business Wing, Al Baith Hotel',
-        rating: 4.92, reviews: 156,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1200&q=80',
-            'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
-            'https://images.unsplash.com/photo-1584132967334-10e028b1db15?w=800&q=80',
-            'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80'
-        ],
-        guests: 2, bedrooms: 1, beds: 1, baths: 1,
-        description: 'Sophisticated workspace and luxury bedding for the modern professional. Includes balcony and premium mini-bar.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Work Desk', icon: <Tv size={24} /> },
-            { label: 'Balcony', icon: <Trees size={24} /> }
-        ],
-        price: 2500, cleaningFee: 250, serviceFee: 200
-    },
-    'apartments_1bhk': {
-        title: '1BHK Apartment',
-        location: 'Residential Wing, Al Baith',
-        rating: 4.88, reviews: 54,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80',
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80',
-            'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&q=80'
-        ],
-        guests: 3, bedrooms: 1, beds: 1, baths: 1,
-        description: 'Cozy fully furnished 1BHK apartment with a complete kitchen, living room, and high-speed Wi-Fi. Ideal for extended stays.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Full Kitchen', icon: <CookingPot size={24} /> },
-            { label: 'Living Room', icon: <Tv size={24} /> },
-            { label: 'Free Parking', icon: <Car size={24} /> }
-        ],
-        price: 3500, cleaningFee: 200, serviceFee: 250
-    },
-    'apartments_2bhk': {
-        title: '2BHK Family Apartment',
-        location: 'Residential Wing, Al Baith',
-        rating: 4.90, reviews: 92,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80',
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
-            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80',
-            'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80'
-        ],
-        guests: 5, bedrooms: 2, beds: 2, baths: 2,
-        description: 'Spacious 2BHK apartment ideal for families, featuring modern furnishings, great panoramic views, and large kitchen spaces.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Full Kitchen', icon: <CookingPot size={24} /> },
-            { label: 'Washing Machine', icon: <WashingMachine size={24} /> },
-            { label: 'Free Parking', icon: <Car size={24} /> }
-        ],
-        price: 5500, cleaningFee: 300, serviceFee: 350
-    },
-    'apartments_3bhk': {
-        title: '3BHK Penthouse Apartment',
-        location: 'Penthouse Residential, Al Baith',
-        rating: 4.96, reviews: 120,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=1200&q=80',
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
-            'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80',
-            'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&q=80'
-        ],
-        guests: 8, bedrooms: 3, beds: 3, baths: 3,
-        description: 'Luxury 3BHK penthouse style apartment perfect for large groups or families seeking premium privacy with extraordinary city views.',
-        amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Full Chef Kitchen', icon: <CookingPot size={24} /> },
-            { label: 'In-Unit Washer', icon: <WashingMachine size={24} /> },
-            { label: 'Reserved Parking', icon: <Car size={24} /> }
-        ],
-        price: 8500, cleaningFee: 450, serviceFee: 500
-    }
-};
+const file = path.join(__dirname, 'client/src/pages/ListingDetailPage.jsx');
+let content = fs.readFileSync(file, 'utf8');
 
-export function getListingDetail(id) {
-    if (LISTING_DATA[id]) return LISTING_DATA[id];
-    return {
-        title: `Beautiful Stay #${id}`,
-        location: 'Al Baith Hotel',
-        rating: 4.9, reviews: 128,
-        host: { name: 'Sarah', years: 5, image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&q=80', superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80',
-            'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-            'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80',
-            'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-            'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=800&q=80'
-        ],
-        guests: 4, bedrooms: 2, beds: 2, baths: 2,
-        description: 'Escape to this architecturally stunning property. Enjoy all the comforts of home with premium amenities.',
-        amenities: [
-            { label: 'Fast wifi', icon: <Wifi size={24} /> },
-            { label: 'Fully equipped kitchen', icon: <CookingPot size={24} /> },
-            { label: 'Free parking', icon: <Car size={24} /> },
-            { label: 'Air conditioning', icon: <Snowflake size={24} /> },
-            { label: 'Smart TV', icon: <Tv size={24} /> },
-            { label: 'Washer & Dryer', icon: <WashingMachine size={24} /> }
-        ],
-        price: 245, cleaningFee: 65, serviceFee: 95
-    };
-}
+const marker = 'export default function ListingDetailPage() {';
 
-// Helper to format dates as YYYY-MM-DD in local time
-function toDateStr(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const d = String(date.getDate()).padStart(2, '0');
-    return `${y}-${m}-${d}`;
-}
-
-function calcNights(checkIn, checkOut) {
-    if (!checkIn || !checkOut) return 0;
-    const diff = new Date(checkOut) - new Date(checkIn);
-    return Math.max(0, Math.ceil(diff / (1000 * 60 * 60 * 24)));
-}
-
-export default function ListingDetailPage() {
+const newComponentCode = `export default function ListingDetailPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const listing = getListingDetail(id);
@@ -235,7 +24,7 @@ export default function ListingDetailPage() {
     const formatDisplayDate = (dateStr) => {
         if (!dateStr) return null;
         const [y, m, d] = dateStr.split('-');
-        return `${m}/${d}/${y}`;
+        return \`\${m}/\${d}/\${y}\`;
     };
 
     useEffect(() => {
@@ -261,7 +50,7 @@ export default function ListingDetailPage() {
             return;
         }
         try {
-            navigate(`/checkout/${id}`, {
+            navigate(\`/checkout/\${id}\`, {
                 state: { checkIn, checkOut, guestsCount, nights, total, subtotal }
             });
         } catch (err) {
@@ -273,7 +62,7 @@ export default function ListingDetailPage() {
     const handleShare = async () => {
         const shareData = {
             title: listing.title,
-            text: `Check out this amazing stay at Al Baith: ${listing.title}`,
+            text: \`Check out this amazing stay at Al Baith: \${listing.title}\`,
             url: window.location.href,
         };
         try {
@@ -325,7 +114,7 @@ export default function ListingDetailPage() {
                                 <Share2 size={16} /> <span className="hide-mobile">Share</span>
                             </button>
                             <button
-                                className={`detail-action-btn ${isSaved ? 'saved' : ''}`}
+                                className={\`detail-action-btn \${isSaved ? 'saved' : ''}\`}
                                 onClick={handleSave}
                             >
                                 <Heart size={16} fill={isSaved ? '#FF385C' : 'transparent'} color={isSaved ? '#FF385C' : 'currentColor'} />
@@ -343,7 +132,7 @@ export default function ListingDetailPage() {
                     </div>
                     <div className="gallery-dots">
                         {listing.images.map((_, i) => (
-                            <div key={i} className={`gallery-dot ${i === activeImgIndex ? 'active' : ''}`} />
+                            <div key={i} className={\`gallery-dot \${i === activeImgIndex ? 'active' : ''}\`} />
                         ))}
                     </div>
                 </div>
@@ -378,7 +167,7 @@ export default function ListingDetailPage() {
                         </div>
 
                         <div className="desc-section">
-                            <p className={`desc-text ${!showFullDesc ? 'collapsed' : ''}`}>
+                            <p className={\`desc-text \${!showFullDesc ? 'collapsed' : ''}\`}>
                                 {listing.description}
                                 {listing.description}
                                 {listing.description}
@@ -431,7 +220,7 @@ export default function ListingDetailPage() {
                         )}
                     </div>
 
-                    <div className={`booking-container ${showBottomSheet ? 'sheet-open' : ''}`}>
+                    <div className={\`booking-container \${showBottomSheet ? 'sheet-open' : ''}\`}>
                         <div className="bottom-sheet-overlay" onClick={() => setShowBottomSheet(false)} />
                         
                         <div className="booking-card">
@@ -449,12 +238,12 @@ export default function ListingDetailPage() {
                             <div className="booking-fields">
                                 <div className="booking-dates">
                                     <div
-                                        className={`booking-field ${activePicker === 'in' ? 'active' : ''}`}
+                                        className={\`booking-field \${activePicker === 'in' ? 'active' : ''}\`}
                                         onClick={() => setActivePicker(activePicker === 'in' ? null : 'in')}
                                         style={{ cursor: 'pointer', position: 'relative' }}
                                     >
                                         <label>CHECK-IN</label>
-                                        <div className={`date-display ${!checkIn ? 'placeholder' : ''}`}>
+                                        <div className={\`date-display \${!checkIn ? 'placeholder' : ''}\`}>
                                             {formatDisplayDate(checkIn) || 'Add date'}
                                         </div>
                                         {activePicker === 'in' && (
@@ -476,12 +265,12 @@ export default function ListingDetailPage() {
                                         )}
                                     </div>
                                     <div
-                                        className={`booking-field ${activePicker === 'out' ? 'active' : ''}`}
+                                        className={\`booking-field \${activePicker === 'out' ? 'active' : ''}\`}
                                         onClick={() => setActivePicker(activePicker === 'out' ? null : 'out')}
                                         style={{ cursor: 'pointer', position: 'relative' }}
                                     >
                                         <label>CHECKOUT</label>
-                                        <div className={`date-display ${!checkOut ? 'placeholder' : ''}`}>
+                                        <div className={\`date-display \${!checkOut ? 'placeholder' : ''}\`}>
                                             {formatDisplayDate(checkOut) || 'Add date'}
                                         </div>
                                         {activePicker === 'out' && (
@@ -555,4 +344,248 @@ export default function ListingDetailPage() {
             </div>
         </>
     );
+}`;
+
+content = content.substring(0, content.indexOf(marker)) + newComponentCode;
+fs.writeFileSync(file, content);
+
+// CSS updating logic
+const cssFile = path.join(__dirname, 'client/src/index.css');
+let css = fs.readFileSync(cssFile, 'utf8');
+
+// Find and replace the entire @media (max-width: 900px) block that relates to .detail-gallery etc...
+// Actually, it's safer to just remove all gallery overrides and re-inject a unified one
+// We'll read the CSS, find the first occurrence of @media (max-width: 900px) and truncate everything after it.
+// The user added @media (max-width: 900px) block at line ~2086
+const media900Index = css.indexOf('@media (max-width: 900px) {');
+if (media900Index !== -1) {
+    const endOfMedia900 = css.indexOf('.modal-header {', media900Index);
+    if (endOfMedia900 !== -1) {
+        css = css.substring(0, media900Index) + css.substring(endOfMedia900);
+    }
 }
+
+// Same for what was previously added at EOF:
+const media768Index = css.lastIndexOf('@media (max-width: 768px) {');
+if (media768Index !== -1) {
+    const detailGalleryInd = css.indexOf('.detail-gallery', media768Index);
+    if (detailGalleryInd !== -1) {
+        // Just let it be, we'll append more !important overrides at the real end
+    }
+}
+
+const newCss = `
+.hide-desktop {
+  display: none !important;
+}
+.calendar-confirm-btn {
+  display: none;
+}
+.detail-header-compact {
+  margin-bottom: 24px;
+}
+.gallery-dots {
+  display: none;
+}
+.desc-text.collapsed {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.bottom-sheet-overlay { display: none; }
+.sheet-drag-handle { display: none; }
+.detail-gallery-container { position: relative; }
+
+@media (max-width: 900px) {
+  .detail-gallery {
+    display: flex !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 0 !important;
+    border-radius: 0 !important;
+    margin-left: -16px !important;
+    margin-right: -16px !important;
+    padding: 0 !important;
+    scrollbar-width: none !important;
+    grid-template-columns: unset !important;
+    grid-template-rows: unset !important;
+  }
+  .detail-gallery::-webkit-scrollbar {
+    display: none !important;
+  }
+  .detail-gallery > img {
+    flex: 0 0 100% !important;
+    scroll-snap-align: center !important;
+    height: 250px !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 0 !important;
+  }
+  
+  .detail-title {
+    font-size: 24px !important;
+    margin-bottom: 8px;
+  }
+  .detail-meta {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    width: 100%;
+  }
+  .hide-mobile {
+    display: none !important;
+  }
+  .detail-actions {
+    display: flex;
+    gap: 12px;
+  }
+  .detail-action-btn {
+    padding: 0;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-weight: 500;
+  }
+  
+  .gallery-dots {
+    display: flex !important;
+    justify-content: center;
+    gap: 6px;
+    position: absolute;
+    bottom: 12px;
+    left: 0;
+    width: 100%;
+  }
+  .gallery-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+  }
+  .gallery-dot.active {
+    background: white;
+  }
+  
+  .amenities-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .amenity-row {
+    gap: 12px !important;
+  }
+  
+  .booking-container {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1002 !important;
+    transform: translateY(100%) !important;
+    transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1) !important;
+  }
+  .booking-container.sheet-open {
+    transform: translateY(0) !important;
+  }
+  .bottom-sheet-overlay {
+    display: block !important;
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,0.5) !important;
+    z-index: -1 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.3s !important;
+    height: 100vh !important;
+    top: 0 !important;
+  }
+  .booking-container.sheet-open .bottom-sheet-overlay {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+  .booking-card {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    width: 100% !important;
+    margin: 0 !important;
+    border-radius: 20px 20px 0 0 !important;
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 24px 16px 48px 16px !important;
+    border: none !important;
+    box-shadow: 0 -4px 16px rgba(0,0,0,0.1) !important;
+    top: 0 !important;
+  }
+  .sheet-drag-handle {
+    display: flex !important;
+    justify-content: center !important;
+    padding-bottom: 24px !important;
+  }
+  .drag-bar {
+    width: 40px !important;
+    height: 4px !important;
+    background: #DDDDDD !important;
+    border-radius: 2px !important;
+  }
+  .hide-mobile-sheet {
+    display: none !important;
+  }
+  
+  .calendar-popover {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: none !important;
+    transform: none !important;
+    border-radius: 0 !important;
+    padding: 24px 16px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    background: white !important;
+    z-index: 2000 !important;
+  }
+  .hide-desktop {
+    display: flex !important;
+  }
+  .calendar-confirm-btn {
+    display: block !important;
+    width: 100% !important;
+    padding: 14px !important;
+    background: var(--accent-gold) !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    margin-top: 16px !important;
+  }
+  
+  .detail-info {
+    margin-bottom: 80px !important;
+  }
+
+  .detail-bottom-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 16px 24px;
+    border-top: 1px solid #EBEBEB;
+    z-index: 1000;
+  }
+  .detail-bottom-reserve {
+    background: var(--accent-gold);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+  }
+}
+`;
+
+fs.writeFileSync(cssFile, css + newCss);
