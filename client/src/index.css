@@ -3694,6 +3694,7 @@ body {
 }
 
 .stat-label {
+  font-family: var(--font-body);
   font-size: 0.85rem;
   text-transform: none;
   color: var(--text-muted);
@@ -3702,12 +3703,14 @@ body {
 }
 
 .stat-value {
+  font-family: var(--font-body);
   font-weight: 400;
   color: var(--text-charcoal);
   font-size: 1.05rem;
 }
 
 .stat-value.highlight {
+  font-family: var(--font-body);
   color: var(--accent-gold-dim);
   font-size: 1.2rem;
   font-weight: 400;
@@ -3841,11 +3844,13 @@ body {
 }
 
 .total-label {
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 1.2rem;
 }
 
 .total-value {
+  font-family: var(--font-body);
   font-weight: 800;
   font-size: 1.4rem;
   color: var(--bg-deep-green);
