@@ -191,24 +191,12 @@ export default function AdminDashboardPage() {
                         <button
                             onClick={() => handleOpenModal()}
                             className="btn-add-booking"
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: '8px',
-                                padding: '10px 20px', borderRadius: '12px', border: 'none',
-                                background: 'var(--primary)', color: 'white',
-                                cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600,
-                                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)'
-                            }}
                         >
                             <Plus size={18} /> Add Booking
                         </button>
                         <button
                             onClick={fetchBookings}
                             className="btn-refresh"
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: '6px',
-                                padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border)',
-                                background: 'white', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600
-                            }}
                         >
                             <RefreshCw size={16} className={refreshing ? 'spin-icon' : ''} />
                         </button>
@@ -220,12 +208,7 @@ export default function AdminDashboardPage() {
                                 borderRadius: '50%'
                             }} />}
                         </div>
-                        <div style={{
-                            width: 40, height: 40, background: '#e0e7ff',
-                            borderRadius: '50%', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center',
-                            color: '#4F46E5', fontWeight: 'bold', fontSize: '0.9rem'
-                        }}>AD</div>
+                        <div className="admin-avatar-pro">AD</div>
                     </div>
                 </div>
 

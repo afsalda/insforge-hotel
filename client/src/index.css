@@ -27,6 +27,10 @@
   --font-arabic: 'Scheherazade New', serif;
   --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --backdrop-blur: blur(16px);
+  --primary: var(--bg-deep-green);
+  --primary-light: #2A422A;
+  --primary-dark: #0F1D0F;
+  --accent: var(--accent-gold);
 }
 
 /* ── Reset & Base ── */
@@ -4112,4 +4116,62 @@ tbody tr:hover {
   .form-row {
     grid-template-columns: 1fr;
   }
+}
+
+/* ── Admin Dashboard Buttons ── */
+.btn-add-booking {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px !important;
+  border-radius: 12px;
+  border: none;
+  background: var(--primary) !important;
+  color: white !important;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(26, 46, 26, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-add-booking:hover {
+  background: var(--primary-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(26, 46, 26, 0.3);
+}
+
+.btn-refresh {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  background: white;
+  color: var(--text-charcoal);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+}
+
+.admin-avatar-pro {
+  width: 42px;
+  height: 42px;
+  background: var(--bg-cream);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: var(--shadow-soft);
 }
