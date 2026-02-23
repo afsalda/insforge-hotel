@@ -77,9 +77,20 @@ export async function createBooking(bookingData) {
 
 export async function updateBooking(id, updates) {
     if (useDirectSDK) {
-        const updateObj = {};
-        if (updates.status) updateObj.status = updates.status;
+        const updateObj = { ...updates };
+        // Map camelCase to snake_case for fields known to the SDK
         if (updates.guestName) updateObj.guest_name = updates.guestName;
+        if (updates.guestEmail) updateObj.guest_email = updates.guestEmail;
+        if (updates.guestPhone) updateObj.guest_phone = updates.guestPhone;
+        if (updates.roomId) updateObj.room_id = updates.roomId;
+        if (updates.checkInDate) updateObj.check_in_date = updates.checkInDate;
+        if (updates.checkOutDate) updateObj.check_out_date = updates.checkOutDate;
+        if (updates.listingTitle) updateObj.listing_title = updates.listingTitle;
+        if (updates.guestsCount) updateObj.guests_count = updates.guestsCount;
+        if (updates.totalPrice) updateObj.total_price = updates.totalPrice;
+        if (updates.totalNights) updateObj.total_nights = updates.totalNights;
+        if (updates.extraBed !== undefined) updateObj.extra_bed = updates.extraBed;
+        if (updates.specialRequests !== undefined) updateObj.special_requests = updates.specialRequests;
 
         const { data, error } = await db
             .from('bookings')

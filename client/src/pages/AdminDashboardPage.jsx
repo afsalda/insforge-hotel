@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import {
     CreditCard, Users, Calendar, LayoutDashboard, Hotel,
     Settings, Bell, CheckCircle, Clock, ArrowLeft, Trash2,
-    RefreshCw, DollarSign, LogOut, Menu, X
+    RefreshCw, DollarSign, LogOut, Menu, X, Plus, Edit,
+    Mail, Phone, Briefcase, Calendar as CalendarIcon, Loader2
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as api from '../lib/api.js';
@@ -14,6 +15,9 @@ export default function AdminDashboardPage() {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [refreshing, setRefreshing] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedBooking, setSelectedBooking] = useState(null);
+    const [formLoading, setFormLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -49,12 +53,44 @@ export default function AdminDashboardPage() {
         }
     };
 
-    const updateStatus = async (id, newStatus) => {
+    const handleOpenModal = (booking = null) => {
+        setSelectedBooking(booking);
+        setIsModalOpen(true);
+    };
+
+    const handleSaveBooking = async (e) => {
+        e.preventDefault();
+        setFormLoading(true);
+        const formData = new FormData(e.target);
+        const data = Object.fromEntries(formData.entries());
+
+        // Match API expectations
+        const payload = {
+            guestName: data.guest_name,
+            guestEmail: data.guest_email,
+            guestPhone: data.guest_phone,
+            roomId: data.room_id,
+            listingTitle: data.room_id.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            checkInDate: data.check_in_date,
+            checkOutDate: data.check_out_date,
+            guestsCount: Number(data.guests_count),
+            totalPrice: Number(data.total_price),
+            status: data.status || 'confirmed'
+        };
+
         try {
-            const updated = await api.updateBooking(id, { status: newStatus });
-            setBookings(prev => prev.map(b => b.id === id ? updated : b));
+            if (selectedBooking) {
+                const updated = await api.updateBooking(selectedBooking.id, payload);
+                setBookings(prev => prev.map(b => b.id === selectedBooking.id ? updated : b));
+            } else {
+                const created = await api.createBooking(payload);
+                setBookings(prev => [created, ...prev]);
+            }
+            setIsModalOpen(false);
         } catch (err) {
-            alert('Update failed: ' + err.message);
+            alert('Save failed: ' + err.message);
+        } finally {
+            setFormLoading(false);
         }
     };
 
@@ -153,14 +189,28 @@ export default function AdminDashboardPage() {
                     </div>
                     <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                         <button
-                            onClick={fetchBookings}
+                            onClick={() => handleOpenModal()}
+                            className="btn-add-booking"
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '6px',
-                                padding: '8px 16px', borderRadius: '8px', border: '1px solid var(--border)',
-                                background: 'white', cursor: 'pointer', fontSize: '0.85rem', fontWeight: 600
+                                display: 'flex', alignItems: 'center', gap: '8px',
+                                padding: '10px 20px', borderRadius: '12px', border: 'none',
+                                background: 'var(--primary)', color: 'white',
+                                cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600,
+                                boxShadow: '0 4px 12px rgba(79, 70, 229, 0.2)'
                             }}
                         >
-                            <RefreshCw size={14} className={refreshing ? 'spin-icon' : ''} /> Refresh
+                            <Plus size={18} /> Add Booking
+                        </button>
+                        <button
+                            onClick={fetchBookings}
+                            className="btn-refresh"
+                            style={{
+                                display: 'flex', alignItems: 'center', gap: '6px',
+                                padding: '10px 16px', borderRadius: '12px', border: '1px solid var(--border)',
+                                background: 'white', cursor: 'pointer', fontSize: '0.9rem', fontWeight: 600
+                            }}
+                        >
+                            <RefreshCw size={16} className={refreshing ? 'spin-icon' : ''} />
                         </button>
                         <div style={{ position: 'relative' }}>
                             <Bell size={20} color="var(--text-secondary)" />
@@ -325,9 +375,18 @@ export default function AdminDashboardPage() {
                                                                         >Cancel</button>
                                                                     )}
                                                                     <button
+                                                                        onClick={() => handleOpenModal(booking)}
+                                                                        title="Edit Booking"
+                                                                        className="btn-action-edit"
+                                                                        style={{ padding: '6px', border: '1px solid var(--border)', background: 'white', borderRadius: '8px', cursor: 'pointer' }}
+                                                                    >
+                                                                        <Edit size={14} color="var(--text-charcoal)" />
+                                                                    </button>
+                                                                    <button
                                                                         onClick={() => handleDeleteBooking(booking.id)}
                                                                         title="Delete Booking"
-                                                                        style={{ padding: '4px 6px', border: '1px solid var(--border)', background: 'white', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                                                        className="btn-action-delete"
+                                                                        style={{ padding: '6px', border: '1px solid #fee2e2', background: '#fef2f2', borderRadius: '8px', cursor: 'pointer' }}
                                                                     >
                                                                         <Trash2 size={14} color="#991B1B" />
                                                                     </button>
@@ -423,6 +482,93 @@ export default function AdminDashboardPage() {
                     </>
                 )}
             </main>
+            {/* Booking Modal (CRUD) */}
+            {isModalOpen && (
+                <div className="admin-modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) setIsModalOpen(false); }}>
+                    <div className="admin-modal-container">
+                        <div className="admin-modal-header">
+                            <div>
+                                <h2>{selectedBooking ? 'Edit Booking' : 'New Manual Booking'}</h2>
+                                <p>Fill in the details for the guest stay.</p>
+                            </div>
+                            <button className="modal-close-icon" onClick={() => setIsModalOpen(false)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <form className="admin-modal-form" onSubmit={handleSaveBooking}>
+                            <div className="form-row">
+                                <div className="form-group-pro">
+                                    <label><Users size={14} /> Guest Name</label>
+                                    <input type="text" name="guest_name" defaultValue={selectedBooking?.guest_name} required placeholder="Full Name" />
+                                </div>
+                                <div className="form-group-pro">
+                                    <label><Mail size={14} /> Email Address</label>
+                                    <input type="email" name="guest_email" defaultValue={selectedBooking?.guest_email} required placeholder="email@example.com" />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group-pro">
+                                    <label><Phone size={14} /> Phone Number</label>
+                                    <input type="text" name="guest_phone" defaultValue={selectedBooking?.guest_phone} placeholder="+91 ..." />
+                                </div>
+                                <div className="form-group-pro">
+                                    <label><Hotel size={14} /> Room Type</label>
+                                    <select name="room_id" defaultValue={selectedBooking?.room_id || 'standard_room'}>
+                                        <option value="standard_room">Standard Room</option>
+                                        <option value="deluxe_room">Deluxe Room</option>
+                                        <option value="suite_room">Suite Room</option>
+                                        <option value="executive_room">Executive Room</option>
+                                        <option value="apartments_1bhk">1BHK Apartment</option>
+                                        <option value="apartments_2bhk">2BHK Apartment</option>
+                                        <option value="apartments_3bhk">3BHK Apartment</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group-pro">
+                                    <label><CalendarIcon size={14} /> Check-in</label>
+                                    <input type="date" name="check_in_date" defaultValue={selectedBooking?.check_in_date} required />
+                                </div>
+                                <div className="form-group-pro">
+                                    <label><CalendarIcon size={14} /> Check-out</label>
+                                    <input type="date" name="check_out_date" defaultValue={selectedBooking?.check_out_date} required />
+                                </div>
+                            </div>
+
+                            <div className="form-row">
+                                <div className="form-group-pro">
+                                    <label><Users size={14} /> Guests</label>
+                                    <input type="number" name="guests_count" defaultValue={selectedBooking?.guests_count || 1} min="1" max="10" />
+                                </div>
+                                <div className="form-group-pro">
+                                    <label><DollarSign size={14} /> Total Price</label>
+                                    <input type="number" name="total_price" defaultValue={selectedBooking?.total_price || 0} required />
+                                </div>
+                            </div>
+
+                            <div className="form-group-pro">
+                                <label><Clock size={14} /> Booking Status</label>
+                                <select name="status" defaultValue={selectedBooking?.status || 'confirmed'}>
+                                    <option value="pending">Pending</option>
+                                    <option value="confirmed">Confirmed</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="cancelled">Cancelled</option>
+                                </select>
+                            </div>
+
+                            <div className="admin-modal-footer">
+                                <button type="button" className="btn-cancel" onClick={() => setIsModalOpen(false)}>Cancel</button>
+                                <button type="submit" className="btn-save" disabled={formLoading}>
+                                    {formLoading ? <Loader2 className="spin-icon" size={18} /> : (selectedBooking ? 'Update Booking' : 'Create Booking')}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
