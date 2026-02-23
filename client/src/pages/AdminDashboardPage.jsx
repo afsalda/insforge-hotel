@@ -53,6 +53,15 @@ export default function AdminDashboardPage() {
         }
     };
 
+    const updateStatus = async (id, newStatus) => {
+        try {
+            const updated = await api.updateBooking(id, { status: newStatus });
+            setBookings(prev => prev.map(b => b.id === id ? { ...b, ...updated } : b));
+        } catch (err) {
+            alert('Update failed: ' + err.message);
+        }
+    };
+
     const handleOpenModal = (booking = null) => {
         setSelectedBooking(booking);
         setIsModalOpen(true);
@@ -70,7 +79,7 @@ export default function AdminDashboardPage() {
             guestEmail: data.guest_email,
             guestPhone: data.guest_phone,
             roomId: data.room_id,
-            listingTitle: data.room_id.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()),
+            listingTitle: data.room_id.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
             checkInDate: data.check_in_date,
             checkOutDate: data.check_out_date,
             guestsCount: Number(data.guests_count),
@@ -81,7 +90,7 @@ export default function AdminDashboardPage() {
         try {
             if (selectedBooking) {
                 const updated = await api.updateBooking(selectedBooking.id, payload);
-                setBookings(prev => prev.map(b => b.id === selectedBooking.id ? updated : b));
+                setBookings(prev => prev.map(b => b.id === selectedBooking.id ? { ...b, ...updated } : b));
             } else {
                 const created = await api.createBooking(payload);
                 setBookings(prev => [created, ...prev]);
