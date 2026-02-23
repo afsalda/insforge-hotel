@@ -47,6 +47,12 @@ export default function CheckoutPage() {
             setErrorMsg('Name and email are required to continue.');
             return;
         }
+
+        if (!guestEmail.toLowerCase().endsWith('@gmail.com')) {
+            setErrorMsg('Email must end with @gmail.com');
+            return;
+        }
+
         setErrorMsg('');
         setStep(2);
     };

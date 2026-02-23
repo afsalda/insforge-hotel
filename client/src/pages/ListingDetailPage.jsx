@@ -13,7 +13,7 @@ export const LISTING_DATA = {
         title: 'Standard Room',
         location: 'Al Baith Hotel',
         rating: 4.85, reviews: 142,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80',
             'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
@@ -35,7 +35,7 @@ export const LISTING_DATA = {
         title: 'Deluxe Room',
         location: 'Upper Levels, Al Baith Hotel',
         rating: 4.95, reviews: 312,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80',
             'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&q=80',
@@ -58,7 +58,7 @@ export const LISTING_DATA = {
         title: 'Suite Room',
         location: 'Penthouse Level, Al Baith Hotel',
         rating: 5.0, reviews: 89,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80',
             'https://images.unsplash.com/photo-1561501878-aabd62634533?w=800&q=80',
@@ -86,7 +86,7 @@ export const LISTING_DATA = {
         title: 'Executive Room',
         location: 'Business Wing, Al Baith Hotel',
         rating: 4.92, reviews: 156,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1200&q=80',
             'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
@@ -108,7 +108,7 @@ export const LISTING_DATA = {
         title: '1BHK Apartment',
         location: 'Residential Wing, Al Baith',
         rating: 4.88, reviews: 54,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80',
             'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
@@ -131,7 +131,7 @@ export const LISTING_DATA = {
         title: '2BHK Family Apartment',
         location: 'Residential Wing, Al Baith',
         rating: 4.90, reviews: 92,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80',
             'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
@@ -154,7 +154,7 @@ export const LISTING_DATA = {
         title: '3BHK Penthouse Apartment',
         location: 'Penthouse Residential, Al Baith',
         rating: 4.96, reviews: 120,
-        host: { name: 'Al Baith', years: 10, image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?w=150&q=80', superhost: true },
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
             'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=1200&q=80',
             'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
@@ -253,7 +253,7 @@ export default function ListingDetailPage() {
     const total = subtotal + listing.cleaningFee + listing.serviceFee;
 
     const handleReserve = (e) => {
-        if(e) e.stopPropagation();
+        if (e) e.stopPropagation();
         if (!checkIn || !checkOut || nights < 1) {
             setShowBottomSheet(true);
             if (!checkIn) setActivePicker('in');
@@ -288,7 +288,7 @@ export default function ListingDetailPage() {
                 try {
                     await navigator.clipboard.writeText(window.location.href);
                     alert('Link copied to clipboard!');
-                } catch (copyErr) {}
+                } catch (copyErr) { }
             }
         }
     };
@@ -355,7 +355,13 @@ export default function ListingDetailPage() {
                                 <h2>Entire home hosted by {listing.host.name}</h2>
                                 <p>{listing.guests} guests · {listing.bedrooms} bedrooms · {listing.beds} beds · {listing.baths} baths</p>
                             </div>
-                            <img src={listing.host.image} alt="" className="host-avatar" />
+                            {listing.host.image ? (
+                                <img src={listing.host.image} alt={listing.host.name} className="host-avatar" />
+                            ) : (
+                                <div className="host-avatar-placeholder">
+                                    <Award size={24} color="var(--accent-gold)" />
+                                </div>
+                            )}
                         </div>
 
                         <div className="highlight-list hide-mobile">
@@ -433,12 +439,12 @@ export default function ListingDetailPage() {
 
                     <div className={`booking-container ${showBottomSheet ? 'sheet-open' : ''}`}>
                         <div className="bottom-sheet-overlay" onClick={() => setShowBottomSheet(false)} />
-                        
+
                         <div className="booking-card">
                             <div className="sheet-drag-handle" onClick={() => setShowBottomSheet(false)}>
                                 <div className="drag-bar" />
                             </div>
-                            
+
                             <div className="booking-price-row hide-mobile-sheet">
                                 <div className="booking-price">₹{listing.price} <span>night</span></div>
                                 <div className="booking-rating">
@@ -459,9 +465,9 @@ export default function ListingDetailPage() {
                                         </div>
                                         {activePicker === 'in' && (
                                             <div className="calendar-popover" onClick={e => e.stopPropagation()}>
-                                                <div className="mobile-calendar-header hide-desktop" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center'}}>
-                                                    <h3 style={{margin:0}}>Select check-in</h3>
-                                                    <button onClick={() => setActivePicker(null)} style={{background:'none', border:'none', padding:0}}><X /></button>
+                                                <div className="mobile-calendar-header hide-desktop" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center' }}>
+                                                    <h3 style={{ margin: 0 }}>Select check-in</h3>
+                                                    <button onClick={() => setActivePicker(null)} style={{ background: 'none', border: 'none', padding: 0 }}><X /></button>
                                                 </div>
                                                 <BookingCalendar
                                                     selectedDate={checkIn}
@@ -486,9 +492,9 @@ export default function ListingDetailPage() {
                                         </div>
                                         {activePicker === 'out' && (
                                             <div className="calendar-popover align-right" onClick={e => e.stopPropagation()}>
-                                                <div className="mobile-calendar-header hide-desktop" style={{display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center'}}>
-                                                    <h3 style={{margin:0}}>Select checkout</h3>
-                                                    <button onClick={() => setActivePicker(null)} style={{background:'none', border:'none', padding:0}}><X /></button>
+                                                <div className="mobile-calendar-header hide-desktop" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center' }}>
+                                                    <h3 style={{ margin: 0 }}>Select checkout</h3>
+                                                    <button onClick={() => setActivePicker(null)} style={{ background: 'none', border: 'none', padding: 0 }}><X /></button>
                                                 </div>
                                                 <BookingCalendar
                                                     selectedDate={checkOut}
@@ -516,8 +522,8 @@ export default function ListingDetailPage() {
                                 </div>
                             </div>
 
-                            <button className="reserve-btn" onClick={handleReserve} style={{background: 'var(--accent-gold)'}}>Reserve</button>
-                            <div className="no-charge" style={{marginBottom: checkIn && checkOut ? '16px' : '0'}}>You won't be charged yet</div>
+                            <button className="reserve-btn" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
+                            <div className="no-charge" style={{ marginBottom: checkIn && checkOut ? '16px' : '0' }}>You won't be charged yet</div>
 
                             {nights > 0 && checkIn && checkOut && (
                                 <div className="price-breakdown">
@@ -546,12 +552,12 @@ export default function ListingDetailPage() {
 
             <div className="detail-bottom-bar" onClick={() => setShowBottomSheet(true)}>
                 <div className="detail-bottom-price">
-                    <strong>₹{listing.price}</strong> <span style={{color: '#717171', fontSize: '0.9rem', fontWeight: 400}}>night</span>
+                    <strong>₹{listing.price}</strong> <span style={{ color: '#717171', fontSize: '0.9rem', fontWeight: 400 }}>night</span>
                     {(!checkIn || !checkOut) && (
-                        <div style={{fontSize: '0.8rem', textDecoration: 'underline'}}>Select dates</div>
+                        <div style={{ fontSize: '0.8rem', textDecoration: 'underline' }}>Select dates</div>
                     )}
                 </div>
-                <button className="detail-bottom-reserve" onClick={handleReserve} style={{background: 'var(--accent-gold)'}}>Reserve</button>
+                <button className="detail-bottom-reserve" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
             </div>
         </>
     );

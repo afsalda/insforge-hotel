@@ -4,3 +4,8 @@
 - Found out that the SDK version installed is 4.0.1, which no longer supports `import brevo from '@getbrevo/brevo'` and requires object destruction to get the `BrevoClient` class.
 - Fixed the `brevoClient` initialization logic in `sendEmail.js`.
 - Passed US-002 and US-003 as testing was successful and the email route returns `200 OK`.
+- Deployed application to InsForge (https://hve9xz4u.insforge.site)
+- Removed Twitter, Facebook, YouTube and added WhatsApp to Footer
+- Redeplyoing to apply social link changes...version installed is 4.0.1, which no longer supports `import brevo from '@getbrevo/brevo'` and requires object destruction to get the `BrevoClient` class.
+- Fixed the `brevoClient` initialization logic in `sendEmail.js`.
+- Passed US-002 and US-003 as testing was successful and the email route returns `200 OK`.

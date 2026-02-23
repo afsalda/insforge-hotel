@@ -3694,14 +3694,15 @@ body {
 }
 
 .stat-label {
-  font-size: 0.75rem;
-  text-transform: uppercase;
+  font-size: 0.85rem;
+  text-transform: none;
   color: var(--text-muted);
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
+  font-weight: 400;
 }
 
 .stat-value {
-  font-weight: 600;
+  font-weight: 400;
   color: var(--text-charcoal);
   font-size: 1.05rem;
 }
@@ -3709,6 +3710,7 @@ body {
 .stat-value.highlight {
   color: var(--accent-gold-dim);
   font-size: 1.2rem;
+  font-weight: 400;
 }
 
 .btn-final-confirm {
@@ -3902,4 +3904,31 @@ body {
     grid-template-columns: 1fr;
     gap: 16px;
   }
+}
+
+/* ── Host Avatar & Placeholder ── */
+.host-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1.5px solid var(--accent-gold);
+  flex-shrink: 0;
+}
+
+.host-avatar-placeholder {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--bg-cream);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--accent-gold);
+  flex-shrink: 0;
+  transition: transform 0.3s var(--transition-smooth);
+}
+
+.host-avatar-placeholder:hover {
+  transform: scale(1.05);
 }
