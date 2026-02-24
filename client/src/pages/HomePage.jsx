@@ -187,6 +187,23 @@ export default function HomePage() {
     const [activeRoomIndex, setActiveRoomIndex] = useState(0);
     const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
 
+    const roomsRef = useRef(null);
+    const testimonialsRef = useRef(null);
+
+    const scrollToRoom = (index) => {
+        if (!roomsRef.current) return;
+        const itemWidth = roomsRef.current.scrollWidth / Object.keys(ROOM_DATA).length;
+        roomsRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+        setActiveRoomIndex(index);
+    };
+
+    const scrollToTestimonial = (index) => {
+        if (!testimonialsRef.current) return;
+        const itemWidth = testimonialsRef.current.scrollWidth / 3;
+        testimonialsRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
+        setActiveTestimonialIndex(index);
+    };
+
     const handleRoomsScroll = (e) => {
         if (window.innerWidth > 768) return;
         const { scrollLeft, scrollWidth } = e.target;
@@ -263,12 +280,13 @@ export default function HomePage() {
 
                 <div className="rooms-grid-wrapper">
                     <motion.div
+                        ref={roomsRef}
                         className="rooms-grid-layout"
                         onScroll={handleRoomsScroll}
                         variants={roomContainerVariants}
                         initial="hidden"
                         whileInView="show"
-                        viewport={{ once: true, margin: "-100px" }}
+                        viewport={{ once: true, margin: "0px" }}
                     >
                         {Object.values(ROOM_DATA).map((room) => (
                             <motion.div className="room-card" key={room.id} variants={roomCardVariants}>
@@ -308,9 +326,11 @@ export default function HomePage() {
                     </motion.div>
                     <div className="rooms-scroll-dots hide-desktop">
                         {Object.values(ROOM_DATA).map((_, idx) => (
-                            <div
+                            <button
                                 key={idx}
                                 className={`scroll-dot ${activeRoomIndex === idx ? 'active' : ''}`}
+                                onClick={() => scrollToRoom(idx)}
+                                aria-label={`Go to room ${idx + 1}`}
                             />
                         ))}
                     </div>
@@ -328,7 +348,7 @@ export default function HomePage() {
                     <p className="section-subtitle">Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
                 </div>
 
-                <div className="testimonials-grid" onScroll={handleTestimonialsScroll}>
+                <div className="testimonials-grid" ref={testimonialsRef} onScroll={handleTestimonialsScroll}>
                     <div className="testimonial-card visible">
                         <div className="testimonial-quote">«</div>
                         <blockquote>An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!</blockquote>
@@ -371,6 +391,7 @@ export default function HomePage() {
                         <button
                             key={idx}
                             className={`dot ${activeTestimonialIndex === idx ? 'active' : ''}`}
+                            onClick={() => scrollToTestimonial(idx)}
                             aria-label={`Page ${idx + 1}`}
                         />
                     ))}

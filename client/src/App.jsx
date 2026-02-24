@@ -14,6 +14,9 @@ import { useEffect } from 'react';
 
 function App() {
   useEffect(() => {
+    // Disable Lenis on Admin routes to prevent scroll/interaction conflicts
+    if (window.location.pathname.startsWith('/admin')) return;
+
     const gsap = window.gsap;
     const ScrollTrigger = window.ScrollTrigger;
     const Lenis = window.Lenis;

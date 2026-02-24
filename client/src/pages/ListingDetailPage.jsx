@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
     ArrowLeft, Star, Share2, Heart, Award, KeyRound, Wifi,
@@ -295,6 +295,15 @@ export default function ListingDetailPage() {
 
     const handleSave = () => setIsSaved(!isSaved);
 
+    const galleryRef = useRef(null);
+
+    const scrollToImage = (index) => {
+        if (!galleryRef.current) return;
+        const width = galleryRef.current.offsetWidth;
+        galleryRef.current.scrollTo({ left: index * width, behavior: 'smooth' });
+        setActiveImgIndex(index);
+    };
+
     const handleScroll = (e) => {
         const scrollLeft = e.target.scrollLeft;
         const width = e.target.offsetWidth;
@@ -336,14 +345,19 @@ export default function ListingDetailPage() {
                 </div>
 
                 <div className="detail-gallery-container">
-                    <div className="detail-gallery" onScroll={handleScroll}>
+                    <div className="detail-gallery" ref={galleryRef} onScroll={handleScroll}>
                         {listing.images.map((img, i) => (
                             <img key={i} src={img} alt="" className={i === 0 ? 'main-img' : ''} />
                         ))}
                     </div>
                     <div className="gallery-dots">
                         {listing.images.map((_, i) => (
-                            <div key={i} className={`gallery-dot ${i === activeImgIndex ? 'active' : ''}`} />
+                            <button
+                                key={i}
+                                className={`gallery-dot ${i === activeImgIndex ? 'active' : ''}`}
+                                onClick={() => scrollToImage(i)}
+                                aria-label={`View image ${i + 1}`}
+                            />
                         ))}
                     </div>
                 </div>

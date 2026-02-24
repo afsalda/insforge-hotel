@@ -126,7 +126,6 @@ export default function AdminDashboardPage() {
                 <div
                     className="admin-sidebar-overlay"
                     onClick={() => setMobileMenuOpen(false)}
-                    style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1000 }}
                 />
             )}
 
@@ -140,7 +139,6 @@ export default function AdminDashboardPage() {
                     <button
                         className="mobile-close-btn"
                         onClick={() => setMobileMenuOpen(false)}
-                        style={{ background: 'none', border: 'none', color: 'white', display: 'none' }}
                     >
                         <X size={24} />
                     </button>
@@ -178,30 +176,29 @@ export default function AdminDashboardPage() {
             {/* Main Content */}
             <main className="dashboard-content">
                 <div className="dashboard-header">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div className="header-left">
                         <button
                             className="mobile-menu-btn"
                             onClick={() => setMobileMenuOpen(true)}
-                            style={{ background: 'none', border: 'none', display: 'none' }}
                         >
                             <Menu size={24} />
                         </button>
-                        <div>
+                        <div className="page-title-group">
                             <h1 className="page-title">
                                 {activeTab === 'dashboard' && 'Dashboard Overview'}
                                 {activeTab === 'bookings' && 'All Bookings'}
                                 {activeTab === 'guests' && 'Guest Directory'}
                                 {activeTab === 'settings' && 'System Settings'}
                             </h1>
-                            <p style={{ color: 'var(--text-secondary)' }}>Welcome back, Admin</p>
+                            <p className="page-subtitle">Welcome back, Admin</p>
                         </div>
                     </div>
-                    <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                    <div className="header-actions">
                         <button
                             onClick={() => handleOpenModal()}
                             className="btn-add-booking"
                         >
-                            <Plus size={18} /> Add Booking
+                            <Plus size={18} /> <span>Add Booking</span>
                         </button>
                         <button
                             onClick={fetchBookings}
@@ -209,13 +206,9 @@ export default function AdminDashboardPage() {
                         >
                             <RefreshCw size={16} className={refreshing ? 'spin-icon' : ''} />
                         </button>
-                        <div style={{ position: 'relative' }}>
+                        <div className="notification-pill">
                             <Bell size={20} color="var(--text-secondary)" />
-                            {totalBookings > 0 && <span style={{
-                                position: 'absolute', top: -2, right: -2,
-                                width: 8, height: 8, background: 'var(--primary)',
-                                borderRadius: '50%'
-                            }} />}
+                            {totalBookings > 0 && <span className="notification-dot" />}
                         </div>
                         <div className="admin-avatar-pro">AD</div>
                     </div>
@@ -264,18 +257,14 @@ export default function AdminDashboardPage() {
                         {/* Bookings Table */}
                         {(activeTab === 'dashboard' || activeTab === 'bookings') && (
                             <div className="table-container">
-                                <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <h3 style={{ margin: 0, fontSize: '1.05rem' }}>
+                                <div className="table-header-pro">
+                                    <h3 className="table-title">
                                         {activeTab === 'dashboard' ? 'Recent Bookings' : `All Bookings (${totalBookings})`}
                                     </h3>
                                     {activeTab === 'dashboard' && totalBookings > 5 && (
                                         <button
                                             onClick={() => setActiveTab('bookings')}
-                                            style={{
-                                                padding: '6px 14px', background: 'var(--primary)',
-                                                color: 'white', border: 'none', borderRadius: '8px',
-                                                cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem'
-                                            }}
+                                            className="btn-view-all"
                                         >View All</button>
                                     )}
                                 </div>
@@ -397,8 +386,8 @@ export default function AdminDashboardPage() {
                         {/* Guest Directory Tab */}
                         {activeTab === 'guests' && (
                             <div className="table-container">
-                                <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border-light)' }}>
-                                    <h3 style={{ margin: 0, fontSize: '1.05rem' }}>Guest Directory ({uniqueGuests} guests)</h3>
+                                <div className="table-header-pro">
+                                    <h3 className="table-title">Guest Directory ({uniqueGuests} guests)</h3>
                                 </div>
                                 <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, position: 'relative' }}>
                                     <table>
