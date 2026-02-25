@@ -71,10 +71,10 @@ function AnimatedCheckmark() {
 
 
 const ROOM_DATA = {
-    standard: { id: 'standard_room', name: 'Standard Room', arabic: 'غرفة قياسية', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift'], extraBedAvailable: false, img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80' },
-    deluxe: { id: 'deluxe_room', name: 'Deluxe Room', arabic: 'غرفة ديلوكس', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80' },
-    suite: { id: 'suite_room', name: 'Suite Room', arabic: 'جناح فاخر', price: '₹5,000 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80' },
-    apartments: { id: 'apartments', name: 'Apartments', arabic: 'شقق', price: '₹3,500 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' }
+    standard: { id: 'standard_room', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift'], extraBedAvailable: false, img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80' },
+    deluxe: { id: 'deluxe_room', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80' },
+    suite: { id: 'suite_room', name: 'Suite Room', price: '₹5,000 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80' },
+    apartments: { id: 'apartments', name: 'Apartments', price: '₹3,500 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' }
 };
 
 
@@ -108,10 +108,6 @@ export default function HomePage() {
             }
 
             // ── Hero Entry ──
-            gsap.fromTo('.hero-arabic-label',
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.6, delay: 1.6, ease: 'power2.out', force3D: true }
-            );
             gsap.fromTo('.hero-word',
                 { opacity: 0, y: 50 },
                 { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 1.8, force3D: true }
@@ -204,11 +200,8 @@ export default function HomePage() {
                     />
                 </div>
 
-                <div className="hero-arabic-watermark" aria-hidden="true">مرحباً</div>
-
                 <div className="hero-content">
                     <div className="hero-text">
-                        <span className="hero-arabic-label">فندق البيت الفاخر</span>
                         <h1 className="hero-headline">
                             {'Book Your Comfort Room Today!'.split(' ').map((word, i) => (
                                 <span className="word" key={i}>
@@ -234,7 +227,6 @@ export default function HomePage() {
           ══════════════════════════════════════════ */}
             <section className="rooms-section" id="rooms">
                 <div className="section-header">
-                    <span className="section-arabic-label room-reveal" style={{ transitionDelay: '0ms' }}>اختر غرفتك</span>
                     <h2 className="section-title room-reveal" style={{ transitionDelay: '150ms' }}>Choose the Best Room for Your Perfect Stay!</h2>
                     <p className="section-subtitle room-reveal" style={{ transitionDelay: '300ms' }}>
                         Experience the art of comfort and luxury. Designed to embrace you in elegance.
@@ -251,7 +243,6 @@ export default function HomePage() {
                             <div className="room-card-anim-wrapper room-reveal" style={{ transitionDelay: `${450 + (idx * 150)}ms` }} key={room.id}>
                                 <div className={`room-card float-anim delay-${idx}`}>
                                     <div className="room-card-image-wrapper">
-                                        <div className="room-badge">{room.arabic}</div>
                                         <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
                                     </div>
                                     <div className="room-card-content">
@@ -304,7 +295,6 @@ export default function HomePage() {
           ══════════════════════════════════════════ */}
             <section className="testimonials-section" id="reviews" style={{ opacity: 1 }}>
                 <div className="section-header">
-                    <span className="section-arabic-label room-reveal" style={{ transitionDelay: '0ms' }}>آراء ضيوفنا</span>
                     <h2 className="section-title room-reveal" style={{ transitionDelay: '150ms' }}>The Words of Our Guests</h2>
                     <p className="section-subtitle room-reveal" style={{ transitionDelay: '300ms' }}>Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
                 </div>

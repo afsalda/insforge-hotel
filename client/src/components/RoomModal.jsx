@@ -257,7 +257,6 @@ export default function RoomModal({ isOpen, onClose, room }) {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                                 <div>
                                     <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#2C2C2C', margin: 0 }}>{room.name}</h2>
-                                    <span style={{ fontFamily: 'var(--font-arabic)', fontSize: '1rem', color: 'var(--accent-gold)' }}>{room.arabic}</span>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
                                     <div style={{ color: 'var(--accent-gold)', fontWeight: 'bold', fontSize: '1.2rem' }}>{room.price}</div>
@@ -391,7 +390,6 @@ export default function RoomModal({ isOpen, onClose, room }) {
                                     <path d="M25 40 L35 50 L55 30" stroke="var(--accent-gold)" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" fill="none" className="success-check" />
                                 </svg>
                                 <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#2C2C2C', margin: '0 0 8px 0' }}>Booking Confirmed!</h2>
-                                <div style={{ fontFamily: 'var(--font-arabic)', fontSize: '1.25rem', color: 'var(--accent-gold)', marginBottom: 32 }}>شكراً لحجزك</div>
 
                                 <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 12, padding: 20, width: '100%', textAlign: 'left', marginBottom: 32 }}>
                                     <p style={{ margin: '0 0 8px', fontSize: '0.9rem' }}><strong style={{ color: '#666', display: 'inline-block', width: 90 }}>Guest:</strong> {form.guest_name}</p>

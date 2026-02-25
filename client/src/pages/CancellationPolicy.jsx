@@ -53,10 +53,6 @@ export default function CancellationPolicy() {
             }
 
             // ── Entry Animations ──
-            gsap.fromTo('.hero-arabic-label',
-                { opacity: 0, y: 20 },
-                { opacity: 1, y: 0, duration: 0.6, delay: 1.1, ease: 'power2.out', force3D: true }
-            );
             gsap.fromTo('.hero-headline',
                 { opacity: 0, y: 30 },
                 { opacity: 1, y: 0, duration: 0.8, delay: 1.3, ease: 'power3.out', force3D: true }
@@ -102,10 +98,8 @@ export default function CancellationPolicy() {
                         loading="eager"
                     />
                 </div>
-                <div className="hero-arabic-watermark" aria-hidden="true" style={{ top: '60%' }}>سياسة الإلغاء</div>
                 <div className="hero-content">
                     <div className="hero-text" style={{ textAlign: 'center' }}>
-                        <span className="hero-arabic-label">الشروط والأحكام</span>
                         <h1 className="hero-headline">Cancellation Policy</h1>
                         <p className="hero-subtext" style={{ marginInline: 'auto' }}>
                             Please review our rules regarding booking cancellations and refunds to ensure a smooth administrative process.

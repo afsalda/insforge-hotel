@@ -50,10 +50,8 @@ export default function ContactPage() {
                         loading="eager"
                     />
                 </div>
-                <div className="hero-arabic-watermark" aria-hidden="true" style={{ top: '60%' }}>اتصل بنا</div>
                 <div className="hero-content">
                     <div className="hero-text" style={{ textAlign: 'center' }}>
-                        <span className="hero-arabic-label">تواصل معنا</span>
                         <h1 className="hero-headline">Let us elevate your experience</h1>
                         <p className="hero-subtext" style={{ marginInline: 'auto' }}>
                             Our dedicated concierge team is at your service 24/7 to ensure your journey with Al Baith is nothing short of extraordinary.
@@ -67,7 +65,6 @@ export default function ContactPage() {
             {/* ─── Content Section ─── */}
             <section className="contact-main">
                 <div className="section-header">
-                    <span className="section-arabic-label">معلومات الاتصال</span>
                     <h2 className="section-title">Visit Us or Get in Touch</h2>
                     <p className="section-subtitle">Experience the art of hospitality. We are located in the heart of the city, ready to welcome you home.</p>
                 </div>

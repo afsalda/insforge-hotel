@@ -42,7 +42,6 @@ export default function Navbar() {
           </svg>
           <span className="logo-text-group">
             <span className="logo-name">Al Baith</span>
-            <span className="logo-arabic-sub">البيت</span>
           </span>
         </Link>
 

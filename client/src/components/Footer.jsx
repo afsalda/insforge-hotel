@@ -16,10 +16,8 @@ export default function Footer() {
                         </svg>
                         <span className="footer-logo-text-group">
                             <span>Al Baith</span>
-                            <span className="footer-logo-arabic">البيت</span>
                         </span>
                     </div>
-                    <span className="footer-arabic-tagline">فندق البيت الفاخر</span>
                     <p>Where timeless Arabian elegance meets modern comfort. Experience luxury that tells a story.</p>
                 </div>
 
