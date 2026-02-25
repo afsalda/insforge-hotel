@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
 import { createClient } from '@insforge/sdk';
 import { useNavigate } from 'react-router-dom';
 import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Square, Car, Sofa } from 'lucide-react';
@@ -165,24 +164,23 @@ export default function HomePage() {
         };
     }, []);
 
-    const roomContainerVariants = {
-        hidden: {},
-        show: {
-            transition: {
-                staggerChildren: 0.15,
-                delayChildren: 0.1
-            }
-        }
-    };
+    // ── Intersection Observer for Room Reveals ──
+    useEffect(() => {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const reveals = entry.target.querySelectorAll('.room-reveal');
+                    reveals.forEach(el => el.classList.add('revealed'));
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
 
-    const roomCardVariants = {
-        hidden: { opacity: 0, y: 50 },
-        show: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.8, ease: "easeOut" }
-        }
-    };
+        const section = document.querySelector('.rooms-section');
+        if (section) observer.observe(section);
+
+        return () => observer.disconnect();
+    }, []);
 
     const [activeRoomIndex, setActiveRoomIndex] = useState(0);
     const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
@@ -271,59 +269,57 @@ export default function HomePage() {
           ══════════════════════════════════════════ */}
             <section className="rooms-section" id="rooms">
                 <div className="section-header">
-                    <span className="section-arabic-label">اختر غرفتك</span>
-                    <h2 className="section-title">Choose the Best Room for Your Perfect Stay!</h2>
-                    <p className="section-subtitle">
+                    <span className="section-arabic-label room-reveal" style={{ transitionDelay: '0ms' }}>اختر غرفتك</span>
+                    <h2 className="section-title room-reveal" style={{ transitionDelay: '150ms' }}>Choose the Best Room for Your Perfect Stay!</h2>
+                    <p className="section-subtitle room-reveal" style={{ transitionDelay: '300ms' }}>
                         Experience the art of comfort and luxury. Designed to embrace you in elegance.
                     </p>
                 </div>
 
                 <div className="rooms-grid-wrapper">
-                    <motion.div
+                    <div
                         ref={roomsRef}
                         className="rooms-grid-layout"
                         onScroll={handleRoomsScroll}
-                        variants={roomContainerVariants}
-                        initial="hidden"
-                        whileInView="show"
-                        viewport={{ once: true, margin: "0px" }}
                     >
-                        {Object.values(ROOM_DATA).map((room) => (
-                            <motion.div className="room-card" key={room.id} variants={roomCardVariants}>
-                                <div className="room-card-image-wrapper">
-                                    <div className="room-badge">{room.arabic}</div>
-                                    <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
-                                </div>
-                                <div className="room-card-content">
-                                    <div className="room-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px', minHeight: '50px' }}>
-                                        <h3 className="room-card-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--text-charcoal)', margin: 0, fontWeight: 500 }}>{room.name}</h3>
-                                        <span className="room-card-price" style={{ fontSize: '1.1rem', color: 'var(--accent-gold)', fontWeight: 600, whiteSpace: 'nowrap' }}>{room.price}</span>
+                        {Object.values(ROOM_DATA).map((room, idx) => (
+                            <div className="room-card-anim-wrapper room-reveal" style={{ transitionDelay: `${450 + (idx * 150)}ms` }} key={room.id}>
+                                <div className={`room-card float-anim delay-${idx}`}>
+                                    <div className="room-card-image-wrapper">
+                                        <div className="room-badge">{room.arabic}</div>
+                                        <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
                                     </div>
-                                    <p className="room-card-desc" style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px', lineHeight: 1.6, flexGrow: 1 }}>{room.desc}</p>
-
-                                    <div className="room-amenities-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
-                                        {room.amenities.slice(0, 4).map((amenity, idx) => (
-                                            <div key={idx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-charcoal)', fontWeight: 500 }}>
-                                                <span className="amenity-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-gold)' }}></span>
-                                                {amenity}
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    <div className="room-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.05)', marginTop: 'auto' }}>
-                                        <div className="room-guests" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                            Up to {room.maxGuests} Guests
+                                    <div className="room-card-content">
+                                        <div className="room-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px', minHeight: '50px' }}>
+                                            <h3 className="room-card-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--text-charcoal)', margin: 0, fontWeight: 500 }}>{room.name}</h3>
+                                            <span className="room-card-price" style={{ fontSize: '1.1rem', color: 'var(--accent-gold)', fontWeight: 600, whiteSpace: 'nowrap' }}>{room.price}</span>
                                         </div>
-                                        <button className="btn-view-room" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
-                                            <span>View Room</span>
-                                            <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                                        </button>
+                                        <p className="room-card-desc" style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px', lineHeight: 1.6, flexGrow: 1 }}>{room.desc}</p>
+
+                                        <div className="room-amenities-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
+                                            {room.amenities.slice(0, 4).map((amenity, amIdx) => (
+                                                <div key={amIdx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-charcoal)', fontWeight: 500 }}>
+                                                    <span className="amenity-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-gold)' }}></span>
+                                                    {amenity}
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <div className="room-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.05)', marginTop: 'auto' }}>
+                                            <div className="room-guests" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                                Up to {room.maxGuests} Guests
+                                            </div>
+                                            <button className="btn-view-room" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
+                                                <span>View Room</span>
+                                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </motion.div>
+                            </div>
                         ))}
-                    </motion.div>
+                    </div>
                     <div className="rooms-scroll-dots hide-desktop">
                         {Object.values(ROOM_DATA).map((_, idx) => (
                             <button

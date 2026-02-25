@@ -902,6 +902,59 @@ img {
   }
 }
 
+/* ── Room Reveals (Masked Slide-Up) ── */
+.room-reveal {
+  clip-path: inset(100% 0 0 0);
+  transform: translateY(60px);
+  will-change: transform, clip-path;
+  transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.room-reveal.revealed {
+  clip-path: inset(-20% -20% -20% -20%);
+  transform: translateY(0);
+}
+
+/* ── Antigravity Float Animation ── */
+@keyframes antigravityFloat {
+
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(0.5deg);
+  }
+}
+
+.float-anim {
+  animation: antigravityFloat 6s ease-in-out infinite;
+  will-change: transform;
+}
+
+.float-anim.delay-0 {
+  animation-delay: 0s;
+}
+
+.float-anim.delay-1 {
+  animation-delay: -2s;
+}
+
+.float-anim.delay-2 {
+  animation-delay: -4s;
+}
+
+.float-anim.delay-3 {
+  animation-delay: -1.5s;
+}
+
+/* Room Card Wrapper */
+.room-card-anim-wrapper {
+  width: 100%;
+  position: relative;
+}
+
 /* Room Card */
 .room-card {
   width: 100%;
