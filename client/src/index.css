@@ -1198,12 +1198,13 @@ img {
 }
 
 .testimonial-card {
-  width: clamp(280px, 80vw, 400px);
-  /* Fixed width for horizontal scrolling, scaling down on mobile */
+  width: clamp(260px, 75vw, 340px);
+  /* Reduced from 400px to 340px for a more compact look */
   flex-shrink: 0;
   background: #fff;
   border-radius: var(--radius-card);
-  padding: 36px 28px;
+  padding: 28px 24px;
+  /* Reduced padding from 36px 28px */
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   transition: transform 0.4s var(--transition-smooth);
   will-change: transform;
@@ -1216,18 +1217,20 @@ img {
 
 .testimonial-quote {
   font-family: var(--font-arabic);
-  font-size: 2rem;
+  font-size: 1.6rem;
+  /* Reduced from 2rem */
   color: var(--accent-gold);
   line-height: 1;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .testimonial-card blockquote {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
+  /* Reduced from 0.92rem */
   color: var(--text-charcoal);
-  line-height: 1.7;
+  line-height: 1.6;
   font-style: italic;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .testimonial-stars {
