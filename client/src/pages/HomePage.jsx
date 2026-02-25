@@ -316,37 +316,37 @@ export default function HomePage() {
                                 {
                                     name: "Anjali Menon",
                                     location: "Kochi, Kerala",
-                                    image: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1594744803329-a584af1cae21?w=100&q=80",
                                     quote: "An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!"
                                 },
                                 {
                                     name: "Rahul Krishnan",
                                     location: "Trivandrum, Kerala",
-                                    image: "https://images.unsplash.com/photo-1507114845806-0347f6150324?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1618331835717-801e976710b2?w=100&q=80",
                                     quote: "The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon."
                                 },
                                 {
                                     name: "Meera Nair",
                                     location: "Wayanad, Kerala",
-                                    image: "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1610030469983-98e6f24965ce?w=100&q=80",
                                     quote: "I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!"
                                 },
                                 {
                                     name: "Aditya Varma",
                                     location: "Bangalore, India",
-                                    image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&q=80",
                                     quote: "A serene oasis perfectly placed. The blend of biophilic design and classic hospitality made our anniversary trip unforgettable. The staff anticipated our every need."
                                 },
                                 {
                                     name: "Priya Lakshmi",
                                     location: "Calicut, Kerala",
-                                    image: "https://images.unsplash.com/photo-1514315384763-ba401779410f?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1649123245135-4db6ec9337ec?w=100&q=80",
                                     quote: "Exceptional dining and luxurious amenities. The private cabanas and the personalized service created a boutique experience that we simply cannot stop raving about to our friends."
                                 },
                                 {
                                     name: "Siddharth Das",
                                     location: "Mumbai, India",
-                                    image: "https://images.unsplash.com/photo-1492562080023-ab3dbdfafbb0?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=100&q=80",
                                     quote: "True Arabian hospitality at its finest. The majestic architecture is matched only by the warmth of the staff. A remarkable stay that truly felt like a home away from home."
                                 }
                             ].concat([
@@ -354,37 +354,37 @@ export default function HomePage() {
                                 {
                                     name: "Anjali Menon",
                                     location: "Kochi, Kerala",
-                                    image: "https://images.unsplash.com/photo-1589310243389-96a5483213a8?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1594744803329-a584af1cae21?w=100&q=80",
                                     quote: "An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!"
                                 },
                                 {
                                     name: "Rahul Krishnan",
                                     location: "Trivandrum, Kerala",
-                                    image: "https://images.unsplash.com/photo-1507114845806-0347f6150324?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1618331835717-801e976710b2?w=100&q=80",
                                     quote: "The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon."
                                 },
                                 {
                                     name: "Meera Nair",
                                     location: "Wayanad, Kerala",
-                                    image: "https://images.unsplash.com/photo-1614283233556-f35b0c801ef1?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1610030469983-98e6f24965ce?w=100&q=80",
                                     quote: "I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!"
                                 },
                                 {
                                     name: "Aditya Varma",
                                     location: "Bangalore, India",
-                                    image: "https://images.unsplash.com/photo-1531384441138-2736e62e0919?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&q=80",
                                     quote: "A serene oasis perfectly placed. The blend of biophilic design and classic hospitality made our anniversary trip unforgettable. The staff anticipated our every need."
                                 },
                                 {
                                     name: "Priya Lakshmi",
                                     location: "Calicut, Kerala",
-                                    image: "https://images.unsplash.com/photo-1514315384763-ba401779410f?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1649123245135-4db6ec9337ec?w=100&q=80",
                                     quote: "Exceptional dining and luxurious amenities. The private cabanas and the personalized service created a boutique experience that we simply cannot stop raving about to our friends."
                                 },
                                 {
                                     name: "Siddharth Das",
                                     location: "Mumbai, India",
-                                    image: "https://images.unsplash.com/photo-1492562080023-ab3dbdfafbb0?w=100&q=80",
+                                    image: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=100&q=80",
                                     quote: "True Arabian hospitality at its finest. The majestic architecture is matched only by the warmth of the staff. A remarkable stay that truly felt like a home away from home."
                                 }
                             ]).map((review, idx) => (
