@@ -1198,62 +1198,64 @@ img {
 }
 
 .testimonial-card {
-  width: clamp(260px, 75vw, 340px);
-  /* Reduced from 400px to 340px for a more compact look */
+  width: clamp(240px, 70vw, 300px);
+  /* Further reduced to 300px for mini-card aesthetic */
   flex-shrink: 0;
   background: #fff;
   border-radius: var(--radius-card);
-  padding: 28px 24px;
-  /* Reduced padding from 36px 28px */
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  padding: 22px 20px;
+  /* Smaller padding for compact fit */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   transition: transform 0.4s var(--transition-smooth);
   will-change: transform;
   transform: translateZ(0);
 }
 
 .testimonial-card:hover {
-  transform: translateY(-6px) translateZ(0);
+  transform: translateY(-5px) translateZ(0);
 }
 
 .testimonial-quote {
   font-family: var(--font-arabic);
-  font-size: 1.6rem;
-  /* Reduced from 2rem */
+  font-size: 1.4rem;
+  /* Reduced for subtle appearance */
   color: var(--accent-gold);
   line-height: 1;
   margin-bottom: 2px;
 }
 
 .testimonial-card blockquote {
-  font-size: 0.88rem;
-  /* Reduced from 0.92rem */
+  font-size: 0.85rem;
+  /* Very compact body text */
   color: var(--text-charcoal);
-  line-height: 1.6;
+  line-height: 1.5;
   font-style: italic;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .testimonial-stars {
   display: flex;
   gap: 3px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .testimonial-stars svg {
-  width: 16px;
-  height: 16px;
+  width: 13px;
+  /* Smaller stars */
+  height: 13px;
   fill: var(--accent-gold);
 }
 
 .testimonial-author {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .testimonial-avatar {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  /* Mini avatars */
+  height: 40px;
   border-radius: 50%;
   overflow: hidden;
   border: 2px solid var(--gold-border);
@@ -1268,13 +1270,14 @@ img {
 
 .testimonial-author-info h5 {
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-charcoal);
+  margin-bottom: -2px;
 }
 
 .testimonial-author-info span {
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   color: var(--text-muted);
 }
 
