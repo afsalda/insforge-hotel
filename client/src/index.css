@@ -1161,21 +1161,52 @@ img {
   position: relative;
 }
 
-.testimonials-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32px;
-  max-width: 1200px;
+.testimonials-scroll-container {
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
+  overflow: hidden;
+  position: relative;
+  /* Mask left and right edges for a fade effect */
+  -webkit-mask: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+  mask: linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+
+.testimonials-infinite-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  padding: 20px 0;
+  animation: testimonialScroll 45s linear infinite;
+}
+
+.testimonials-infinite-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes testimonialScroll {
+  0% {
+    transform: translateX(0);
+  }
+
+  /* Translate exactly half the width to seamlessly loop back */
+  100% {
+    transform: translateX(calc(-50% - 16px));
+  }
+
+  /* 16px is half the 32px gap */
 }
 
 .testimonial-card {
+  width: clamp(280px, 80vw, 400px);
+  /* Fixed width for horizontal scrolling, scaling down on mobile */
+  flex-shrink: 0;
   background: #fff;
   border-radius: var(--radius-card);
   padding: 36px 28px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
   transition: transform 0.4s var(--transition-smooth);
-  will-change: transform, opacity;
+  will-change: transform;
   transform: translateZ(0);
 }
 
@@ -1242,39 +1273,6 @@ img {
 .testimonial-author-info span {
   font-size: 0.78rem;
   color: var(--text-muted);
-}
-
-.testimonials-dots {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 48px;
-}
-
-.testimonials-dots button.dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: rgba(201, 169, 110, 0.3);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  transform: translateZ(0);
-}
-
-.testimonials-dots button.dot.active {
-  background: var(--accent-gold);
-  transform: scale(1.2) translateZ(0);
-  width: 24px;
-  border-radius: 5px;
-}
-
-.testimonials-dots .dot.active {
-  background: var(--accent-gold);
-  width: 28px;
-  border-radius: 5px;
 }
 
 /* ═══════════════════════════════════════════════════

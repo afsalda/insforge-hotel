@@ -121,42 +121,7 @@ export default function HomePage() {
             const mm = gsap.matchMedia();
 
 
-            // Testimonials (desktop)
-            mm.add("(min-width: 1025px)", () => {
-                gsap.utils.toArray('.testimonial-card').forEach((card, i) => {
-                    gsap.fromTo(card,
-                        { opacity: 0, x: i % 2 === 0 ? -40 : 40 },
-                        {
-                            opacity: 1, x: 0, duration: 0.8, ease: 'power3.out', force3D: true,
-                            scrollTrigger: {
-                                trigger: card,
-                                start: 'top 90%',
-                                once: true
-                            }
-                        }
-                    );
-                });
-            });
-
-            // MOBILE / Tablet Testimonials
-            mm.add("(max-width: 1024px)", () => {
-                gsap.fromTo('.testimonial-card',
-                    { opacity: 0, y: 30 },
-                    {
-                        opacity: 1, y: 0, duration: 1, ease: 'power3.out', stagger: 0.2, force3D: true,
-                        scrollTrigger: {
-                            trigger: '.testimonials-section',
-                            start: 'top 80%',
-                            once: true
-                        }
-                    }
-                );
-            });
-
-
-
-
-
+            // Removed GSAP animations for testimonials (using CSS animations now)
         }, mainRef);
 
         return () => {
@@ -339,58 +304,105 @@ export default function HomePage() {
           ══════════════════════════════════════════ */}
             <section className="testimonials-section" id="reviews" style={{ opacity: 1 }}>
                 <div className="section-header">
-                    <span className="section-arabic-label">آراء ضيوفنا</span>
-                    <h2 className="section-title">The Words of Our Guests</h2>
-                    <p className="section-subtitle">Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
+                    <span className="section-arabic-label room-reveal" style={{ transitionDelay: '0ms' }}>آراء ضيوفنا</span>
+                    <h2 className="section-title room-reveal" style={{ transitionDelay: '150ms' }}>The Words of Our Guests</h2>
+                    <p className="section-subtitle room-reveal" style={{ transitionDelay: '300ms' }}>Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
                 </div>
 
-                <div className="testimonials-grid" ref={testimonialsRef} onScroll={handleTestimonialsScroll}>
-                    <div className="testimonial-card visible">
-                        <div className="testimonial-quote">«</div>
-                        <blockquote>An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!</blockquote>
-                        <div className="testimonial-stars"><StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon /></div>
-                        <div className="testimonial-author">
-                            <div className="testimonial-avatar">
-                                <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=60" alt="Sarah M." decoding="async" />
+                <div className="testimonials-scroll-container room-reveal" style={{ transitionDelay: '450ms' }}>
+                    <div className="testimonials-infinite-track">
+                        {[
+                            {
+                                name: "Sarah Mitchell",
+                                location: "New York, USA",
+                                image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=60",
+                                quote: "An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!"
+                            },
+                            {
+                                name: "James Kingston",
+                                location: "London, UK",
+                                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=60",
+                                quote: "The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon."
+                            },
+                            {
+                                name: "Aisha Rahman",
+                                location: "Dubai, UAE",
+                                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=60",
+                                quote: "I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!"
+                            },
+                            {
+                                name: "David Chen",
+                                location: "Toronto, Canada",
+                                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=60",
+                                quote: "A serene oasis perfectly placed. The blend of biophilic design and classic hospitality made our anniversary trip unforgettable. The staff anticipated our every need."
+                            },
+                            {
+                                name: "Elena Volkov",
+                                location: "Berlin, Germany",
+                                image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=60",
+                                quote: "Exceptional dining and luxurious amenities. The private cabanas and the personalized service created a boutique experience that we simply cannot stop raving about to our friends."
+                            },
+                            {
+                                name: "Omar Al-Fayed",
+                                location: "Doha, Qatar",
+                                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=60",
+                                quote: "True Arabian hospitality at its finest. The majestic architecture is matched only by the warmth of the staff. A remarkable stay that truly felt like a home away from home."
+                            }
+                        ].concat([
+                            // Duplicate array for seamless infinite looping
+                            {
+                                name: "Sarah Mitchell",
+                                location: "New York, USA",
+                                image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=60",
+                                quote: "An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!"
+                            },
+                            {
+                                name: "James Kingston",
+                                location: "London, UK",
+                                image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=60",
+                                quote: "The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon."
+                            },
+                            {
+                                name: "Aisha Rahman",
+                                location: "Dubai, UAE",
+                                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=60",
+                                quote: "I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!"
+                            },
+                            {
+                                name: "David Chen",
+                                location: "Toronto, Canada",
+                                image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=60",
+                                quote: "A serene oasis perfectly placed. The blend of biophilic design and classic hospitality made our anniversary trip unforgettable. The staff anticipated our every need."
+                            },
+                            {
+                                name: "Elena Volkov",
+                                location: "Berlin, Germany",
+                                image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&q=60",
+                                quote: "Exceptional dining and luxurious amenities. The private cabanas and the personalized service created a boutique experience that we simply cannot stop raving about to our friends."
+                            },
+                            {
+                                name: "Omar Al-Fayed",
+                                location: "Doha, Qatar",
+                                image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=100&q=60",
+                                quote: "True Arabian hospitality at its finest. The majestic architecture is matched only by the warmth of the staff. A remarkable stay that truly felt like a home away from home."
+                            }
+                        ]).map((review, idx) => (
+                            <div className="testimonial-card" key={idx}>
+                                <div className="testimonial-quote">«</div>
+                                <blockquote>{review.quote}</blockquote>
+                                <div className="testimonial-stars"><StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon /></div>
+                                <div className="testimonial-author">
+                                    <div className="testimonial-avatar">
+                                        <img src={review.image} alt={review.name} loading="lazy" decoding="async" />
+                                    </div>
+                                    <div className="testimonial-author-info">
+                                        <h5>{review.name}</h5>
+                                        <span>{review.location}</span>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="testimonial-author-info"><h5>Sarah Mitchell</h5><span>New York, USA</span></div>
-                        </div>
+                        ))}
                     </div>
-
-                    <div className="testimonial-card visible">
-                        <div className="testimonial-quote">«</div>
-                        <blockquote>The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon.</blockquote>
-                        <div className="testimonial-stars"><StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon /></div>
-                        <div className="testimonial-author">
-                            <div className="testimonial-avatar">
-                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=60" alt="James K." decoding="async" />
-                            </div>
-                            <div className="testimonial-author-info"><h5>James Kingston</h5><span>London, UK</span></div>
-                        </div>
-                    </div>
-
-                    <div className="testimonial-card visible">
-                        <div className="testimonial-quote">«</div>
-                        <blockquote>I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!</blockquote>
-                        <div className="testimonial-stars"><StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon /></div>
-                        <div className="testimonial-author">
-                            <div className="testimonial-avatar">
-                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&q=60" alt="Aisha R." decoding="async" />
-                            </div>
-                            <div className="testimonial-author-info"><h5>Aisha Rahman</h5><span>Dubai, UAE</span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="testimonials-dots">
-                    {[0, 1, 2].map((idx) => (
-                        <button
-                            key={idx}
-                            className={`dot ${activeTestimonialIndex === idx ? 'active' : ''}`}
-                            onClick={() => scrollToTestimonial(idx)}
-                            aria-label={`Page ${idx + 1}`}
-                        />
-                    ))}
                 </div>
             </section>
         </div >
