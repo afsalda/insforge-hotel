@@ -7,7 +7,9 @@ import { createClient } from '@insforge/sdk';
 
 const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app';
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTU2NzgtOTBhYi1jZGVmMTIzNDU2NzgiLCJlbWFpbCI6ImFub25AaW5zZm9yZ2UuY29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1MjgzNjN9.FEEJcdIXtJoQa-7drZfFuCmh5BRn1qCFdvKGdLXZ4vw';
-const API_URL = import.meta.env.VITE_API_URL || '';
+
+// Always point to the Express server (handles bookings + email sending)
+const SERVER_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // Use InsForge SDK directly if anon key is available (production)
 const useDirectSDK = !!INSFORGE_ANON_KEY;
@@ -32,40 +34,15 @@ export async function getAllBookings() {
         if (error) throw error;
         return data;
     }
-    // Fallback to Express API
-    const base = API_URL || 'http://localhost:5000';
-    const res = await fetch(`${base}/api/bookings`);
+    const res = await fetch(`${SERVER_BASE}/api/bookings`);
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'Failed to fetch bookings');
     return json.data;
 }
 
 export async function createBooking(bookingData) {
-    if (useDirectSDK) {
-        const { data, error } = await db
-            .from('bookings')
-            .insert([{
-                guest_name: bookingData.guestName,
-                guest_email: bookingData.guestEmail,
-                guest_phone: bookingData.guestPhone || '',
-                room_id: bookingData.roomId || 'standard',
-                check_in_date: bookingData.checkInDate,
-                check_out_date: bookingData.checkOutDate || null,
-                listing_title: bookingData.listingTitle || '',
-                guests_count: bookingData.guestsCount || 1,
-                total_price: bookingData.totalPrice || 0,
-                status: bookingData.status || 'confirmed',
-                total_nights: bookingData.totalNights || 1,
-                extra_bed: bookingData.extraBed || false,
-                special_requests: bookingData.specialRequests || ''
-            }])
-            .select()
-            .single();
-        if (error) throw error;
-        return data;
-    }
-    const base = API_URL || 'http://localhost:5000';
-    const res = await fetch(`${base}/api/bookings`, {
+    // ALWAYS go through Express server so emails are sent via nodemailer
+    const res = await fetch(`${SERVER_BASE}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData),
@@ -101,8 +78,7 @@ export async function updateBooking(id, updates) {
         if (error) throw error;
         return data;
     }
-    const base = API_URL || 'http://localhost:5000';
-    const res = await fetch(`${base}/api/bookings/${id}`, {
+    const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -121,8 +97,7 @@ export async function deleteBooking(id) {
         if (error) throw error;
         return true;
     }
-    const base = API_URL || 'http://localhost:5000';
-    const res = await fetch(`${base}/api/bookings/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, { method: 'DELETE' });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.error || 'Delete failed');
     return true;

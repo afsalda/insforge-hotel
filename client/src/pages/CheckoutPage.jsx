@@ -30,8 +30,9 @@ export default function CheckoutPage() {
     const [guestName, setGuestName] = useState('');
     const [guestEmail, setGuestEmail] = useState('');
     const [guestPhone, setGuestPhone] = useState('');
-    const [errorMsg, setErrorMsg] = useState('');
+    const [errors, setErrors] = useState({});
     const [bookingStatus, setBookingStatus] = useState('idle');
+    const [confirmedBooking, setConfirmedBooking] = useState(null);
 
     // Play premium success sound effect when booking is confirmed
     useEffect(() => {
@@ -42,18 +43,28 @@ export default function CheckoutPage() {
         }
     }, [step, bookingStatus]);
 
+    const validateField = (name, value) => {
+        let error = '';
+        if (!value.trim()) {
+            error = 'This field is required.';
+        } else if (name === 'email' && !value.toLowerCase().endsWith('@gmail.com')) {
+            error = 'Please enter a valid Gmail address (example@gmail.com).';
+        } else if (name === 'phone' && !/^\d{10}$/.test(value.replace(/\D/g, ''))) {
+            error = 'Please enter a valid 10-digit phone number.';
+        }
+        setErrors(prev => ({ ...prev, [name]: error }));
+        return error;
+    };
+
     const handleConfirmDetails = () => {
-        if (!guestName.trim() || !guestEmail.trim()) {
-            setErrorMsg('Name and email are required to continue.');
+        const nameError = validateField('name', guestName);
+        const emailError = validateField('email', guestEmail);
+        const phoneError = validateField('phone', guestPhone);
+
+        if (nameError || emailError || phoneError) {
             return;
         }
 
-        if (!guestEmail.toLowerCase().endsWith('@gmail.com')) {
-            setErrorMsg('Email must end with @gmail.com');
-            return;
-        }
-
-        setErrorMsg('');
         setStep(2);
     };
 
@@ -63,10 +74,10 @@ export default function CheckoutPage() {
 
     const handleAddPaymentAndBook = async () => {
         setBookingStatus('loading');
-        setErrorMsg('');
+        setErrors(prev => ({ ...prev, api: '' }));
 
         try {
-            await createBooking({
+            const result = await createBooking({
                 guestName: guestName.trim(),
                 guestEmail: guestEmail.trim(),
                 guestPhone: guestPhone.trim(),
@@ -82,11 +93,12 @@ export default function CheckoutPage() {
                 specialRequests: ''
             });
 
+            setConfirmedBooking(result);
             setBookingStatus('success');
             setStep(4);
         } catch (err) {
             setBookingStatus('error');
-            setErrorMsg(err.message);
+            setErrors(prev => ({ ...prev, api: err.message }));
         }
     };
 
@@ -107,6 +119,9 @@ export default function CheckoutPage() {
                         </div>
 
                         <h2 className="success-title">Booking Confirmed!</h2>
+                        <div className="success-booking-id">
+                            Ref: {confirmedBooking?.booking_number || confirmedBooking?.id?.split('-')[0].toUpperCase()}
+                        </div>
 
                         <div className="success-details-group">
                             <p className="success-room-type">{listing.title}</p>
@@ -169,19 +184,52 @@ export default function CheckoutPage() {
                                     <div className="checkout-input-grid">
                                         <div className="input-group-pro">
                                             <label>Full Name</label>
-                                            <input type="text" value={guestName} onChange={e => setGuestName(e.target.value)} placeholder="e.g. Muhammed Afsal" />
+                                            <input
+                                                type="text"
+                                                value={guestName}
+                                                onChange={e => {
+                                                    setGuestName(e.target.value);
+                                                    if (errors.name) setErrors({ ...errors, name: '' });
+                                                }}
+                                                onBlur={e => validateField('name', e.target.value)}
+                                                className={errors.name ? 'error' : ''}
+                                                placeholder="e.g. Muhammed Afsal"
+                                            />
+                                            {errors.name && <span className="error-message">{errors.name}</span>}
                                         </div>
                                         <div className="input-group-pro">
                                             <label>Email Address</label>
-                                            <input type="email" value={guestEmail} onChange={e => setGuestEmail(e.target.value)} placeholder="example@email.com" />
+                                            <input
+                                                type="email"
+                                                value={guestEmail}
+                                                onChange={e => {
+                                                    setGuestEmail(e.target.value);
+                                                    if (errors.email) setErrors({ ...errors, email: '' });
+                                                }}
+                                                onBlur={e => validateField('email', e.target.value)}
+                                                className={errors.email ? 'error' : ''}
+                                                placeholder="example@email.com"
+                                            />
+                                            {errors.email && <span className="error-message">{errors.email}</span>}
                                         </div>
                                         <div className="input-group-pro full-width">
                                             <label>Phone Number</label>
-                                            <input type="tel" value={guestPhone} onChange={e => setGuestPhone(e.target.value)} placeholder="+91 98765 43210" />
+                                            <input
+                                                type="tel"
+                                                value={guestPhone}
+                                                onChange={e => {
+                                                    setGuestPhone(e.target.value);
+                                                    if (errors.phone) setErrors({ ...errors, phone: '' });
+                                                }}
+                                                onBlur={e => validateField('phone', e.target.value)}
+                                                className={errors.phone ? 'error' : ''}
+                                                placeholder="9876543210"
+                                            />
+                                            {errors.phone && <span className="error-message">{errors.phone}</span>}
                                         </div>
                                     </div>
 
-                                    {errorMsg && <p className="checkout-error-text">{errorMsg}</p>}
+                                    {errors.api && <p className="error-message">{errors.api}</p>}
 
                                     <button onClick={handleConfirmDetails} className="btn-step-continue">
                                         Continue to Payment
@@ -259,7 +307,7 @@ export default function CheckoutPage() {
                                         </div>
                                     </div>
 
-                                    {errorMsg && <p className="checkout-error-text">{errorMsg}</p>}
+                                    {errors.api && <p className="error-message">{errors.api}</p>}
 
                                     <button
                                         onClick={handleAddPaymentAndBook}

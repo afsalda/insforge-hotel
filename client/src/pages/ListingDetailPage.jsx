@@ -9,7 +9,7 @@ import { createBooking } from '../lib/api.js';
 import BookingCalendar from '../components/BookingCalendar';
 
 export const LISTING_DATA = {
-    'standard_room': {
+    'standard': {
         title: 'Standard Room',
         location: 'Al Baith Hotel',
         rating: 4.85, reviews: 142,
@@ -31,7 +31,7 @@ export const LISTING_DATA = {
         ],
         price: 1500, cleaningFee: 200, serviceFee: 150
     },
-    'deluxe_room': {
+    'deluxe': {
         title: 'Deluxe Room',
         location: 'Upper Levels, Al Baith Hotel',
         rating: 4.95, reviews: 312,
@@ -54,7 +54,7 @@ export const LISTING_DATA = {
         ],
         price: 1800, cleaningFee: 250, serviceFee: 200
     },
-    'suite_room': {
+    'suite': {
         title: 'Suite Room',
         location: 'Penthouse Level, Al Baith Hotel',
         rating: 5.0, reviews: 89,
@@ -82,7 +82,7 @@ export const LISTING_DATA = {
         ],
         price: 5000, cleaningFee: 350, serviceFee: 400
     },
-    'executive_room': {
+    'executive': {
         title: 'Executive Room',
         location: 'Business Wing, Al Baith Hotel',
         rating: 4.92, reviews: 156,
@@ -104,7 +104,7 @@ export const LISTING_DATA = {
         ],
         price: 2500, cleaningFee: 250, serviceFee: 200
     },
-    'apartments_1bhk': {
+    'apt1': {
         title: '1BHK Apartment',
         location: 'Residential Wing, Al Baith',
         rating: 4.88, reviews: 54,
@@ -127,7 +127,7 @@ export const LISTING_DATA = {
         ],
         price: 3500, cleaningFee: 200, serviceFee: 250
     },
-    'apartments_2bhk': {
+    'apt2': {
         title: '2BHK Family Apartment',
         location: 'Residential Wing, Al Baith',
         rating: 4.90, reviews: 92,
@@ -150,7 +150,7 @@ export const LISTING_DATA = {
         ],
         price: 5500, cleaningFee: 300, serviceFee: 350
     },
-    'apartments_3bhk': {
+    'apt3': {
         title: '3BHK Penthouse Apartment',
         location: 'Penthouse Residential, Al Baith',
         rating: 4.96, reviews: 120,
@@ -231,6 +231,7 @@ export default function ListingDetailPage() {
     const [showFullDesc, setShowFullDesc] = useState(false);
     const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [activeImgIndex, setActiveImgIndex] = useState(0);
+    const [errors, setErrors] = useState({});
 
     const formatDisplayDate = (dateStr) => {
         if (!dateStr) return null;
@@ -254,12 +255,51 @@ export default function ListingDetailPage() {
 
     const handleReserve = (e) => {
         if (e) e.stopPropagation();
-        if (!checkIn || !checkOut || nights < 1) {
-            setShowBottomSheet(true);
-            if (!checkIn) setActivePicker('in');
-            else if (!checkOut) setActivePicker('out');
+
+        const newErrors = {};
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (!checkIn) {
+            newErrors.checkIn = 'This field is required.';
+        } else if (new Date(checkIn) < today) {
+            newErrors.checkIn = 'Please select a valid future date.';
+        }
+
+        if (!checkOut) {
+            newErrors.checkOut = 'This field is required.';
+        }
+
+        if (checkIn && checkOut) {
+            const inDate = new Date(checkIn);
+            const outDate = new Date(checkOut);
+
+            if (checkIn === checkOut) {
+                newErrors.checkOut = 'Check-in and checkout dates cannot be the same.';
+            } else if (outDate < inDate) {
+                newErrors.checkOut = 'Checkout date must be after check-in date.';
+            }
+        }
+
+        // Rule #7: Login check
+        const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true'; // Assuming this for now, or check generic isLoggedIn
+        if (!isLoggedIn) {
+            newErrors.auth = 'Please log in before making a booking.';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            if (newErrors.auth) {
+                // Handle auth redirect after a short delay or immediately
+                setTimeout(() => {
+                    navigate('/admin/login');
+                }, 2000);
+            }
             return;
         }
+
+        setErrors({});
+
         try {
             navigate(`/checkout/${id}`, {
                 state: { checkIn, checkOut, guestsCount, nights, total, subtotal }
@@ -469,8 +509,11 @@ export default function ListingDetailPage() {
                             <div className="booking-fields">
                                 <div className="booking-dates">
                                     <div
-                                        className={`booking-field ${activePicker === 'in' ? 'active' : ''}`}
-                                        onClick={() => setActivePicker(activePicker === 'in' ? null : 'in')}
+                                        className={`booking-field ${activePicker === 'in' ? 'active' : ''} ${errors.checkIn ? 'error' : ''}`}
+                                        onClick={() => {
+                                            setActivePicker(activePicker === 'in' ? null : 'in');
+                                            if (errors.checkIn) setErrors({ ...errors, checkIn: null });
+                                        }}
                                         style={{ cursor: 'pointer', position: 'relative' }}
                                     >
                                         <label>CHECK-IN</label>
@@ -487,6 +530,7 @@ export default function ListingDetailPage() {
                                                     selectedDate={checkIn}
                                                     onSelect={(date) => {
                                                         setCheckIn(date);
+                                                        setErrors(prev => ({ ...prev, checkIn: null }));
                                                         setActivePicker('out');
                                                     }}
                                                     minDate={toDateStr(new Date())}
@@ -496,8 +540,11 @@ export default function ListingDetailPage() {
                                         )}
                                     </div>
                                     <div
-                                        className={`booking-field ${activePicker === 'out' ? 'active' : ''}`}
-                                        onClick={() => setActivePicker(activePicker === 'out' ? null : 'out')}
+                                        className={`booking-field ${activePicker === 'out' ? 'active' : ''} ${errors.checkOut ? 'error' : ''}`}
+                                        onClick={() => {
+                                            setActivePicker(activePicker === 'out' ? null : 'out');
+                                            if (errors.checkOut) setErrors({ ...errors, checkOut: null });
+                                        }}
                                         style={{ cursor: 'pointer', position: 'relative' }}
                                     >
                                         <label>CHECKOUT</label>
@@ -514,6 +561,7 @@ export default function ListingDetailPage() {
                                                     selectedDate={checkOut}
                                                     onSelect={(date) => {
                                                         setCheckOut(date);
+                                                        setErrors(prev => ({ ...prev, checkOut: null }));
                                                         setActivePicker(null);
                                                     }}
                                                     minDate={checkIn}
@@ -523,6 +571,8 @@ export default function ListingDetailPage() {
                                         )}
                                     </div>
                                 </div>
+                                {errors.checkIn && <span className="error-message">{errors.checkIn}</span>}
+                                {errors.checkOut && <span className="error-message">{errors.checkOut}</span>}
                                 <div className="booking-field">
                                     <label>GUESTS</label>
                                     <select
@@ -537,6 +587,7 @@ export default function ListingDetailPage() {
                             </div>
 
                             <button className="reserve-btn" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
+                            {errors.auth && <span className="error-message">{errors.auth}</span>}
                             <div className="no-charge" style={{ marginBottom: checkIn && checkOut ? '16px' : '0' }}>You won't be charged yet</div>
 
                             {nights > 0 && checkIn && checkOut && (
@@ -572,6 +623,7 @@ export default function ListingDetailPage() {
                     )}
                 </div>
                 <button className="detail-bottom-reserve" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
+                {errors.auth && <div className="error-message" style={{ position: 'absolute', bottom: '100%', left: 0, width: '100%', marginBottom: '10px' }}>{errors.auth}</div>}
             </div>
         </>
     );

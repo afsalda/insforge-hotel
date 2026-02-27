@@ -6,14 +6,35 @@ export default function AdminLoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [error, setError] = useState('');
+    const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
+    const validateEmail = (val) => {
+        let err = '';
+        if (!val.trim()) err = 'This field is required.';
+        else if (!val.toLowerCase().endsWith('@gmail.com')) err = 'Please enter a valid Gmail address (example@gmail.com).';
+        setErrors(prev => ({ ...prev, email: err }));
+        return err;
+    };
+
+    const validatePassword = (val) => {
+        let err = '';
+        if (!val) err = 'This field is required.';
+        setErrors(prev => ({ ...prev, password: err }));
+        return err;
+    };
+
     const handleLogin = (e) => {
         e.preventDefault();
+
+        const emailErr = validateEmail(email);
+        const passErr = validatePassword(password);
+
+        if (emailErr || passErr) return;
+
         setLoading(true);
-        setError('');
+        setErrors({});
 
         // Simple hardcoded admin credentials as requested for mandatory login
         // In a real app, this would call api.login()
@@ -24,7 +45,7 @@ export default function AdminLoginPage() {
                 navigate('/admin');
             }, 800);
         } else {
-            setError('Invalid email or password');
+            setErrors({ api: 'Invalid email or password' });
             setLoading(false);
         }
     };
@@ -168,7 +189,7 @@ export default function AdminLoginPage() {
                     <p className="login-subtitle">Admin Management Portal</p>
                 </div>
 
-                {error && <div className="error-msg">{error}</div>}
+                {errors.api && <div className="error-message" style={{ marginBottom: '20px', textAlign: 'center' }}>{errors.api}</div>}
 
                 <form onSubmit={handleLogin}>
                     <div className="form-group">
@@ -177,13 +198,17 @@ export default function AdminLoginPage() {
                             <User className="input-icon" size={18} />
                             <input
                                 type="email"
-                                className="login-input"
+                                className={`login-input ${errors.email ? 'error' : ''}`}
                                 placeholder="albaith.booking@gmail.com"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                    if (errors.email) setErrors({ ...errors, email: '' });
+                                }}
+                                onBlur={(e) => validateEmail(e.target.value)}
                             />
                         </div>
+                        {errors.email && <span className="error-message">{errors.email}</span>}
                     </div>
 
                     <div className="form-group">
@@ -192,16 +217,20 @@ export default function AdminLoginPage() {
                             <Lock className="input-icon" size={18} />
                             <input
                                 type={showPassword ? "text" : "password"}
-                                className="login-input"
+                                className={`login-input ${errors.password ? 'error' : ''}`}
                                 placeholder="••••••••"
                                 value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                    if (errors.password) setErrors({ ...errors, password: '' });
+                                }}
+                                onBlur={(e) => validatePassword(e.target.value)}
                             />
                             <div className="password-toggle" onClick={() => setShowPassword(!showPassword)}>
                                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                             </div>
                         </div>
+                        {errors.password && <span className="error-message">{errors.password}</span>}
                     </div>
 
                     <button type="submit" className="btn-login" disabled={loading}>

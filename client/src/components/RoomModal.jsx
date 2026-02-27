@@ -55,6 +55,17 @@ export default function RoomModal({ isOpen, onClose, room }) {
     };
 
     const handleBookClick = () => {
+        // Rule #7: Login check
+        const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+        if (!isLoggedIn) {
+            setErrors({ auth: 'Please log in before making a booking.' });
+            setTimeout(() => {
+                // Redirect to login or just show the error for a bit
+                window.location.href = '/admin/login';
+            }, 2000);
+            return;
+        }
+
         gsap.to(detailsRef.current, { x: '-100%', duration: 0.4, ease: 'power3.inOut' });
         gsap.fromTo(formRef.current,
             { x: '100%', display: 'block' },
@@ -103,18 +114,39 @@ export default function RoomModal({ isOpen, onClose, room }) {
 
     const validateForm = () => {
         const errs = {};
-        if (!form.guest_name.trim()) errs.guest_name = 'Required';
-        if (!form.email.trim()) errs.email = 'Required';
-        else if (!/^\S+@\S+\.\S+$/.test(form.email)) errs.email = 'Invalid email';
-        if (!form.phone.trim()) errs.phone = 'Required';
-        if (!form.checkin_date) errs.checkin_date = 'Required';
-        if (!form.checkout_date) errs.checkout_date = 'Required';
-        if (form.checkin_date && form.checkout_date && form.checkout_date <= form.checkin_date) {
-            errs.checkout_date = 'Must be after check-in';
+        const todayStr = new Date().toISOString().split('T')[0];
+
+        if (!form.guest_name.trim()) errs.guest_name = 'This field is required.';
+        if (!form.email.trim()) errs.email = 'This field is required.';
+        else if (!form.email.toLowerCase().endsWith('@gmail.com')) errs.email = 'Please enter a valid Gmail address (example@gmail.com).';
+
+        if (!form.phone.trim()) errs.phone = 'This field is required.';
+        else if (!/^\d{10}$/.test(form.phone.replace(/\D/g, ''))) errs.phone = 'Please enter a valid 10-digit phone number.';
+
+        if (!form.checkin_date) {
+            errs.checkin_date = 'This field is required.';
+        } else if (form.checkin_date < todayStr) {
+            errs.checkin_date = 'Please select a valid future date.';
         }
-        if (!form.num_guests || form.num_guests < 1 || form.num_guests > room.maxGuests) {
+
+        if (!form.checkout_date) {
+            errs.checkout_date = 'This field is required.';
+        }
+
+        if (form.checkin_date && form.checkout_date) {
+            if (form.checkin_date === form.checkout_date) {
+                errs.checkout_date = 'Check-in and checkout dates cannot be the same.';
+            } else if (form.checkout_date < form.checkin_date) {
+                errs.checkout_date = 'Checkout date must be after check-in date.';
+            }
+        }
+
+        if (!form.num_guests || form.num_guests < 1) {
+            errs.num_guests = 'This field is required.';
+        } else if (form.num_guests > room.maxGuests) {
             errs.num_guests = `Max ${room.maxGuests} guests`;
         }
+
         return errs;
     };
 
@@ -280,6 +312,7 @@ export default function RoomModal({ isOpen, onClose, room }) {
                             >
                                 Book Now
                             </button>
+                            {errors.auth && <span className="error-message" style={{ marginTop: '12px', textAlign: 'center' }}>{errors.auth}</span>}
                         </div>
 
                         {/* ── BOOKING FORM PANEL ── */}
@@ -299,39 +332,39 @@ export default function RoomModal({ isOpen, onClose, room }) {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.85rem', color: '#666', marginBottom: 4 }}>Guest Full Name *</label>
-                                        <input type="text" name="guest_name" value={form.guest_name} onChange={handleChange} className={`booking-input ${errors.guest_name ? 'error' : ''}`} />
-                                        {errors.guest_name && <span className="error-msg">{errors.guest_name}</span>}
+                                        <input type="text" name="guest_name" value={form.guest_name} onChange={handleChange} onBlur={() => setErrors(prev => ({ ...prev, guest_name: validateForm().guest_name }))} className={`booking-input ${errors.guest_name ? 'error' : ''}`} />
+                                        {errors.guest_name && <span className="error-message">{errors.guest_name}</span>}
                                     </div>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.85rem', color: '#666', marginBottom: 4 }}>Email Address *</label>
-                                        <input type="email" name="email" value={form.email} onChange={handleChange} className={`booking-input ${errors.email ? 'error' : ''}`} />
-                                        {errors.email && <span className="error-msg">{errors.email}</span>}
+                                        <input type="email" name="email" value={form.email} onChange={handleChange} onBlur={() => setErrors(prev => ({ ...prev, email: validateForm().email }))} className={`booking-input ${errors.email ? 'error' : ''}`} />
+                                        {errors.email && <span className="error-message">{errors.email}</span>}
                                     </div>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.85rem', color: '#666', marginBottom: 4 }}>Phone Number *</label>
-                                        <input type="tel" name="phone" value={form.phone} onChange={handleChange} className={`booking-input ${errors.phone ? 'error' : ''}`} />
-                                        {errors.phone && <span className="error-msg">{errors.phone}</span>}
+                                        <input type="tel" name="phone" value={form.phone} onChange={handleChange} onBlur={() => setErrors(prev => ({ ...prev, phone: validateForm().phone }))} className={`booking-input ${errors.phone ? 'error' : ''}`} />
+                                        {errors.phone && <span className="error-message">{errors.phone}</span>}
                                     </div>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.85rem', color: '#666', marginBottom: 4 }}>Number of Guests *</label>
-                                        <input type="number" name="num_guests" min="1" max={room.maxGuests} value={form.num_guests} onChange={handleChange} className={`booking-input ${errors.num_guests ? 'error' : ''}`} />
-                                        {errors.num_guests && <span className="error-msg">{errors.num_guests}</span>}
+                                        <input type="number" name="num_guests" min="1" max={room.maxGuests} value={form.num_guests} onChange={handleChange} onBlur={() => setErrors(prev => ({ ...prev, num_guests: validateForm().num_guests }))} className={`booking-input ${errors.num_guests ? 'error' : ''}`} />
+                                        {errors.num_guests && <span className="error-message">{errors.num_guests}</span>}
                                     </div>
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.85rem', color: '#666', marginBottom: 4 }}>Check-in Date *</label>
-                                        <input type="date" name="checkin_date" min={today} value={form.checkin_date} onChange={handleChange} className={`booking-input ${errors.checkin_date ? 'error' : ''}`} />
-                                        {errors.checkin_date && <span className="error-msg">{errors.checkin_date}</span>}
+                                        <input type="date" name="checkin_date" min={today} value={form.checkin_date} onChange={handleChange} onBlur={() => setErrors(prev => ({ ...prev, checkin_date: validateForm().checkin_date }))} className={`booking-input ${errors.checkin_date ? 'error' : ''}`} />
+                                        {errors.checkin_date && <span className="error-message">{errors.checkin_date}</span>}
                                     </div>
                                     <div>
                                         <label style={{ display: 'block', fontSize: '0.85rem', color: '#666', marginBottom: 4 }}>Check-out Date *</label>
-                                        <input type="date" name="checkout_date" min={minCheckout} value={form.checkout_date} onChange={handleChange} className={`booking-input ${errors.checkout_date ? 'error' : ''}`} />
-                                        {errors.checkout_date && <span className="error-msg">{errors.checkout_date}</span>}
+                                        <input type="date" name="checkout_date" min={minCheckout} value={form.checkout_date} onChange={handleChange} onBlur={() => setErrors(prev => ({ ...prev, checkout_date: validateForm().checkout_date }))} className={`booking-input ${errors.checkout_date ? 'error' : ''}`} />
+                                        {errors.checkout_date && <span className="error-message">{errors.checkout_date}</span>}
                                     </div>
                                 </div>
 

@@ -211,6 +211,7 @@ export default function CancellationPolicy() {
                     justify-content: center;
                     position: relative;
                     overflow: hidden;
+                    padding-top: 80px; /* Accounts for navbar */
                 }
 
                 .hero-bg-overlay {
@@ -229,6 +230,28 @@ export default function CancellationPolicy() {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
+                }
+                
+                .hero-content {
+                    position: relative;
+                    z-index: 2;
+                    width: 100%;
+                    padding: 0 24px;
+                }
+                
+                .hero-headline {
+                    font-family: var(--font-heading);
+                    font-size: 4rem;
+                    color: white;
+                    margin-bottom: 20px;
+                    font-weight: 500;
+                }
+                
+                .hero-subtext {
+                    font-size: 1.25rem;
+                    color: rgba(255, 255, 255, 0.9);
+                    max-width: 650px;
+                    line-height: 1.6;
                 }
 
                 .policy-main {
@@ -265,6 +288,7 @@ export default function CancellationPolicy() {
                     margin-bottom: 20px;
                     font-weight: 500;
                     color: var(--bg-deep-green);
+                    line-height: 1.2;
                 }
 
                 .section-intro {
@@ -312,6 +336,8 @@ export default function CancellationPolicy() {
                     text-decoration: none;
                     transition: color 0.3s;
                     font-weight: 500;
+                    line-height: 1.3;
+                    word-break: break-word;
                 }
 
                 .highlight-contact:hover {
@@ -436,14 +462,97 @@ export default function CancellationPolicy() {
                 }
 
                 @media (max-width: 900px) {
-                    .contact-options-grid, .terms-grid-wrapper, .policy-detailed-grid {
+                    .contact-options-grid {
                         grid-template-columns: 1fr;
+                        gap: 16px;
+                    }
+                    .terms-grid-wrapper, .policy-detailed-grid {
+                        grid-template-columns: 1fr;
+                        gap: 16px;
+                    }
+                    .policy-hero-alt {
+                        height: 40vh;
+                        min-height: 320px;
+                        padding-top: 60px;
+                    }
+                    .hero-headline {
+                        font-size: 2.2rem;
+                        margin-bottom: 12px;
+                    }
+                    .hero-subtext {
+                        font-size: 1rem;
                     }
                     .policy-main {
-                        padding: 40px 24px 80px;
+                        padding: 24px 16px 60px;
                     }
                     .policy-section-highlight {
-                        padding: 50px 30px;
+                        padding: 32px 20px;
+                        border-radius: 24px;
+                        margin-bottom: 32px;
+                    }
+                    .section-decoration-icon {
+                        padding: 16px;
+                        margin-bottom: 16px;
+                    }
+                    .section-decoration-icon svg {
+                        width: 32px;
+                        height: 32px;
+                    }
+                    .policy-section-title {
+                        font-size: 1.8rem;
+                        margin-bottom: 12px;
+                    }
+                    .section-intro {
+                        font-size: 1rem;
+                        margin-bottom: 24px;
+                    }
+                    .contact-method-card {
+                        padding: 24px 20px;
+                        border-radius: 20px;
+                    }
+                    .contact-method-card h3 {
+                        font-size: 1.3rem;
+                    }
+                    .highlight-contact {
+                        font-size: 1.4rem;
+                        margin: 12px 0;
+                    }
+                    .policy-terms-card {
+                        padding: 28px 20px;
+                        border-radius: 24px;
+                    }
+                    .term-icon {
+                        margin-bottom: 16px;
+                    }
+                    .term-icon svg {
+                        width: 28px;
+                        height: 28px;
+                    }
+                    .policy-terms-card h3 {
+                        font-size: 1.4rem;
+                        margin-bottom: 8px;
+                    }
+                    .detail-box {
+                        padding: 28px 20px;
+                        border-radius: 24px;
+                    }
+                    .box-title {
+                        margin-bottom: 16px;
+                    }
+                    .box-title h3 {
+                        font-size: 1.3rem;
+                    }
+                    .policy-list li {
+                        margin-bottom: 16px;
+                        gap: 12px;
+                    }
+                    .policy-terms-card p, .policy-list li, .box-text {
+                        font-size: 0.95rem;
+                        line-height: 1.5;
+                    }
+                    .ornamental-divider {
+                        transform: scale(0.6);
+                        margin: -20px 0;
                     }
                 }
             `}</style>

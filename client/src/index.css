@@ -1,7 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 /* ═══════════════════════════════════════════════════
    AL BAITH — Design System
    Arabic/Islamic Luxury × Modern Biophilic Design
    ═══════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: 'Balkind';
+  src: url('/fonts/Balkind.woff2') format('woff2'),
+    url('/fonts/Balkind.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 
+   UNIVERSAL NUMERIC OVERRIDE
+   Forces digits (0-9) to render in Inter globally.
+*/
+@font-face {
+  font-family: 'InterNumbers';
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+002C, U+002E, U+002D;
+  src: local('Inter'), local('Inter Regular'), local('Inter-Regular'), sans-serif;
+}
+
+/* Force numeric font globally */
+* {
+  font-family: 'InterNumbers', inherit;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: 'InterNumbers', inherit;
+}
 
 /* ── CSS Variables ── */
 :root {
@@ -22,8 +58,8 @@
   --radius-pill: 50px;
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
   --shadow-gold: 0 4px 24px rgba(201, 169, 110, 0.15);
-  --font-heading: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-heading: 'InterNumbers', 'Balkind', serif;
+  --font-body: 'InterNumbers', 'Cormorant Garamond', serif;
   --font-arabic: 'Scheherazade New', serif;
   --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --backdrop-blur: blur(16px);
@@ -31,6 +67,19 @@
   --primary-light: #2A422A;
   --primary-dark: #0F1D0F;
   --accent: var(--accent-gold);
+}
+
+/* Force numeric font on all elements to catch digits everywhere */
+* {
+  font-family: 'InterNumbers', inherit;
+  text-rendering: optimizeLegibility;
+}
+
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
 }
 
 /* ── Reset & Base ── */
@@ -51,8 +100,22 @@ body {
   font-family: var(--font-body);
   background: var(--bg-cream);
   color: var(--text-charcoal);
-  line-height: 1.6;
+  line-height: 1.7;
   overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.section-title,
+.navbar-logo,
+.hero-headline {
+  font-family: var(--font-heading);
+  letter-spacing: 0.05em;
+  font-weight: normal;
 }
 
 a {
@@ -4518,4 +4581,79 @@ tbody tr:hover {
   font-weight: 700;
   font-size: 0.95rem;
   box-shadow: var(--shadow-soft);
+}
+
+/* -- Booking ID Style -- */
+.success-booking-id {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--accent-gold);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+  margin-bottom: 20px;
+  background: rgba(201, 169, 110, 0.1);
+  padding: 6px 16px;
+  border-radius: 8px;
+  display: inline-block;
+  border: 1px solid rgba(201, 169, 110, 0.2);
+}
+
+/* Final Numeric Override - Forces Inter on common numeric elements */
+.price,
+.amount,
+.cost,
+.rating,
+.review-count,
+.checkin,
+.checkout,
+.date,
+.night-price,
+.stat-value,
+.total-value,
+.rating-score,
+.success-price,
+[class*="price"],
+[class*="amount"],
+[class*="date"],
+[class*="checkin"],
+[class*="checkout"],
+[class*="rating"],
+[class*="review"],
+[class*="night"],
+[class*="count"],
+[class*="number"],
+[class*="num"],
+[class*="star"],
+[class*="value"],
+[class*="stat"],
+input[type="date"],
+input[type="number"],
+input[type="tel"] {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Form Validation Styles */
+.error-message {
+  color: #e53e3e;
+  background-color: #fff5f5;
+  border-left: 4px solid #e53e3e;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  margin-top: 6px;
+  display: block;
+}
+
+input.error,
+select.error,
+textarea.error {
+  border: 1.5px solid #e53e3e !important;
+  background-color: #fff5f5 !important;
+}
+
+.booking-field.error {
+  border-color: #e53e3e !important;
+  background-color: #fff5f5 !important;
 }

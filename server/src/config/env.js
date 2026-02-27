@@ -7,7 +7,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+// env.js lives at server/src/config/ — go up 3 levels to reach monorepo root .env
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const required = [
     'INSFORGE_URL',
@@ -63,7 +64,10 @@ const env = {
 
     // Brevo
     BREVO_API_KEY: process.env.BREVO_API_KEY || '',
+    BREVO_SMTP_LOGIN: process.env.BREVO_SMTP_LOGIN || '',
+    BREVO_SMTP_KEY: process.env.BREVO_SMTP_KEY || '',
     HOTEL_EMAIL: process.env.HOTEL_EMAIL || 'albaith.booking@gmail.com',
+    SENDER_EMAIL: process.env.SENDER_EMAIL || 'booking@albaith.in',
 
     isProd: process.env.NODE_ENV === 'production',
     isDev: process.env.NODE_ENV !== 'production',
