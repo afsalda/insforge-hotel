@@ -1578,8 +1578,11 @@ img {
     padding: 12px 20px;
   }
 
-  .hero-content {
-    padding: 0 20px;
+  .hero-sticky-container,
+  .hero-bg {
+    width: 100vw !important;
+    left: 0 !important;
+    right: 0 !important;
   }
 
   .hero-bg {
@@ -2806,9 +2809,14 @@ body {
 @media (max-width: 768px) {
 
   /* 1. GLOBAL FIXES */
-  section {
+  section:not(.hero) {
     padding-left: 16px !important;
     padding-right: 16px !important;
+  }
+
+  .hero {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .rooms-section {
