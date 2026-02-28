@@ -284,21 +284,12 @@ export default function ListingDetailPage() {
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            if (!checkIn || !checkOut) {
-                toast.error('Please select your dates first', {
-                    style: {
-                        background: '#1A2E1A',
-                        color: '#F5F0E8',
-                        borderRadius: '12px',
-                        fontSize: '14px',
-                        fontFamily: 'var(--font-body)',
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
-                    },
-                    iconTheme: {
-                        primary: '#C9A96E',
-                        secondary: '#1A2E1A',
-                    }
-                });
+            if (!checkIn) {
+                setShowBottomSheet(true);
+                setActivePicker('in');
+            } else if (!checkOut) {
+                setShowBottomSheet(true);
+                setActivePicker('out');
             }
             return;
         }
