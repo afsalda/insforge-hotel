@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { createBooking } from '../lib/api.js';
 import BookingCalendar from '../components/BookingCalendar';
+import toast from 'react-hot-toast';
 
 export const LISTING_DATA = {
     'standard': {
@@ -283,6 +284,22 @@ export default function ListingDetailPage() {
 
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
+            if (!checkIn || !checkOut) {
+                toast.error('Please select your dates first', {
+                    style: {
+                        background: '#1A2E1A',
+                        color: '#F5F0E8',
+                        borderRadius: '12px',
+                        fontSize: '14px',
+                        fontFamily: 'var(--font-body)',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.2)'
+                    },
+                    iconTheme: {
+                        primary: '#C9A96E',
+                        secondary: '#1A2E1A',
+                    }
+                });
+            }
             return;
         }
 
