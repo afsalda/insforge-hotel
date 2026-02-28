@@ -23,7 +23,12 @@ app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Explicit preflight for all routes
 
 /* ── Security ── */
-app.use(helmet());
+app.use(
+    helmet({
+        crossOriginResourcePolicy: { policy: 'cross-origin' },
+        crossOriginOpenerPolicy: { policy: 'unsafe-none' },
+    })
+);
 
 /* ── Parsing ── */
 app.use(express.json({ limit: '10mb' }));
