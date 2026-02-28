@@ -281,20 +281,8 @@ export default function ListingDetailPage() {
             }
         }
 
-        // Rule #7: Login check
-        const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true'; // Assuming this for now, or check generic isLoggedIn
-        if (!isLoggedIn) {
-            newErrors.auth = 'Please log in before making a booking.';
-        }
-
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
-            if (newErrors.auth) {
-                // Handle auth redirect after a short delay or immediately
-                setTimeout(() => {
-                    navigate('/admin/login');
-                }, 2000);
-            }
             return;
         }
 
@@ -406,8 +394,8 @@ export default function ListingDetailPage() {
                     <div className="detail-info">
                         <div className="host-row">
                             <div className="host-text">
-                                <h2>Entire home hosted by {listing.host.name}</h2>
-                                <p>{listing.guests} guests · {listing.bedrooms} bedrooms · {listing.beds} beds · {listing.baths} baths</p>
+                                <h2 className="serif-heading">Entire home hosted by {listing.host.name}</h2>
+                                <p className="host-meta">{listing.guests} guests · {listing.bedrooms} bedrooms · {listing.beds} beds · {listing.baths} baths</p>
                             </div>
                             {listing.host.image ? (
                                 <img src={listing.host.image} alt={listing.host.name} className="host-avatar" />
@@ -445,7 +433,7 @@ export default function ListingDetailPage() {
                             </p>
                             {!showFullDesc && (
                                 <button className="show-more-btn" onClick={() => setShowFullDesc(true)}>
-                                    Read more <ChevronRight size={16} />
+                                    Read more <ChevronRight size={14} className="ml-1" />
                                 </button>
                             )}
                         </div>
@@ -453,7 +441,7 @@ export default function ListingDetailPage() {
                         <div className="amenities-section">
                             <h3>What this place offers</h3>
                             <div className="amenities-grid">
-                                {listing.amenities.slice(0, 6).map((a, idx) => (
+                                {listing.amenities.slice(0, 4).map((a, idx) => (
                                     <div className="amenity-row" key={idx}>
                                         {a.icon}
                                         <span>{a.label}</span>
@@ -587,7 +575,6 @@ export default function ListingDetailPage() {
                             </div>
 
                             <button className="reserve-btn" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
-                            {errors.auth && <span className="error-message">{errors.auth}</span>}
                             <div className="no-charge" style={{ marginBottom: checkIn && checkOut ? '16px' : '0' }}>You won't be charged yet</div>
 
                             {nights > 0 && checkIn && checkOut && (
@@ -623,7 +610,6 @@ export default function ListingDetailPage() {
                     )}
                 </div>
                 <button className="detail-bottom-reserve" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
-                {errors.auth && <div className="error-message" style={{ position: 'absolute', bottom: '100%', left: 0, width: '100%', marginBottom: '10px' }}>{errors.auth}</div>}
             </div>
         </>
     );

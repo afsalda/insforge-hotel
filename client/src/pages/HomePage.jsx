@@ -202,6 +202,10 @@ export default function HomePage() {
 
                 <div className="hero-content">
                     <div className="hero-text">
+                        <div className="hero-label-group">
+                            <span className="hero-top-label">Luxury Stays</span>
+                            <div className="hero-gold-line"></div>
+                        </div>
                         <h1 className="hero-headline">
                             {'Book Your Comfort Room Today!'.split(' ').map((word, i) => (
                                 <span className="word" key={i}>
@@ -209,12 +213,13 @@ export default function HomePage() {
                                 </span>
                             ))}
                         </h1>
+                        <div className="hero-short-line"></div>
                         <p className="hero-subtext">
                             Immerse yourself in the harmony of Arabian heritage and modern serenity.
                             Every room tells a story of timeless luxury.
                         </p>
                         <div className="hero-cta-row">
-                            <a href="#rooms" className="btn-primary">Explore Rooms</a>
+                            <a href="#rooms" className="btn-primary font-inter-numbers">EXPLORE ROOMS</a>
                         </div>
                     </div>
                 </div>

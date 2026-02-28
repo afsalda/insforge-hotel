@@ -55,17 +55,6 @@ export default function RoomModal({ isOpen, onClose, room }) {
     };
 
     const handleBookClick = () => {
-        // Rule #7: Login check
-        const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
-        if (!isLoggedIn) {
-            setErrors({ auth: 'Please log in before making a booking.' });
-            setTimeout(() => {
-                // Redirect to login or just show the error for a bit
-                window.location.href = '/admin/login';
-            }, 2000);
-            return;
-        }
-
         gsap.to(detailsRef.current, { x: '-100%', duration: 0.4, ease: 'power3.inOut' });
         gsap.fromTo(formRef.current,
             { x: '100%', display: 'block' },
