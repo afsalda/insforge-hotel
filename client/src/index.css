@@ -14,6 +14,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: 'ZeistN2Web';
+  src: url('/fonts/ZeistN2Web-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* 
    UNIVERSAL NUMERIC OVERRIDE
    Forces digits (0-9) to render in Inter globally.
@@ -59,7 +67,7 @@ textarea {
   --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.12);
   --shadow-gold: 0 4px 24px rgba(201, 169, 110, 0.15);
   --font-heading: 'InterNumbers', 'Balkind', serif;
-  --font-body: 'InterNumbers', 'Cormorant Garamond', serif;
+  --font-body: 'InterNumbers', 'ZeistN2Web', sans-serif;
   --font-arabic: 'Scheherazade New', serif;
   --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
   --backdrop-blur: blur(16px);
@@ -182,8 +190,12 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px 0;
+  padding: 40px 0;
   width: 100%;
+  position: relative;
+  z-index: 10;
+  margin-top: -150vh;
+  background: var(--bg-off-white);
 }
 
 .ornamental-divider svg {
@@ -435,11 +447,18 @@ img {
 .hero {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  height: 250vh;
+  background: var(--bg-deep-green);
+}
+
+.hero-sticky-container {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
   display: flex;
   align-items: center;
   overflow: hidden;
-  background: var(--bg-deep-green);
 }
 
 .hero-bg {
@@ -452,7 +471,9 @@ img {
 
 .hero-bg img {
   width: 100%;
-  height: 100%;
+  height: 115%;
+  top: -15%;
+  position: relative;
   object-fit: cover;
   transform: translateZ(0);
 }
@@ -911,6 +932,7 @@ img {
   background: var(--bg-off-white);
   position: relative;
   overflow: visible;
+  z-index: 10;
 }
 
 .parallax-text-container {
@@ -926,7 +948,7 @@ img {
 }
 
 .parallax-bg-text {
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'ZeistN2Web', sans-serif;
   font-size: 25vw;
   font-weight: 700;
   text-transform: uppercase;
@@ -1002,13 +1024,15 @@ img {
 
 /* ── Room Reveals (Masked Slide-Up) ── */
 .room-reveal {
+  opacity: 0;
   clip-path: inset(100% 0 0 0);
   transform: translateY(60px);
-  will-change: transform, clip-path;
-  transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, clip-path, opacity;
+  transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .room-reveal.revealed {
+  opacity: 1;
   clip-path: inset(-20% -20% -20% -20%);
   transform: translateY(0);
 }
@@ -2881,6 +2905,8 @@ body {
     overflow-x: auto !important;
     overflow-y: visible !important;
     scroll-snap-type: x mandatory !important;
+    scroll-behavior: smooth !important;
+    scroll-padding-left: 16px !important;
     gap: 16px !important;
     padding: 0 16px 24px 16px !important;
     scrollbar-width: none !important;
@@ -2904,6 +2930,13 @@ body {
     width: calc(85vw) !important;
     min-width: calc(85vw) !important;
     max-width: calc(85vw) !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+
+  .room-card-anim-wrapper .float-anim {
+    animation: none !important;
+    transform: none !important;
   }
 
   .room-card {

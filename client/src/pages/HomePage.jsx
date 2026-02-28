@@ -113,6 +113,38 @@ export default function HomePage() {
                 { opacity: 1, y: 0, duration: 0.8, stagger: 0.15, ease: 'power3.out', delay: 1.8, force3D: true }
             );
 
+            // ── Hero Scroll Parallax & Fades ──
+            const heroTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.hero',
+                    start: 'top top',
+                    end: 'bottom top',
+                    scrub: 1.5,
+                }
+            });
+
+            // Parallax background (moves down slightly for depth)
+            heroTl.to('.hero-bg img', {
+                yPercent: 15,
+                ease: 'none',
+                duration: 1
+            }, 0);
+
+            // Text scrolls up and fades out (finishes by 100vh scroll)
+            heroTl.to(['.hero-label-group', '.hero-headline', '.hero-short-line', '.hero-subtext'], {
+                y: -150,
+                opacity: 0,
+                ease: 'none',
+                duration: 0.4
+            }, 0);
+
+            // Explore button fades out quickly (at ~30vh of scroll progress)
+            heroTl.to('.hero-cta-row', {
+                opacity: 0,
+                ease: 'none',
+                duration: 0.2
+            }, 0);
+
             // ── matchMedia — Desktop vs Mobile ──
             const mm = gsap.matchMedia();
 
@@ -192,34 +224,36 @@ export default function HomePage() {
           1. HERO SECTION
           ══════════════════════════════════════════ */}
             <section className="hero">
-                <div className="hero-bg">
-                    <img
-                        src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80"
-                        alt="Luxury hotel lobby with lush botanical interior"
-                        loading="eager" decoding="async"
-                    />
-                </div>
+                <div className="hero-sticky-container">
+                    <div className="hero-bg">
+                        <img
+                            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80"
+                            alt="Luxury hotel lobby with lush botanical interior"
+                            loading="eager" decoding="async"
+                        />
+                    </div>
 
-                <div className="hero-content">
-                    <div className="hero-text">
-                        <div className="hero-label-group">
-                            <span className="hero-top-label">Luxury Stays</span>
-                            <div className="hero-gold-line"></div>
-                        </div>
-                        <h1 className="hero-headline">
-                            {'Book Your Comfort Room Today!'.split(' ').map((word, i) => (
-                                <span className="word" key={i}>
-                                    <span className="hero-word">{word}</span>{' '}
-                                </span>
-                            ))}
-                        </h1>
-                        <div className="hero-short-line"></div>
-                        <p className="hero-subtext">
-                            Immerse yourself in the harmony of Arabian heritage and modern serenity.
-                            Every room tells a story of timeless luxury.
-                        </p>
-                        <div className="hero-cta-row">
-                            <a href="#rooms" className="btn-primary font-inter-numbers">EXPLORE ROOMS</a>
+                    <div className="hero-content">
+                        <div className="hero-text">
+                            <div className="hero-label-group">
+                                <span className="hero-top-label">Luxury Stays</span>
+                                <div className="hero-gold-line"></div>
+                            </div>
+                            <h1 className="hero-headline">
+                                {'Book Your Comfort Room Today!'.split(' ').map((word, i) => (
+                                    <span className="word" key={i}>
+                                        <span className="hero-word">{word}</span>{' '}
+                                    </span>
+                                ))}
+                            </h1>
+                            <div className="hero-short-line"></div>
+                            <p className="hero-subtext">
+                                Immerse yourself in the harmony of Arabian heritage and modern serenity.
+                                Every room tells a story of timeless luxury.
+                            </p>
+                            <div className="hero-cta-row">
+                                <a href="#rooms" className="btn-primary font-inter-numbers">EXPLORE ROOMS</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -232,8 +266,8 @@ export default function HomePage() {
           ══════════════════════════════════════════ */}
             <section className="rooms-section" id="rooms">
                 <div className="section-header">
-                    <h2 className="section-title room-reveal" style={{ transitionDelay: '150ms' }}>Choose the Best Room for Your Perfect Stay!</h2>
-                    <p className="section-subtitle room-reveal" style={{ transitionDelay: '300ms' }}>
+                    <h2 className="section-title room-reveal" style={{ transitionDelay: '100ms' }}>Choose the Best Room for Your Perfect Stay!</h2>
+                    <p className="section-subtitle room-reveal" style={{ transitionDelay: '200ms' }}>
                         Experience the art of comfort and luxury. Designed to embrace you in elegance.
                     </p>
                 </div>
@@ -245,7 +279,7 @@ export default function HomePage() {
                         onScroll={handleRoomsScroll}
                     >
                         {Object.values(ROOM_DATA).map((room, idx) => (
-                            <div className="room-card-anim-wrapper room-reveal" style={{ transitionDelay: `${450 + (idx * 150)}ms` }} key={room.id}>
+                            <div className="room-card-anim-wrapper room-reveal" style={{ transitionDelay: `${300 + (idx * 100)}ms` }} key={room.id}>
                                 <div className={`room-card float-anim delay-${idx}`}>
                                     <div className="room-card-image-wrapper">
                                         <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
@@ -402,6 +436,6 @@ export default function HomePage() {
                     </div>
                 </div>
             </section>
-        </div>
+        </div >
     );
 }
