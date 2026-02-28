@@ -41,7 +41,49 @@ export async function getAllBookings() {
 }
 
 export async function createBooking(bookingData) {
-    // ALWAYS go through Express server so emails are sent via nodemailer
+    if (useDirectSDK) {
+        // Generate a human-readable booking reference
+        const year = new Date().getFullYear();
+        const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+        const bookingNumber = `ALB-${year}-${randomPart}`;
+
+        const { data, error } = await db
+            .from('bookings')
+            .insert([{
+                guest_name: bookingData.guestName,
+                guest_email: bookingData.guestEmail,
+                guest_phone: bookingData.guestPhone || '',
+                room_id: bookingData.roomId || 'standard',
+                check_in_date: bookingData.checkInDate,
+                check_out_date: bookingData.checkOutDate || null,
+                listing_title: bookingData.listingTitle || '',
+                guests_count: bookingData.guestsCount || 1,
+                total_price: bookingData.totalPrice || 0,
+                status: bookingData.status || 'confirmed',
+                total_nights: bookingData.totalNights || 1,
+                extra_bed: bookingData.extraBed || false,
+                special_requests: bookingData.specialRequests || '',
+            }])
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        const enrichedData = { ...data, booking_number: bookingNumber };
+
+        // Fire-and-forget: try to send emails through Express server if available
+        try {
+            fetch(`${SERVER_BASE}/api/send-booking-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(enrichedData),
+            }).catch(() => { /* server unavailable — emails skipped silently */ });
+        } catch { /* ignore */ }
+
+        return enrichedData;
+    }
+
+    // Fallback: go through Express server (local development)
     const res = await fetch(`${SERVER_BASE}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
