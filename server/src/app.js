@@ -18,9 +18,12 @@ import routes from './routes/index.js';
 
 const app = express();
 
+/* ── CORS (must be first — before helmet and other middleware) ── */
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Explicit preflight for all routes
+
 /* ── Security ── */
 app.use(helmet());
-app.use(cors(corsOptions));
 
 /* ── Parsing ── */
 app.use(express.json({ limit: '10mb' }));

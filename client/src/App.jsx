@@ -11,6 +11,7 @@ import ContactPage from './pages/ContactPage';
 import CancellationPolicy from './pages/CancellationPolicy';
 import './index.css';
 import { useEffect } from 'react';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
   useEffect(() => {
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster position="top-center" reverseOrder={false} />
       <Routes>
         {/* Public Routes with Layout */}
         <Route path="/" element={

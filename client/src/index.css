@@ -3052,6 +3052,11 @@ body {
     display: flex !important;
     justify-content: center !important;
     align-items: center !important;
+    background: var(--bg-deep-green) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    border: none !important;
+    font-weight: 600 !important;
   }
 
   .btn-view-room {
@@ -4022,10 +4027,10 @@ body {
   }
 
   .detail-bottom-reserve {
-    background: var(--accent-gold);
+    background: var(--bg-deep-green);
     color: white;
     padding: 12px 24px;
-    border-radius: 8px;
+    border-radius: 12px;
     border: none;
     font-weight: 600;
   }
