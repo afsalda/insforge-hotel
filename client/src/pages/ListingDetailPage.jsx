@@ -591,7 +591,7 @@ export default function ListingDetailPage() {
                                 </div>
                             </div>
 
-                            <button className="reserve-btn" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
+                            <button className="reserve-btn" onClick={handleReserve}>Reserve</button>
                             <div className="no-charge" style={{ marginBottom: checkIn && checkOut ? '16px' : '0' }}>You won't be charged yet</div>
 
                             {nights > 0 && checkIn && checkOut && (
@@ -626,7 +626,7 @@ export default function ListingDetailPage() {
                         <div style={{ fontSize: '0.8rem', textDecoration: 'underline' }}>Select dates</div>
                     )}
                 </div>
-                <button className="detail-bottom-reserve" onClick={handleReserve} style={{ background: 'var(--accent-gold)' }}>Reserve</button>
+                <button className="detail-bottom-reserve" onClick={handleReserve}>Reserve</button>
             </div>
         </>
     );
