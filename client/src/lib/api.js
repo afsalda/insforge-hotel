@@ -27,12 +27,16 @@ if (useDirectSDK) {
 
 export async function getAllBookings() {
     if (useDirectSDK) {
-        const { data, error } = await db
-            .from('bookings')
-            .select('*')
-            .order('created_at', { ascending: false });
-        if (error) throw error;
-        return data;
+        try {
+            const { data, error } = await db
+                .from('bookings')
+                .select('*')
+                .order('created_at', { ascending: false });
+            if (error) throw error;
+            return data;
+        } catch (sdkError) {
+            console.warn('[Bookings] SDK call failed, falling back to Express server:', sdkError.message);
+        }
     }
     const res = await fetch(`${SERVER_BASE}/api/bookings`);
     const json = await res.json();
@@ -41,49 +45,54 @@ export async function getAllBookings() {
 }
 
 export async function createBooking(bookingData) {
+    // ── Strategy: Try direct SDK first, fallback to Express server ──
     if (useDirectSDK) {
-        // Generate a human-readable booking reference
-        const year = new Date().getFullYear();
-        const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const bookingNumber = `ALB-${year}-${randomPart}`;
-
-        const { data, error } = await db
-            .from('bookings')
-            .insert([{
-                guest_name: bookingData.guestName,
-                guest_email: bookingData.guestEmail,
-                guest_phone: bookingData.guestPhone || '',
-                room_id: bookingData.roomId || 'standard',
-                check_in_date: bookingData.checkInDate,
-                check_out_date: bookingData.checkOutDate || null,
-                listing_title: bookingData.listingTitle || '',
-                guests_count: bookingData.guestsCount || 1,
-                total_price: bookingData.totalPrice || 0,
-                status: bookingData.status || 'confirmed',
-                total_nights: bookingData.totalNights || 1,
-                extra_bed: bookingData.extraBed || false,
-                special_requests: bookingData.specialRequests || '',
-            }])
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        const enrichedData = { ...data, booking_number: bookingNumber };
-
-        // Fire-and-forget: try to send emails through Express server if available
         try {
-            fetch(`${SERVER_BASE}/api/send-booking-email`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(enrichedData),
-            }).catch(() => { /* server unavailable — emails skipped silently */ });
-        } catch { /* ignore */ }
+            const year = new Date().getFullYear();
+            const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+            const bookingNumber = `ALB-${year}-${randomPart}`;
 
-        return enrichedData;
+            const { data, error } = await db
+                .from('bookings')
+                .insert([{
+                    guest_name: bookingData.guestName,
+                    guest_email: bookingData.guestEmail,
+                    guest_phone: bookingData.guestPhone || '',
+                    room_id: bookingData.roomId || 'standard',
+                    check_in_date: bookingData.checkInDate,
+                    check_out_date: bookingData.checkOutDate || null,
+                    listing_title: bookingData.listingTitle || '',
+                    guests_count: bookingData.guestsCount || 1,
+                    total_price: bookingData.totalPrice || 0,
+                    status: bookingData.status || 'confirmed',
+                    total_nights: bookingData.totalNights || 1,
+                    extra_bed: bookingData.extraBed || false,
+                    special_requests: bookingData.specialRequests || '',
+                }])
+                .select()
+                .single();
+
+            if (error) throw error;
+
+            const enrichedData = { ...data, booking_number: bookingNumber };
+
+            // Fire-and-forget: try to send emails through Express server
+            try {
+                fetch(`${SERVER_BASE}/api/send-booking-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(enrichedData),
+                }).catch(() => { /* server unavailable — emails skipped silently */ });
+            } catch { /* ignore */ }
+
+            return enrichedData;
+        } catch (sdkError) {
+            // ── Graceful Degradation: fallback to Express server ──
+            console.warn('[Booking] SDK call failed, falling back to Express server:', sdkError.message);
+        }
     }
 
-    // Fallback: go through Express server (local development)
+    // Fallback: go through Express server (local development or SDK failure)
     const res = await fetch(`${SERVER_BASE}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -96,29 +105,32 @@ export async function createBooking(bookingData) {
 
 export async function updateBooking(id, updates) {
     if (useDirectSDK) {
-        const updateObj = { ...updates };
-        // Map camelCase to snake_case for fields known to the SDK
-        if (updates.guestName) updateObj.guest_name = updates.guestName;
-        if (updates.guestEmail) updateObj.guest_email = updates.guestEmail;
-        if (updates.guestPhone) updateObj.guest_phone = updates.guestPhone;
-        if (updates.roomId) updateObj.room_id = updates.roomId;
-        if (updates.checkInDate) updateObj.check_in_date = updates.checkInDate;
-        if (updates.checkOutDate) updateObj.check_out_date = updates.checkOutDate;
-        if (updates.listingTitle) updateObj.listing_title = updates.listingTitle;
-        if (updates.guestsCount) updateObj.guests_count = updates.guestsCount;
-        if (updates.totalPrice) updateObj.total_price = updates.totalPrice;
-        if (updates.totalNights) updateObj.total_nights = updates.totalNights;
-        if (updates.extraBed !== undefined) updateObj.extra_bed = updates.extraBed;
-        if (updates.specialRequests !== undefined) updateObj.special_requests = updates.specialRequests;
+        try {
+            const updateObj = { ...updates };
+            if (updates.guestName) updateObj.guest_name = updates.guestName;
+            if (updates.guestEmail) updateObj.guest_email = updates.guestEmail;
+            if (updates.guestPhone) updateObj.guest_phone = updates.guestPhone;
+            if (updates.roomId) updateObj.room_id = updates.roomId;
+            if (updates.checkInDate) updateObj.check_in_date = updates.checkInDate;
+            if (updates.checkOutDate) updateObj.check_out_date = updates.checkOutDate;
+            if (updates.listingTitle) updateObj.listing_title = updates.listingTitle;
+            if (updates.guestsCount) updateObj.guests_count = updates.guestsCount;
+            if (updates.totalPrice) updateObj.total_price = updates.totalPrice;
+            if (updates.totalNights) updateObj.total_nights = updates.totalNights;
+            if (updates.extraBed !== undefined) updateObj.extra_bed = updates.extraBed;
+            if (updates.specialRequests !== undefined) updateObj.special_requests = updates.specialRequests;
 
-        const { data, error } = await db
-            .from('bookings')
-            .update(updateObj)
-            .eq('id', id)
-            .select()
-            .single();
-        if (error) throw error;
-        return data;
+            const { data, error } = await db
+                .from('bookings')
+                .update(updateObj)
+                .eq('id', id)
+                .select()
+                .single();
+            if (error) throw error;
+            return data;
+        } catch (sdkError) {
+            console.warn('[Bookings] SDK update failed, falling back to Express server:', sdkError.message);
+        }
     }
     const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, {
         method: 'PUT',
@@ -132,12 +144,16 @@ export async function updateBooking(id, updates) {
 
 export async function deleteBooking(id) {
     if (useDirectSDK) {
-        const { error } = await db
-            .from('bookings')
-            .delete()
-            .eq('id', id);
-        if (error) throw error;
-        return true;
+        try {
+            const { error } = await db
+                .from('bookings')
+                .delete()
+                .eq('id', id);
+            if (error) throw error;
+            return true;
+        } catch (sdkError) {
+            console.warn('[Bookings] SDK delete failed, falling back to Express server:', sdkError.message);
+        }
     }
     const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, { method: 'DELETE' });
     const json = await res.json();

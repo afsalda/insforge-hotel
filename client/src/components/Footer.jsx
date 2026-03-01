@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 export default function Footer() {
     return (
         <footer className="footer">
-            {/* Islamic Star Border */}
-            <div className="star-border"></div>
+
 
             <div className="footer-inner">
                 {/* Brand Column */}

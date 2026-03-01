@@ -203,14 +203,7 @@ img {
   height: auto;
 }
 
-/* ── Star Border (Footer) ── */
-.star-border {
-  width: 100%;
-  height: 40px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='40' viewBox='0 0 60 40'%3E%3Cpolygon points='30,5 34,15 45,15 36,22 39,33 30,26 21,33 24,22 15,15 26,15' fill='none' stroke='%23C9A96E' stroke-width='0.8' opacity='0.5'/%3E%3C/svg%3E");
-  background-repeat: repeat-x;
-  background-position: center;
-}
+
 
 /* ═══════════════════════════════════════════════════
    NAVBAR
@@ -2616,6 +2609,7 @@ img {
 .calendar-days-header {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
   margin-bottom: 12px;
 }
 
@@ -2884,8 +2878,8 @@ body {
 
   .react-datepicker__day,
   .calendar-day {
-    min-width: 44px !important;
-    min-height: 44px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
   }
 
   /* 4. BOTTOM NAVIGATION */
@@ -3322,12 +3316,7 @@ body {
     justify-content: center !important;
   }
 
-  /* Decorative row height reduction */
-  .star-border {
-    height: 32px !important;
-    background-size: 16px !important;
-    overflow: hidden !important;
-  }
+
 
   .footer-bottom {
     padding: 12px 16px !important;
@@ -3954,7 +3943,7 @@ body {
     border-radius: 20px 20px 0 0 !important;
     max-height: 90vh !important;
     overflow-y: auto !important;
-    padding: 24px 16px 48px 16px !important;
+    padding: 16px 16px 32px 16px !important;
     border: none !important;
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1) !important;
     top: 0 !important;
@@ -3963,7 +3952,7 @@ body {
   .sheet-drag-handle {
     display: flex !important;
     justify-content: center !important;
-    padding-bottom: 24px !important;
+    padding-bottom: 20px !important;
   }
 
   .drag-bar {
@@ -3985,27 +3974,93 @@ body {
     max-width: none !important;
     transform: none !important;
     border-radius: 0 !important;
-    padding: 24px 16px !important;
+    padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(4px) !important;
+    z-index: 5000 !important;
+  }
+
+  .custom-calendar {
+    width: 90% !important;
+    max-width: 340px !important;
+    padding: 20px 16px !important;
+    margin: 0 auto !important;
     background: white !important;
-    z-index: 2000 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.25) !important;
+    border: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    animation: modalScaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  }
+
+  @keyframes modalScaleUp {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .calendar-grid {
+    gap: 2px !important;
+    align-content: start !important;
+  }
+
+  .calendar-day,
+  .calendar-day-label {
+    min-width: unset !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    font-size: 0.85rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .calendar-day-label {
+    padding: 8px 0 !important;
+    height: auto !important;
+    aspect-ratio: unset !important;
+  }
+
+  .mobile-calendar-header {
+    margin-bottom: 12px !important;
+    color: #1a1a1a !important;
   }
 
   .hide-desktop {
     display: flex !important;
+    width: 100% !important;
+    justify-content: space-between !important;
+    align-items: center !important;
   }
 
   .calendar-confirm-btn {
     display: block !important;
-    width: 100% !important;
-    padding: 14px !important;
+    width: auto !important;
+    min-width: 140px !important;
+    padding: 10px 24px !important;
     background: var(--accent-gold) !important;
     color: white !important;
     font-weight: 600 !important;
     border: none !important;
-    border-radius: 8px !important;
-    margin-top: 16px !important;
+    border-radius: 50px !important;
+    margin: 16px auto 0 !important;
+    font-family: inherit !important;
+    text-align: center !important;
+    font-size: 0.9rem !important;
+    box-shadow: 0 4px 15px rgba(201, 169, 110, 0.4) !important;
   }
 
   .detail-info {
@@ -4029,10 +4084,189 @@ body {
   .detail-bottom-reserve {
     background: var(--bg-deep-green);
     color: white;
-    padding: 12px 24px;
+    padding: 10px 20px;
     border-radius: 12px;
     border: none;
     font-weight: 600;
+  }
+
+  .booking-fields {
+    margin-bottom: 12px !important;
+  }
+
+  .booking-field {
+    padding: 10px 12px !important;
+  }
+
+  .booking-field label {
+    font-size: 0.55rem !important;
+    margin-bottom: 2px !important;
+  }
+
+  .date-display,
+  .booking-field select {
+    font-size: 0.85rem !important;
+  }
+
+  .reserve-btn {
+    min-height: 44px !important;
+    padding: 12px !important;
+    font-size: 0.95rem !important;
+    border-radius: 10px !important;
+  }
+
+  .no-charge {
+    margin: 10px 0 !important;
+    font-size: 0.8rem !important;
+  }
+
+  .price-breakdown {
+    gap: 10px !important;
+  }
+
+  .price-row {
+    font-size: 0.9rem !important;
+  }
+
+  .price-total {
+    padding-top: 16px !important;
+    margin-top: 4px !important;
+    font-size: 0.95rem !important;
+  }
+
+  /* CHECKOUT PAGE MOBILE */
+  .checkout-main-wrapper {
+    padding: 80px 16px 40px !important;
+  }
+
+  .checkout-header-section {
+    margin-bottom: 24px !important;
+    gap: 12px !important;
+  }
+
+  .checkout-page-title {
+    font-size: 1.8rem !important;
+  }
+
+  .checkout-content-layout {
+    grid-template-columns: 1fr !important;
+    gap: 32px !important;
+  }
+
+  .checkout-card-pro {
+    padding: 20px !important;
+    border-radius: 16px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .step-card-title {
+    font-size: 1.3rem !important;
+  }
+
+  .step-content-expanded {
+    margin-top: 16px !important;
+  }
+
+  .step-description {
+    font-size: 0.9rem !important;
+    margin-bottom: 16px !important;
+  }
+
+  .checkout-input-grid {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .input-group-pro {
+    gap: 6px !important;
+  }
+
+  .input-group-pro label {
+    font-size: 0.75rem !important;
+  }
+
+  .input-group-pro input {
+    padding: 10px 14px !important;
+    font-size: 0.95rem !important;
+  }
+
+  .btn-step-continue {
+    width: 100% !important;
+    padding: 14px !important;
+    font-size: 0.95rem !important;
+  }
+
+  .sidebar-sticky-card {
+    position: static !important;
+    padding: 20px !important;
+  }
+
+  .review-summary-box {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .review-stat {
+    gap: 2px !important;
+  }
+
+  .stat-label {
+    font-size: 0.75rem !important;
+  }
+
+  .stat-value {
+    font-size: 0.95rem !important;
+  }
+
+  .btn-final-confirm {
+    height: 52px !important;
+    font-size: 1rem !important;
+  }
+
+  /* Compact Sidebar Summary for Mobile */
+  .sidebar-room-preview {
+    gap: 12px !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 20px !important;
+  }
+
+  .preview-img-container {
+    width: 80px !important;
+    height: 80px !important;
+  }
+
+  .preview-title {
+    font-size: 1.1rem !important;
+    margin-bottom: 4px !important;
+  }
+
+  .section-title-sm {
+    font-size: 1.2rem !important;
+    margin-bottom: 12px !important;
+  }
+
+  .price-details-section {
+    margin-bottom: 20px !important;
+  }
+
+  .price-row {
+    margin-bottom: 8px !important;
+    font-size: 0.9rem !important;
+  }
+
+  .total-price-section {
+    padding-top: 16px !important;
+  }
+
+  .total-label {
+    font-size: 1.1rem !important;
+  }
+
+  .total-value {
+    font-size: 1.2rem !important;
   }
 }
 
@@ -4924,4 +5158,49 @@ textarea.error {
 .booking-field.error {
   border-color: #e53e3e !important;
   background-color: #fff5f5 !important;
+}
+
+/* ── Global Theme Button Hover & Active States ── */
+.reserve-btn:hover,
+.reserve-btn:active,
+.detail-bottom-reserve:hover,
+.detail-bottom-reserve:active,
+.btn-step-continue:hover,
+.btn-step-continue:active,
+.btn-final-confirm:hover,
+.btn-final-confirm:active,
+.btn-success-return:hover,
+.btn-success-return:active,
+.calendar-confirm-btn:hover,
+.calendar-confirm-btn:active,
+.btn-book-now:hover,
+.btn-book-now:active,
+.nav-btn-solid:hover,
+.nav-btn-solid:active,
+.search-btn:hover,
+.search-btn:active,
+.explore-btn:hover,
+.explore-btn:active {
+  background: var(--bg-deep-green) !important;
+  border-color: var(--bg-deep-green) !important;
+  color: var(--text-cream) !important;
+  transform: scale(0.98);
+  transition: all 0.2s ease-in-out;
+}
+
+/* ── Animated Lucide Icons Theme ── */
+.amenity-icon-anim {
+  color: var(--accent-gold);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.amenity-chip:hover .amenity-icon-anim,
+.amenity-row:hover .amenity-icon-anim,
+.amenity-modal-item:hover .amenity-icon-anim,
+.highlight-item:hover .highlight-icon {
+  transform: scale(1.2) translateY(-2px);
+  color: var(--bg-deep-green);
 }

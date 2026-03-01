@@ -26,6 +26,21 @@ export default function CheckoutPage() {
     // Flow steps: 1: Details, 2: Payment, 3: Review, 4: Success
     const [step, setStep] = useState(1);
 
+    const formatDateRange = (start, end) => {
+        if (!start || !end) return '';
+        try {
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            const startDate = new Date(start);
+            const endDate = new Date(end);
+
+            // If same month and year, we can optionally simplify it, 
+            // but standard "MMM D, YYYY – MMM D, YYYY" is what's requested
+            return `${startDate.toLocaleDateString('en-US', options)} – ${endDate.toLocaleDateString('en-US', options)}`;
+        } catch (e) {
+            return `${start} – ${end}`;
+        }
+    };
+
     // Step 1 Form
     const [guestName, setGuestName] = useState('');
     const [guestEmail, setGuestEmail] = useState('');
@@ -98,7 +113,19 @@ export default function CheckoutPage() {
             setStep(4);
         } catch (err) {
             setBookingStatus('error');
-            setErrors(prev => ({ ...prev, api: err.message }));
+            // ── Meaningful Error Messages (Troubleshooting Skill Best Practice #3) ──
+            let userMessage = 'Something went wrong. Please try again.';
+            const raw = (err.message || '').toLowerCase();
+            if (raw.includes('failed to fetch') || raw.includes('networkerror') || raw.includes('fetch')) {
+                userMessage = 'Unable to connect to our servers. Please check your internet connection and try again.';
+            } else if (raw.includes('no backend services') || raw.includes('503') || raw.includes('unavailable')) {
+                userMessage = 'Our booking service is temporarily unavailable. Please try again in a few moments.';
+            } else if (raw.includes('400') || raw.includes('bad request')) {
+                userMessage = 'There was an issue with your booking details. Please review and try again.';
+            } else if (err.message) {
+                userMessage = err.message;
+            }
+            setErrors(prev => ({ ...prev, api: userMessage }));
         }
     };
 
@@ -291,7 +318,7 @@ export default function CheckoutPage() {
                                     <div className="review-summary-box">
                                         <div className="review-stat">
                                             <span className="stat-label">Dates</span>
-                                            <span className="stat-value">{checkIn} – {checkOut}</span>
+                                            <span className="stat-value">{formatDateRange(checkIn, checkOut)}</span>
                                         </div>
                                         <div className="review-stat">
                                             <span className="stat-label">Guests</span>
@@ -307,7 +334,28 @@ export default function CheckoutPage() {
                                         </div>
                                     </div>
 
-                                    {errors.api && <p className="error-message">{errors.api}</p>}
+                                    {errors.api && (
+                                        <div style={{
+                                            background: '#FEF2F2',
+                                            border: '1px solid #FECACA',
+                                            borderRadius: '12px',
+                                            padding: '16px',
+                                            marginBottom: '16px',
+                                            display: 'flex',
+                                            alignItems: 'flex-start',
+                                            gap: '12px'
+                                        }}>
+                                            <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>⚠️</span>
+                                            <div>
+                                                <p style={{ color: '#991B1B', fontSize: '0.9rem', fontWeight: 600, margin: '0 0 4px' }}>
+                                                    Booking Failed
+                                                </p>
+                                                <p style={{ color: '#B91C1C', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
+                                                    {errors.api}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <button
                                         onClick={handleAddPaymentAndBook}

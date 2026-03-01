@@ -451,7 +451,7 @@ export default function ListingDetailPage() {
                             <div className="amenities-grid">
                                 {listing.amenities.slice(0, 4).map((a, idx) => (
                                     <div className="amenity-row" key={idx}>
-                                        {a.icon}
+                                        <div className="amenity-icon-anim">{a.icon}</div>
                                         <span>{a.label}</span>
                                     </div>
                                 ))}
@@ -475,7 +475,7 @@ export default function ListingDetailPage() {
                                     <div className="amenities-modal-list">
                                         {listing.amenities.map((a, idx) => (
                                             <div className="amenity-modal-item" key={idx}>
-                                                <div className="amenity-icon">{a.icon}</div>
+                                                <div className="amenity-icon amenity-icon-anim">{a.icon}</div>
                                                 <div className="amenity-info">
                                                     <span className="amenity-label">{a.label}</span>
                                                 </div>

@@ -77,6 +77,25 @@ const ROOM_DATA = {
     apartments: { id: 'apartments', name: 'Apartments', price: '₹3,500 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' }
 };
 
+const AMENITY_ICONS = {
+    'WiFi': Wifi,
+    'AC': Wind,
+    'Smart TV': Tv,
+    'Heater': Thermometer,
+    'Power Backup': Sun,
+    'Lift': Building,
+    'King Bed': BedDouble,
+    'City View': Building,
+    'Mini Kitchen': ChefHat,
+    'Mini Fridge': Square,
+    'Jacuzzi': Bath,
+    'Panoramic View': TreePine,
+    'Kitchen': ChefHat,
+    'Living Room': Sofa,
+    'Parking': Car,
+    'Balcony': Leaf
+};
+
 
 
 /* ═══════════════════════════════════════════
@@ -292,12 +311,15 @@ export default function HomePage() {
                                         <p className="room-card-desc" style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px', lineHeight: 1.6, flexGrow: 1 }}>{room.desc}</p>
 
                                         <div className="room-amenities-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
-                                            {room.amenities.slice(0, 4).map((amenity, amIdx) => (
-                                                <div key={amIdx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-charcoal)', fontWeight: 500 }}>
-                                                    <span className="amenity-dot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: 'var(--accent-gold)' }}></span>
-                                                    {amenity}
-                                                </div>
-                                            ))}
+                                            {room.amenities.slice(0, 4).map((amenity, amIdx) => {
+                                                const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
+                                                return (
+                                                    <div key={amIdx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-charcoal)', fontWeight: 500 }}>
+                                                        <IconComponent size={14} className="amenity-icon-anim" />
+                                                        {amenity}
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
 
                                         <div className="room-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.05)', marginTop: 'auto' }}>
