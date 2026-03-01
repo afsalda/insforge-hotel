@@ -275,111 +275,184 @@ export default function AdminDashboardPage() {
                                         <p>No bookings yet. They will appear here when guests book listings.</p>
                                     </div>
                                 ) : (
-                                    <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, position: 'relative' }}>
-                                        <table>
-                                            <thead>
-                                                <tr>
-                                                    <th>Guest</th>
-                                                    <th>Listing</th>
-                                                    <th>Check-in</th>
-                                                    <th>Check-out</th>
-                                                    <th>Booking Time</th>
-                                                    <th>Guests</th>
-                                                    <th>Total</th>
-                                                    <th>Status</th>
-                                                    <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {(activeTab === 'dashboard' ? bookings.slice(0, 5) : bookings).map((booking) => {
-                                                    const sc = getStatusColor(booking.status);
-                                                    return (
-                                                        <tr key={booking.id}>
-                                                            <td>
-                                                                <div style={{ fontWeight: 600, color: 'var(--text-charcoal)' }}>{booking.guest_name}</div>
-                                                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{booking.guest_email}</div>
-                                                            </td>
-                                                            <td style={{ maxWidth: '180px' }}>
-                                                                <div style={{
-                                                                    fontWeight: 500,
-                                                                    whiteSpace: 'nowrap',
-                                                                    overflow: 'hidden',
-                                                                    textOverflow: 'ellipsis'
-                                                                }}>
-                                                                    {booking.listing_title || booking.room_id || '—'}
-                                                                </div>
-                                                            </td>
-                                                            <td>{booking.check_in_date || '—'}</td>
-                                                            <td>{booking.check_out_date || '—'}</td>
-                                                            <td style={{ fontSize: '0.82rem', color: 'var(--text-charcoal)' }}>
-                                                                <div style={{ fontWeight: 500 }}>
-                                                                    {booking.created_at ? new Date(booking.created_at).toLocaleDateString('en-IN', { dateStyle: 'short' }) : '—'}
-                                                                </div>
-                                                                <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                                                                    {booking.created_at ? new Date(booking.created_at).toLocaleTimeString('en-IN', { timeStyle: 'short' }) : ''}
-                                                                </div>
-                                                            </td>
-                                                            <td>{booking.guests_count || 1}</td>
-                                                            <td style={{ fontWeight: 600 }}>
-                                                                {booking.total_price ? `₹${Number(booking.total_price).toLocaleString()}` : '—'}
-                                                            </td>
-                                                            <td>
-                                                                <span style={{
-                                                                    padding: '4px 10px', borderRadius: '20px',
-                                                                    fontSize: '0.75rem', fontWeight: 600,
-                                                                    background: sc.bg, color: sc.color,
-                                                                    textTransform: 'capitalize'
-                                                                }}>
-                                                                    {booking.status || 'unknown'}
-                                                                </span>
-                                                            </td>
-                                                            <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                                                                <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'flex-end' }}>
-                                                                    {booking.status === 'confirmed' && (
+                                    <div className="table-wrapper-pro">
+                                        {/* Desktop View Table */}
+                                        <div className="desktop-only-table">
+                                            <table>
+                                                <thead>
+                                                    <tr>
+                                                        <th>Guest</th>
+                                                        <th>Listing</th>
+                                                        <th>Check-in</th>
+                                                        <th>Check-out</th>
+                                                        <th>Booking Time</th>
+                                                        <th>Guests</th>
+                                                        <th>Total</th>
+                                                        <th>Status</th>
+                                                        <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {(activeTab === 'dashboard' ? bookings.slice(0, 5) : bookings).map((booking) => {
+                                                        const sc = getStatusColor(booking.status);
+                                                        return (
+                                                            <tr key={booking.id}>
+                                                                <td>
+                                                                    <div style={{ fontWeight: 600, color: 'var(--text-charcoal)' }}>{booking.guest_name}</div>
+                                                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', wordBreak: 'break-all' }}>{booking.guest_email}</div>
+                                                                </td>
+                                                                <td style={{ maxWidth: '180px' }}>
+                                                                    <div style={{
+                                                                        fontWeight: 500,
+                                                                        whiteSpace: 'nowrap',
+                                                                        overflow: 'hidden',
+                                                                        textOverflow: 'ellipsis'
+                                                                    }}>
+                                                                        {booking.listing_title || booking.room_id || '—'}
+                                                                    </div>
+                                                                </td>
+                                                                <td className="num-font">{booking.check_in_date || '—'}</td>
+                                                                <td className="num-font">{booking.check_out_date || '—'}</td>
+                                                                <td style={{ fontSize: '0.82rem', color: 'var(--text-charcoal)' }}>
+                                                                    <div style={{ fontWeight: 500 }} className="num-font">
+                                                                        {booking.created_at ? new Date(booking.created_at).toLocaleDateString('en-IN', { dateStyle: 'short' }) : '—'}
+                                                                    </div>
+                                                                    <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }} className="num-font">
+                                                                        {booking.created_at ? new Date(booking.created_at).toLocaleTimeString('en-IN', { timeStyle: 'short' }) : ''}
+                                                                    </div>
+                                                                </td>
+                                                                <td className="num-font">{booking.guests_count || 1}</td>
+                                                                <td style={{ fontWeight: 600 }} className="num-font">
+                                                                    {booking.total_price ? `₹${Number(booking.total_price).toLocaleString()}` : '—'}
+                                                                </td>
+                                                                <td>
+                                                                    <span style={{
+                                                                        padding: '4px 10px', borderRadius: '20px',
+                                                                        fontSize: '0.75rem', fontWeight: 600,
+                                                                        background: sc.bg, color: sc.color,
+                                                                        textTransform: 'capitalize'
+                                                                    }}>
+                                                                        {booking.status || 'unknown'}
+                                                                    </span>
+                                                                </td>
+                                                                <td style={{ textAlign: 'right', paddingRight: '24px' }}>
+                                                                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'nowrap', alignItems: 'center', justifyContent: 'flex-end' }}>
+                                                                        {booking.status === 'confirmed' && (
+                                                                            <button
+                                                                                onClick={() => updateStatus(booking.id, 'completed')}
+                                                                                title="Mark Completed"
+                                                                                style={{ padding: '4px 8px', border: '1px solid var(--border)', background: 'white', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+                                                                            >✓ Done</button>
+                                                                        )}
+                                                                        {(booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
+                                                                            <button
+                                                                                onClick={() => updateStatus(booking.id, 'confirmed')}
+                                                                                title="Confirm Booking"
+                                                                                style={{ padding: '4px 8px', border: '1px solid #10b981', background: '#d1fae5', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', color: '#047857', whiteSpace: 'nowrap', fontWeight: 600 }}
+                                                                            >✓ Confirm</button>
+                                                                        )}
+                                                                        {(booking.status === 'confirmed' || booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
+                                                                            <button
+                                                                                onClick={() => updateStatus(booking.id, 'cancelled')}
+                                                                                title="Cancel Booking"
+                                                                                style={{ padding: '4px 8px', border: '1px solid #FCA5A5', background: '#FEF2F2', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', color: '#991B1B', whiteSpace: 'nowrap', fontWeight: 600 }}
+                                                                            >Cancel</button>
+                                                                        )}
                                                                         <button
-                                                                            onClick={() => updateStatus(booking.id, 'completed')}
-                                                                            title="Mark Completed"
-                                                                            style={{ padding: '4px 8px', border: '1px solid var(--border)', background: 'white', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-                                                                        >✓ Done</button>
-                                                                    )}
-                                                                    {(booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
+                                                                            onClick={() => handleOpenModal(booking)}
+                                                                            title="Edit Booking"
+                                                                            className="btn-action-edit"
+                                                                            style={{ padding: '6px', border: '1px solid var(--border)', background: 'white', borderRadius: '8px', cursor: 'pointer' }}
+                                                                        >
+                                                                            <Edit size={14} color="var(--text-charcoal)" />
+                                                                        </button>
                                                                         <button
-                                                                            onClick={() => updateStatus(booking.id, 'confirmed')}
-                                                                            title="Confirm Booking"
-                                                                            style={{ padding: '4px 8px', border: '1px solid #10b981', background: '#d1fae5', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', color: '#047857', whiteSpace: 'nowrap', fontWeight: 600 }}
-                                                                        >✓ Confirm</button>
-                                                                    )}
-                                                                    {(booking.status === 'confirmed' || booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
-                                                                        <button
-                                                                            onClick={() => updateStatus(booking.id, 'cancelled')}
-                                                                            title="Cancel Booking"
-                                                                            style={{ padding: '4px 8px', border: '1px solid #FCA5A5', background: '#FEF2F2', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', color: '#991B1B', whiteSpace: 'nowrap', fontWeight: 600 }}
-                                                                        >Cancel</button>
-                                                                    )}
-                                                                    <button
-                                                                        onClick={() => handleOpenModal(booking)}
-                                                                        title="Edit Booking"
-                                                                        className="btn-action-edit"
-                                                                        style={{ padding: '6px', border: '1px solid var(--border)', background: 'white', borderRadius: '8px', cursor: 'pointer' }}
-                                                                    >
-                                                                        <Edit size={14} color="var(--text-charcoal)" />
-                                                                    </button>
-                                                                    <button
-                                                                        onClick={() => handleDeleteBooking(booking.id)}
-                                                                        title="Delete Booking"
-                                                                        className="btn-action-delete"
-                                                                        style={{ padding: '6px', border: '1px solid #fee2e2', background: '#fef2f2', borderRadius: '8px', cursor: 'pointer' }}
-                                                                    >
-                                                                        <Trash2 size={14} color="#991B1B" />
-                                                                    </button>
+                                                                            onClick={() => handleDeleteBooking(booking.id)}
+                                                                            title="Delete Booking"
+                                                                            className="btn-action-delete"
+                                                                            style={{ padding: '6px', border: '1px solid #fee2e2', background: '#fef2f2', borderRadius: '8px', cursor: 'pointer' }}
+                                                                        >
+                                                                            <Trash2 size={14} color="#991B1B" />
+                                                                        </button>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                        {/* Mobile Card View */}
+                                        <div className="mobile-only-cards">
+                                            {(activeTab === 'dashboard' ? bookings.slice(0, 5) : bookings).map((booking) => {
+                                                const sc = getStatusColor(booking.status);
+                                                return (
+                                                    <div key={booking.id} className="mobile-booking-card">
+                                                        <div className="card-top">
+                                                            <div className="guest-info">
+                                                                <div className="guest-name">{booking.guest_name}</div>
+                                                                <div className="guest-contact">{booking.guest_email}</div>
+                                                            </div>
+                                                            <span className="status-badge" style={{ background: sc.bg, color: sc.color }}>
+                                                                {booking.status}
+                                                            </span>
+                                                        </div>
+                                                        <div className="card-middle">
+                                                            <div className="info-row">
+                                                                <Hotel size={14} />
+                                                                <span>{booking.listing_title || booking.room_id || '—'}</span>
+                                                            </div>
+                                                            <div className="info-row">
+                                                                <CalendarIcon size={14} />
+                                                                <span className="num-font">{booking.check_in_date} — {booking.check_out_date}</span>
+                                                            </div>
+                                                            <div className="price-row">
+                                                                <div className="price-label">Total Amount</div>
+                                                                <div className="price-value num-font">
+                                                                    {booking.total_price ? `₹${Number(booking.total_price).toLocaleString()}` : '—'}
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
-                                            </tbody>
-                                        </table>
+                                                            </div>
+                                                        </div>
+                                                        <div className="card-actions-row">
+                                                            {booking.status === 'confirmed' && (
+                                                                <button
+                                                                    onClick={() => updateStatus(booking.id, 'completed')}
+                                                                    className="mobile-action-btn done"
+                                                                >Done</button>
+                                                            )}
+                                                            {(booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
+                                                                <button
+                                                                    onClick={() => updateStatus(booking.id, 'confirmed')}
+                                                                    className="mobile-action-btn confirm"
+                                                                >Confirm</button>
+                                                            )}
+                                                            {(booking.status === 'confirmed' || booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
+                                                                <button
+                                                                    onClick={() => updateStatus(booking.id, 'cancelled')}
+                                                                    className="mobile-action-btn cancel"
+                                                                >Cancel</button>
+                                                            )}
+                                                            <div style={{ flex: 1 }}></div>
+                                                            <button
+                                                                onClick={() => handleOpenModal(booking)}
+                                                                className="mobile-icon-btn edit"
+                                                            >
+                                                                <Edit size={16} />
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteBooking(booking.id)}
+                                                                className="mobile-icon-btn delete"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
                                     </div>
+
                                 )}
                             </div>
                         )}
@@ -390,33 +463,36 @@ export default function AdminDashboardPage() {
                                 <div className="table-header-pro">
                                     <h3 className="table-title">Guest Directory ({uniqueGuests} guests)</h3>
                                 </div>
-                                <div style={{ overflowY: 'auto', overflowX: 'auto', flex: 1, position: 'relative' }}>
-                                    <table>
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Email</th>
-                                                <th>Phone</th>
-                                                <th>Bookings</th>
-                                                <th>Total Spent</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {[...new Map(bookings.map(b => [b.guest_email, b])).values()].map((guest) => {
-                                                const guestBookings = bookings.filter(b => b.guest_email === guest.guest_email);
-                                                const spent = guestBookings.reduce((s, b) => s + (Number(b.total_price) || 0), 0);
-                                                return (
-                                                    <tr key={guest.guest_email}>
-                                                        <td style={{ fontWeight: 600 }}>{guest.guest_name}</td>
-                                                        <td>{guest.guest_email}</td>
-                                                        <td>{guest.guest_phone || '—'}</td>
-                                                        <td>{guestBookings.length}</td>
-                                                        <td style={{ fontWeight: 600 }}>₹{spent.toLocaleString()}</td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
+                                <div className="table-wrapper-pro">
+                                    <div className="desktop-only-table">
+                                        <table>
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Email</th>
+                                                    <th>Phone</th>
+                                                    <th>Bookings</th>
+                                                    <th>Total Spent</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {[...new Map(bookings.map(b => [b.guest_email, b])).values()].map((guest) => {
+                                                    const guestBookings = bookings.filter(b => b.guest_email === guest.guest_email);
+                                                    const spent = guestBookings.reduce((s, b) => s + (Number(b.total_price) || 0), 0);
+                                                    return (
+                                                        <tr key={guest.guest_email}>
+                                                            <td style={{ fontWeight: 600 }}>{guest.guest_name}</td>
+                                                            <td>{guest.guest_email}</td>
+                                                            <td className="num-font">{guest.guest_phone || '—'}</td>
+                                                            <td className="num-font">{guestBookings.length}</td>
+                                                            <td style={{ fontWeight: 600 }} className="num-font">₹{spent.toLocaleString()}</td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {/* Optional: Add mobile cards for guests if desired, but focus on bookings first */}
                                 </div>
                             </div>
                         )}
