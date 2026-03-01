@@ -112,6 +112,7 @@ export default function AdminDashboardPage() {
     const getStatusColor = (status) => {
         switch (status) {
             case 'confirmed': return { bg: '#DCFCE7', color: '#166534' };
+            case 'confirmed_offline_sync': return { bg: '#ECFDF5', color: '#065F46' };
             case 'pending': return { bg: '#FEF3C7', color: '#92400E' };
             case 'cancelled': return { bg: '#FEE2E2', color: '#991B1B' };
             case 'completed': return { bg: '#DBEAFE', color: '#1E40AF' };
@@ -341,14 +342,14 @@ export default function AdminDashboardPage() {
                                                                             style={{ padding: '4px 8px', border: '1px solid var(--border)', background: 'white', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
                                                                         >✓ Done</button>
                                                                     )}
-                                                                    {booking.status === 'pending' && (
+                                                                    {(booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
                                                                         <button
                                                                             onClick={() => updateStatus(booking.id, 'confirmed')}
                                                                             title="Confirm Booking"
                                                                             style={{ padding: '4px 8px', border: '1px solid #10b981', background: '#d1fae5', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', color: '#047857', whiteSpace: 'nowrap', fontWeight: 600 }}
                                                                         >✓ Confirm</button>
                                                                     )}
-                                                                    {(booking.status === 'confirmed' || booking.status === 'pending') && (
+                                                                    {(booking.status === 'confirmed' || booking.status === 'pending' || booking.status === 'confirmed_offline_sync') && (
                                                                         <button
                                                                             onClick={() => updateStatus(booking.id, 'cancelled')}
                                                                             title="Cancel Booking"
