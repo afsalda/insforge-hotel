@@ -5231,6 +5231,12 @@ textarea.error {
     min-height: 100vh !important;
   }
 
+  .table-container {
+    overflow: visible !important;
+    height: auto !important;
+    flex: none !important;
+  }
+
   .dashboard-content {
     padding: 16px 12px;
     overflow: visible !important;
