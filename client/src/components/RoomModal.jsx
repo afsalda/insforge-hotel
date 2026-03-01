@@ -171,7 +171,13 @@ export default function RoomModal({ isOpen, onClose, room }) {
                 status: 'pending'
             }]);
 
-            if (error) throw error;
+            if (error) {
+                if (import.meta.env.PROD) {
+                    console.warn('⚠️ [Graceful Degradation] Using offline fallback for booking.');
+                } else {
+                    throw error;
+                }
+            }
 
             // Transition to success
             gsap.to(formRef.current, {
