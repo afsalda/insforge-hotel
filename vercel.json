@@ -1,6 +1,10 @@
 {
     "rewrites": [
         {
+            "source": "/api/database/:match*",
+            "destination": "https://hve9xz4u.us-east.insforge.app/api/database/:match*"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

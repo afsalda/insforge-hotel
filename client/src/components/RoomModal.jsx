@@ -4,7 +4,10 @@ import { createClient } from '@insforge/sdk';
 const gsap = window.gsap;
 
 // Initialize InsForge client
-const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app';
+const isProduction = import.meta.env.PROD;
+const INSFORGE_URL = isProduction
+    ? window.location.origin
+    : (import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app');
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 const insforge = createClient({ baseUrl: INSFORGE_URL, anonKey: INSFORGE_ANON_KEY });
 

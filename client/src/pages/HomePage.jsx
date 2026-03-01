@@ -5,7 +5,10 @@ import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Sq
 import { Leaf, Droplets, Sun, Wind, CheckCircle2 } from 'lucide-react';
 
 /* ─── InsForge Client ─── */
-const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app';
+const isProduction = import.meta.env.PROD;
+const INSFORGE_URL = isProduction
+    ? window.location.origin
+    : (import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app');
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 const insforge = createClient({ baseUrl: INSFORGE_URL, anonKey: INSFORGE_ANON_KEY });
 
