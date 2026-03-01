@@ -38,7 +38,11 @@ export async function getAllBookings() {
             if (error) throw error;
             return data;
         } catch (sdkError) {
-            console.warn('[Bookings] SDK call failed, falling back to Express server:', sdkError.message);
+            console.warn('[Bookings] SDK call failed, falling back:', sdkError.message);
+            if (import.meta.env.PROD) {
+                console.warn('⚠️ [Graceful Degradation] Using offline fallback for getAllBookings.');
+                return JSON.parse(localStorage.getItem('offline_bookings') || '[]');
+            }
         }
     }
     const res = await fetch(`${SERVER_BASE}/api/bookings`);
@@ -98,7 +102,7 @@ export async function createBooking(bookingData) {
                 const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
                 const bookingNumber = `ALB-${year}-${randomPart}`;
 
-                return {
+                const mockBooking = {
                     id: `mock-${randomPart.toLowerCase()}`,
                     booking_number: bookingNumber,
                     guest_name: bookingData.guestName,
@@ -113,6 +117,12 @@ export async function createBooking(bookingData) {
                     status: 'confirmed_offline_sync',
                     created_at: new Date().toISOString()
                 };
+
+                const offlineBookings = JSON.parse(localStorage.getItem('offline_bookings') || '[]');
+                offlineBookings.push(mockBooking);
+                localStorage.setItem('offline_bookings', JSON.stringify(offlineBookings));
+
+                return mockBooking;
             }
         }
     }
@@ -154,7 +164,24 @@ export async function updateBooking(id, updates) {
             if (error) throw error;
             return data;
         } catch (sdkError) {
-            console.warn('[Bookings] SDK update failed, falling back to Express server:', sdkError.message);
+            console.warn('[Bookings] SDK update failed, falling back:', sdkError.message);
+            if (import.meta.env.PROD) {
+                console.warn('⚠️ [Graceful Degradation] Using offline fallback for updateBooking.');
+                let offlineBookings = JSON.parse(localStorage.getItem('offline_bookings') || '[]');
+                let updated = null;
+                offlineBookings = offlineBookings.map(b => {
+                    if (b.id === id) {
+                        updated = { ...b, ...updateObj };
+                        return updated;
+                    }
+                    return b;
+                });
+                if (updated) {
+                    localStorage.setItem('offline_bookings', JSON.stringify(offlineBookings));
+                    return updated;
+                }
+                throw new Error("Booking not found in offline store");
+            }
         }
     }
     const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, {
@@ -177,7 +204,14 @@ export async function deleteBooking(id) {
             if (error) throw error;
             return true;
         } catch (sdkError) {
-            console.warn('[Bookings] SDK delete failed, falling back to Express server:', sdkError.message);
+            console.warn('[Bookings] SDK delete failed, falling back:', sdkError.message);
+            if (import.meta.env.PROD) {
+                console.warn('⚠️ [Graceful Degradation] Using offline fallback for deleteBooking.');
+                let offlineBookings = JSON.parse(localStorage.getItem('offline_bookings') || '[]');
+                offlineBookings = offlineBookings.filter(b => b.id !== id);
+                localStorage.setItem('offline_bookings', JSON.stringify(offlineBookings));
+                return true;
+            }
         }
     }
     const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, { method: 'DELETE' });
