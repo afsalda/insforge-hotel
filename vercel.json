@@ -5,6 +5,10 @@
             "destination": "https://hve9xz4u.us-east.insforge.app/api/database/:match*"
         },
         {
+            "source": "/api/(.*)",
+            "destination": "/api/$1"
+        },
+        {
             "source": "/(.*)",
             "destination": "/index.html"
         }

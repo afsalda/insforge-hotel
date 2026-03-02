@@ -9,7 +9,7 @@ const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-e
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTU2NzgtOTBhYi1jZGVmMTIzNDU2NzgiLCJlbWFpbCI6ImFub25AaW5zZm9yZ2UuY29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1MjgzNjN9.FEEJcdIXtJoQa-7drZfFuCmh5BRn1qCFdvKGdLXZ4vw';
 
 // The Express server handles emails. In production, proxy via Vercel if needed.
-const SERVER_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const SERVER_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
 
 // Use InsForge SDK directly if anon key is available (production)
 const useDirectSDK = !!INSFORGE_ANON_KEY;
