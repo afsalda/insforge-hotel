@@ -83,7 +83,7 @@ export async function createBooking(bookingData) {
             // Await the email trigger so the browser doesn't abort it upon navigation,
             // which can cause Vercel to terminate the function prematurely.
             try {
-                await fetch(`${SERVER_BASE}/api/send-booking-email`, {
+                await fetch('/api/send-booking-email', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(enrichedData),
