@@ -1,7 +1,22 @@
 import { Router } from 'express';
 import { sendEmail } from '../utils/sendEmail.js';
+import { sendBookingEmails } from '../models/Booking.model.js';
 
 const router = Router();
+
+/**
+ * POST /api/send-booking-email
+ * Direct trigger for the combined owner & guest booking notification email
+ */
+router.post('/send-booking-email', async (req, res) => {
+    try {
+        await sendBookingEmails(req.body);
+        res.status(200).json({ success: true, message: 'Emails sent successfully.' });
+    } catch (error) {
+        console.error('send-booking-email error:', error.message || error);
+        res.status(500).json({ success: false, message: 'Failed to send booking emails.' });
+    }
+});
 
 /**
  * POST /api/send-confirmation

@@ -80,14 +80,19 @@ export async function createBooking(bookingData) {
 
             const enrichedData = { ...data, booking_number: bookingNumber };
 
-            // Fire-and-forget: try to send emails through Express server
+            // Await the email trigger so the browser doesn't abort it upon navigation,
+            // which can cause Vercel to terminate the function prematurely.
             try {
-                fetch(`${SERVER_BASE}/api/send-booking-email`, {
+                await fetch(`${SERVER_BASE}/api/send-booking-email`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(enrichedData),
-                }).catch(() => { /* server unavailable — emails skipped silently */ });
-            } catch { /* ignore */ }
+                }).catch((emailErr) => {
+                    console.warn('⚠️ Email sending failed:', emailErr.message);
+                });
+            } catch (err) {
+                console.warn('⚠️ Email triggering error:', err.message);
+            }
 
             return enrichedData;
         } catch (sdkError) {

@@ -12,7 +12,7 @@ const TABLE = 'bookings';
  * Transporter is created at call-time so env vars are guaranteed to be loaded.
  * Hardcoded credentials act as reliable fallbacks.
  */
-async function sendBookingEmails(booking) {
+export async function sendBookingEmails(booking) {
     // ── Create transporter at call-time (env is loaded by now) ──
     const smtpUser = process.env.BREVO_SMTP_LOGIN || 'a2f52a001@smtp-brevo.com';
     const smtpPass = process.env.BREVO_SMTP_KEY || '';
@@ -228,9 +228,9 @@ export const createBooking = async (bookingData) => {
         };
     }
 
-    // Send booking notification emails (fire-and-forget — never blocks the booking)
-    // Email sending will work even if DB is down!
-    sendBookingEmails(enrichedData).catch((emailErr) => {
+    // Await the email sending promise so that serverless environments (like Vercel)
+    // do not freeze the execution context before the emails are actually sent.
+    await sendBookingEmails(enrichedData).catch((emailErr) => {
         console.error('⚠️ Email sending failed (booking still saved):', emailErr.message);
     });
 
