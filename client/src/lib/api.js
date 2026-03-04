@@ -130,8 +130,8 @@ export async function createBooking(bookingData) {
         }
     }
 
-    // Fallback: go through Express server (local development only)
-    const res = await fetch(`/api/bookings`, {
+    // Fallback: go through Express server (or Vercel serverless function)
+    const res = await fetch(`/api/book-room`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData),
