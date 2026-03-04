@@ -1,11 +1,11 @@
 /**
- * emailService.js — Email sending service using Handlebars templates.
+ * emailService.js — Email sending service using Handlebars templates + Brevo HTTP API.
  */
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import Handlebars from 'handlebars';
-import { transporter } from '../config/index.js';
+import { brevoClient } from '../config/index.js';
 import { env } from '../config/index.js';
 import logger from '../utils/logger.js';
 
@@ -38,19 +38,22 @@ export async function sendEmail({ to, subject, template, data }) {
             year: new Date().getFullYear(),
         });
 
-        const mailOptions = {
-            from: env.EMAIL_FROM,
-            to,
-            subject,
-            html,
-        };
+        if (!brevoClient) {
+            logger.debug(`[Email] Brevo not configured. Would send "${subject}" to ${to}`);
+            return;
+        }
 
-        if (env.isDev && !env.SMTP_USER) {
+        if (env.isDev && !env.BREVO_API_KEY) {
             logger.debug(`[Email] Would send "${subject}" to ${to}`);
             return;
         }
 
-        await transporter.sendMail(mailOptions);
+        await brevoClient.transactionalEmails.sendTransacEmail({
+            sender: { email: env.SENDER_EMAIL, name: 'Al-Baith Resort' },
+            to: [{ email: to, name: to }],
+            subject,
+            htmlContent: html,
+        });
         logger.info(`Email sent: "${subject}" to ${to}`);
     } catch (error) {
         logger.error('Email send failed', { error: error.message, to, subject });

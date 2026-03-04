@@ -7,7 +7,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// env.js lives at server/src/config/ — go up 3 levels to reach monorepo root .env
 dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const required = [
@@ -55,17 +54,8 @@ const env = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
 
-    // Email
-    SMTP_HOST: process.env.SMTP_HOST || 'smtp.gmail.com',
-    SMTP_PORT: parseInt(process.env.SMTP_PORT, 10) || 587,
-    SMTP_USER: process.env.SMTP_USER || '',
-    SMTP_PASS: process.env.SMTP_PASS || '',
-    EMAIL_FROM: process.env.EMAIL_FROM || 'StayBnB <noreply@staybnb.com>',
-
-    // Brevo
+    // Brevo HTTP API
     BREVO_API_KEY: process.env.BREVO_API_KEY || '',
-    BREVO_SMTP_LOGIN: process.env.BREVO_SMTP_LOGIN || '',
-    BREVO_SMTP_KEY: process.env.BREVO_SMTP_KEY || '',
     HOTEL_EMAIL: process.env.HOTEL_EMAIL || 'albaith.booking@gmail.com',
     SENDER_EMAIL: process.env.SENDER_EMAIL || 'booking@albaith.in',
 

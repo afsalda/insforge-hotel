@@ -8,8 +8,9 @@ import { createClient } from '@insforge/sdk';
 const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app';
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTU2NzgtOTBhYi1jZGVmMTIzNDU2NzgiLCJlbWFpbCI6ImFub25AaW5zZm9yZ2UuY29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1MjgzNjN9.FEEJcdIXtJoQa-7drZfFuCmh5BRn1qCFdvKGdLXZ4vw';
 
-// The Express server handles emails. In production, proxy via Vercel if needed.
-const SERVER_BASE = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? '' : 'http://localhost:5000');
+// All API calls use relative URLs (e.g. /api/bookings).
+// - Dev: Vite proxy forwards /api/* to http://localhost:5000
+// - Prod: Vercel rewrites handle /api/* routing
 
 // Use InsForge SDK directly if anon key is available (production)
 const useDirectSDK = !!INSFORGE_ANON_KEY;
@@ -42,7 +43,7 @@ export async function getAllBookings() {
             }
         }
     }
-    const res = await fetch(`${SERVER_BASE}/api/bookings`);
+    const res = await fetch(`/api/bookings`);
     const json = await res.json();
     if (!json.success) throw new Error(json.error || 'Failed to fetch bookings');
     return json.data;
@@ -130,7 +131,7 @@ export async function createBooking(bookingData) {
     }
 
     // Fallback: go through Express server (local development only)
-    const res = await fetch(`${SERVER_BASE}/api/bookings`, {
+    const res = await fetch(`/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData),
@@ -152,7 +153,7 @@ export async function updateBooking(id, updates) {
     if (updates.guestsCount) updateObj.guests_count = updates.guestsCount;
     if (updates.totalPrice) updateObj.total_price = updates.totalPrice;
     if (updates.totalNights) updateObj.total_nights = updates.totalNights;
-    if (updates.extraBed !== undefined) updateObj.extra_bed = updates.extraBed;
+    if (updates.extra_bed !== undefined) updateObj.extra_bed = updates.extra_bed;
     if (updates.specialRequests !== undefined) updateObj.special_requests = updates.specialRequests;
 
     if (useDirectSDK) {
@@ -186,7 +187,7 @@ export async function updateBooking(id, updates) {
             }
         }
     }
-    const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, {
+    const res = await fetch(`/api/bookings/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
@@ -216,7 +217,7 @@ export async function deleteBooking(id) {
             }
         }
     }
-    const res = await fetch(`${SERVER_BASE}/api/bookings/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
     const json = await res.json();
     if (!res.ok || !json.success) throw new Error(json.error || 'Delete failed');
     return true;

@@ -1,17 +1,10 @@
-/**
- * email.js — Nodemailer transporter configuration.
- */
-import nodemailer from 'nodemailer';
-import env from './env.js';
+import { BrevoClient } from '@getbrevo/brevo';
 
-const transporter = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT,
-    secure: env.SMTP_PORT === 465,
-    auth: {
-        user: env.SMTP_USER,
-        pass: env.SMTP_PASS,
-    },
+/**
+ * Replaces the old Nodemailer transporter with the @getbrevo/brevo SDK.
+ */
+const brevoClient = new BrevoClient({
+    apiKey: process.env.BREVO_API_KEY || '',
 });
 
-export default transporter;
+export default brevoClient;
