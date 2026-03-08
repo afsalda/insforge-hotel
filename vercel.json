@@ -1,10 +1,6 @@
 {
     "rewrites": [
         {
-            "source": "/api/database/(.*)",
-            "destination": "https://hve9xz4u.us-east.insforge.app/api/database/$1"
-        },
-        {
             "source": "/api/(.*)",
             "destination": "/api/$1"
         },
