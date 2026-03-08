@@ -20,7 +20,7 @@ function OrnamentalDivider() {
     }, []);
 
     return (
-        <div className="ornamental-divider" ref={ref}>
+        <div className="policy-divider" ref={ref}>
             <svg width="200" height="60" viewBox="0 0 200 60" fill="none">
                 <path className="svg-divider-draw" d="M10,55 Q10,10 100,10 Q190,10 190,55" stroke="#C9A96E" strokeWidth="1.5" fill="none" />
                 <circle cx="100" cy="10" r="3" fill="#C9A96E" opacity="0.6" />
@@ -201,6 +201,22 @@ export default function CancellationPolicy() {
                     background: var(--bg-cream);
                     min-height: 100vh;
                     color: var(--text-charcoal);
+                }
+
+                .policy-divider {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 40px 0;
+                    width: 100%;
+                    position: relative;
+                    margin: 40px 0;
+                    background: transparent;
+                }
+
+                .policy-divider svg {
+                    width: 200px;
+                    height: auto;
                 }
 
                 .policy-hero-alt {
@@ -559,9 +575,10 @@ export default function CancellationPolicy() {
                         font-size: 0.95rem;
                         line-height: 1.5;
                     }
-                    .ornamental-divider {
+                    .policy-divider {
                         transform: scale(0.6);
                         margin: -20px 0;
+                        padding: 20px 0;
                     }
                 }
             `}</style>
