@@ -7,7 +7,7 @@ import { createClient } from '@insforge/sdk';
 
 const isProduction = import.meta.env.PROD;
 const INSFORGE_URL = isProduction
-    ? window.location.origin
+    ? window.location.origin + '/api/database'
     : (import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app');
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 
