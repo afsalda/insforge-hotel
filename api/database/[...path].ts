@@ -1,85 +1,101 @@
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+
 /**
  * Vercel Serverless Function — InsForge Database Proxy
- * 
+ *
  * Proxies all /api/database/* requests to the InsForge backend,
  * injecting the service-level API key for write permissions.
- * 
+ *
  * This solves the issue where the anon key only allows GET requests
  * but the SDK needs POST/PATCH/DELETE for CRUD operations.
  */
-export const config = {
-    runtime: 'edge',
-};
 
-const INSFORGE_URL = process.env.INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app';
-const INSFORGE_API_KEY = process.env.INSFORGE_API_KEY || '';
+const INSFORGE_URL =
+    process.env.INSFORGE_URL || "https://hve9xz4u.us-east.insforge.app";
+const INSFORGE_API_KEY = process.env.INSFORGE_API_KEY || "";
 
-export default async function handler(request: Request): Promise<Response> {
-    const url = new URL(request.url);
+export default async function handler(
+    req: VercelRequest,
+    res: VercelResponse
+) {
+    // Handle CORS preflight
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+    );
+    res.setHeader(
+        "Access-Control-Allow-Headers",
+        "Content-Type, Authorization, apikey, Prefer"
+    );
+
+    if (req.method === "OPTIONS") {
+        return res.status(204).end();
+    }
 
     // Extract the path after /api/database/
-    // e.g. /api/database/records/bookings → /api/database/records/bookings
-    const pathMatch = url.pathname.match(/^\/api\/database\/(.*)/);
+    const fullPath = req.url || "";
+    const pathMatch = fullPath.match(/^\/api\/database\/(.*)/);
     if (!pathMatch) {
-        return new Response(JSON.stringify({ error: 'Invalid path' }), {
-            status: 400,
-            headers: { 'Content-Type': 'application/json' },
-        });
+        return res.status(400).json({ error: "Invalid path" });
     }
 
-    const targetPath = `/api/database/${pathMatch[1]}`;
-    const targetUrl = `${INSFORGE_URL}${targetPath}${url.search}`;
+    const subPath = pathMatch[1]; // e.g. "records/bookings?select=*"
+    const targetUrl = `${INSFORGE_URL}/api/database/${subPath}`;
 
-    // Forward headers, replacing/adding the API key for authentication
-    const headers = new Headers(request.headers);
+    // Build headers
+    const headers: Record<string, string> = {
+        "Content-Type": req.headers["content-type"] || "application/json",
+    };
 
-    // Use the service API key for all requests (enables write operations)
+    // Use service API key for authentication (enables write operations)
     if (INSFORGE_API_KEY) {
-        headers.set('apikey', INSFORGE_API_KEY);
+        headers["apikey"] = INSFORGE_API_KEY;
     }
 
-    // Remove host header to avoid conflicts
-    headers.delete('host');
+    // Forward the Authorization header from the client
+    if (req.headers["authorization"]) {
+        headers["Authorization"] = req.headers["authorization"] as string;
+    }
+
+    // Forward the Prefer header (used by PostgREST for return=representation)
+    if (req.headers["prefer"]) {
+        headers["Prefer"] = req.headers["prefer"] as string;
+    }
 
     try {
-        const proxyResponse = await fetch(targetUrl, {
-            method: request.method,
-            headers: headers,
-            body: request.method !== 'GET' && request.method !== 'HEAD'
-                ? await request.text()
-                : undefined,
-        });
+        const fetchOptions: RequestInit = {
+            method: req.method || "GET",
+            headers,
+        };
 
-        // Forward the response back to the client
-        const responseHeaders = new Headers();
-        proxyResponse.headers.forEach((value, key) => {
-            // Skip hop-by-hop headers
-            if (!['transfer-encoding', 'connection', 'keep-alive'].includes(key.toLowerCase())) {
-                responseHeaders.set(key, value);
-            }
-        });
-
-        // Ensure CORS headers
-        responseHeaders.set('Access-Control-Allow-Origin', '*');
-        responseHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        responseHeaders.set('Access-Control-Allow-Headers', 'Content-Type, Authorization, apikey, Prefer');
-
-        // Handle preflight
-        if (request.method === 'OPTIONS') {
-            return new Response(null, { status: 204, headers: responseHeaders });
+        // Forward body for non-GET/HEAD requests
+        if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
+            fetchOptions.body =
+                typeof req.body === "string" ? req.body : JSON.stringify(req.body);
         }
 
-        const responseBody = await proxyResponse.text();
+        const proxyResponse = await fetch(targetUrl, fetchOptions);
+        const responseText = await proxyResponse.text();
 
-        return new Response(responseBody, {
-            status: proxyResponse.status,
-            headers: responseHeaders,
-        });
+        // Forward response headers
+        const contentType = proxyResponse.headers.get("content-type");
+        if (contentType) {
+            res.setHeader("Content-Type", contentType);
+        }
+
+        // Forward content-range for pagination
+        const contentRange = proxyResponse.headers.get("content-range");
+        if (contentRange) {
+            res.setHeader("Content-Range", contentRange);
+        }
+
+        return res.status(proxyResponse.status).send(responseText);
     } catch (error) {
-        console.error('Proxy error:', error);
-        return new Response(JSON.stringify({ error: 'Proxy request failed', details: String(error) }), {
-            status: 502,
-            headers: { 'Content-Type': 'application/json' },
+        console.error("InsForge proxy error:", error);
+        return res.status(502).json({
+            error: "Proxy request failed",
+            details: String(error),
         });
     }
 }
