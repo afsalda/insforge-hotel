@@ -165,11 +165,11 @@ export default function CancellationPolicy() {
                     {/* Section 3: Refunds & No-Show */}
                     <div className="policy-detailed-grid">
                         <div className="detail-box">
-                            <div className="box-title">
+                            <div className="box-title" style={{ justifyContent: 'center' }}>
                                 <RefreshCcw size={20} />
                                 <h3>Refund Policy</h3>
                             </div>
-                            <ul className="policy-list">
+                            <ul className="policy-list centered-list">
                                 <li>
                                     <span className="bullet">✓</span>
                                     <span>Full refunds (minus standard processing fees) are issued for timely cancellations.</span>
@@ -377,7 +377,7 @@ export default function CancellationPolicy() {
                 }
 
                 .policy-terms-card.alert {
-                    border-left: 8px solid var(--accent-gold);
+                    border: 1px solid rgba(201, 169, 110, 0.2);
                     background: linear-gradient(to right, #fff, var(--bg-off-white));
                 }
 
@@ -438,21 +438,30 @@ export default function CancellationPolicy() {
                 .policy-list {
                     list-style: none;
                     padding: 0;
+                    display: flex;
+                    flex-direction: column;
+                }
+
+                .policy-list.centered-list {
+                    align-items: center;
                 }
 
                 .policy-list li {
                     display: flex;
-                    gap: 20px;
+                    gap: 16px;
                     margin-bottom: 24px;
                     align-items: flex-start;
                     font-size: 1.05rem;
                     line-height: 1.6;
+                    max-width: 550px;
+                    text-align: left;
                 }
 
                 .bullet {
                     color: var(--accent-gold);
                     font-weight: bold;
                     font-size: 1.3rem;
+                    flex-shrink: 0;
                 }
 
                 .box-text {
