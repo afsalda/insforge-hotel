@@ -54,8 +54,10 @@ const env = {
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET || '',
 
-    // Brevo HTTP API
+    // Brevo / Resend Email
     BREVO_API_KEY: process.env.BREVO_API_KEY || '',
+    RESEND_API_KEY: process.env.RESEND_API_KEY || '',
+    FROM_EMAIL: process.env.FROM_EMAIL || 'noreply@albaith.in',
     HOTEL_EMAIL: process.env.HOTEL_EMAIL || 'albaith.booking@gmail.com',
     SENDER_EMAIL: process.env.SENDER_EMAIL || 'booking@albaith.in',
 

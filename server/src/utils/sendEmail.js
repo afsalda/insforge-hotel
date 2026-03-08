@@ -22,8 +22,35 @@ if (env.BREVO_API_KEY) {
  */
 export const sendEmail = async (toEmail, toName, subject, htmlContent) => {
     try {
+        // Preference 1: Resend
+        if (env.RESEND_API_KEY) {
+            const response = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    from: `Al-Baith Resort <${env.FROM_EMAIL || 'noreply@albaith.in'}>`,
+                    to: [toEmail],
+                    subject,
+                    html: htmlContent,
+                }),
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log('Email sent via Resend:', data.id);
+                return data;
+            } else {
+                const errData = await response.json();
+                console.error('Resend API error, trying fallback:', errData);
+            }
+        }
+
+        // Preference 2: Brevo
         if (!brevoClient) {
-            console.warn('BREVO_API_KEY is not defined. Skipping email delivery.');
+            console.warn('No email service configured (Resend or Brevo). Skipping email delivery.');
             return null;
         }
 
@@ -42,7 +69,8 @@ export const sendEmail = async (toEmail, toName, subject, htmlContent) => {
         console.log('Brevo API called successfully. Returned data:', JSON.stringify(data));
         return data;
     } catch (error) {
-        console.error('Error sending email through Brevo:', error);
-        throw new Error('Failed to send email');
+        console.error('Error sending email:', error);
+        // We generally don't want to throw and block the process for an email failure
+        return null;
     }
 };

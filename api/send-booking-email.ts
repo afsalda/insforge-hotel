@@ -19,17 +19,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     } = req.body;
 
     try {
-        const apiKey = process.env.BREVO_API_KEY;
+        const apiKey = process.env.RESEND_API_KEY;
         if (!apiKey) {
-            console.warn("BREVO_API_KEY is not defined.");
+            console.warn("RESEND_API_KEY is not defined.");
             return res.status(500).json({ error: "Email service not configured" });
         }
 
         const displayId = booking_number || (id ? id.split("-")[0].toUpperCase() : "N/A");
-        const senderEmail = process.env.SENDER_EMAIL || "booking@albaith.in";
+        const fromEmail = process.env.FROM_EMAIL || "noreply@albaith.in";
         const hotelEmail = process.env.HOTEL_EMAIL || "albaith.booking@gmail.com";
 
-        // Email 1: Hotel Owner Notification HTML
+        // ... (ownerHtml and customerHtml remain the same)
         const ownerHtml = `
       <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
           <div style="background:linear-gradient(135deg,#1a3c34 0%,#2d6a4f 100%);padding:32px 24px;text-align:center;">
@@ -82,7 +82,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           </div>
       </div>`;
 
-        // Email 2: Customer Confirmation HTML
         const customerHtml = `
       <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
           <div style="background:linear-gradient(135deg,#1a3c34 0%,#2d6a4f 100%);padding:40px 24px;text-align:center;">
@@ -133,28 +132,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           </div>
       </div>`;
 
-        const headers = {
-            "accept": "application/json",
-            "api-key": apiKey,
-            "content-type": "application/json",
-        };
-
-        const sendEmail = (toEmail: string, toName: string, subject: string, htmlContent: string) => {
-            return fetch("https://api.brevo.com/v3/smtp/email", {
+        const sendEmail = (toEmail: string, subject: string, html: string) => {
+            return fetch("https://api.resend.com/emails", {
                 method: "POST",
-                headers,
+                headers: {
+                    "Authorization": `Bearer ${apiKey}`,
+                    "Content-Type": "application/json",
+                },
                 body: JSON.stringify({
-                    sender: { name: "Al-Baith Resort", email: senderEmail },
-                    to: [{ email: toEmail, name: toName }],
+                    from: `Al-Baith Resort <${fromEmail}>`,
+                    to: [toEmail],
                     subject,
-                    htmlContent,
+                    html,
                 }),
             });
         };
 
         await Promise.allSettled([
-            sendEmail(hotelEmail, "Al-Baith Hotel", `New Booking Alert [${displayId}] – Al-Baith Resort`, ownerHtml),
-            sendEmail(guest_email, guest_name, `Booking Confirmed [${displayId}] – Al-Baith Resort`, customerHtml),
+            sendEmail(hotelEmail, `New Booking Alert [${displayId}] – Al-Baith Resort`, ownerHtml),
+            sendEmail(guest_email, `Booking Confirmed [${displayId}] – Al-Baith Resort`, customerHtml),
         ]);
 
         return res.status(200).json({ success: true, message: "Emails successfully sent." });

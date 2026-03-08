@@ -1,18 +1,21 @@
 /**
  * InsForge client for frontend — direct database access.
- * In development, falls back to the local Express API.
- * In production, uses the InsForge SDK directly.
+ * In development, uses VITE_INSFORGE_URL directly (Vite proxy handles CORS).
+ * In production, routes through the Vercel rewrite proxy (same-origin).
  */
 import { createClient } from '@insforge/sdk';
 
-const INSFORGE_URL = import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app';
-const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3OC0xMjM0LTU2NzgtOTBhYi1jZGVmMTIzNDU2NzgiLCJlbWFpbCI6ImFub25AaW5zZm9yZ2UuY29tIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE1MjgzNjN9.FEEJcdIXtJoQa-7drZfFuCmh5BRn1qCFdvKGdLXZ4vw';
+const isProduction = import.meta.env.PROD;
+const INSFORGE_URL = isProduction
+    ? window.location.origin
+    : (import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app');
+const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 
 // All API calls use relative URLs (e.g. /api/bookings).
 // - Dev: Vite proxy forwards /api/* to http://localhost:5000
 // - Prod: Vercel rewrites handle /api/* routing
 
-// Use InsForge SDK directly if anon key is available (production)
+// Use InsForge SDK directly if anon key is available
 const useDirectSDK = !!INSFORGE_ANON_KEY;
 
 let db = null;

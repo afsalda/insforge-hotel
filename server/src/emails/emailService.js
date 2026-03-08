@@ -38,13 +38,34 @@ export async function sendEmail({ to, subject, template, data }) {
             year: new Date().getFullYear(),
         });
 
-        if (!brevoClient) {
-            logger.debug(`[Email] Brevo not configured. Would send "${subject}" to ${to}`);
-            return;
+        // Use Resend if API key is available
+        if (env.RESEND_API_KEY) {
+            const response = await fetch('https://api.resend.com/emails', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    from: `Al-Baith Resort <${env.FROM_EMAIL || 'noreply@albaith.in'}>`,
+                    to: [to],
+                    subject,
+                    html: html,
+                }),
+            });
+
+            if (response.ok) {
+                logger.info(`Email sent via Resend: "${subject}" to ${to}`);
+                return;
+            } else {
+                const errData = await response.json();
+                logger.error('Resend email failed, trying fallback', errData);
+            }
         }
 
-        if (env.isDev && !env.BREVO_API_KEY) {
-            logger.debug(`[Email] Would send "${subject}" to ${to}`);
+        // Fallback to Brevo
+        if (!brevoClient || !env.BREVO_API_KEY) {
+            logger.debug(`[Email] No email service configured. Would send "${subject}" to ${to}`);
             return;
         }
 
@@ -54,9 +75,8 @@ export async function sendEmail({ to, subject, template, data }) {
             subject,
             htmlContent: html,
         });
-        logger.info(`Email sent: "${subject}" to ${to}`);
+        logger.info(`Email sent via Brevo: "${subject}" to ${to}`);
     } catch (error) {
         logger.error('Email send failed', { error: error.message, to, subject });
-        // Don't throw — email failures should not block the main flow
     }
 }

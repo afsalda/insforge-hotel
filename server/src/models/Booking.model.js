@@ -24,15 +24,14 @@ function getBrevoClient() {
 }
 
 /**
- * Sends booking notification emails (owner + customer) via Brevo HTTP API.
- * Uses @getbrevo/brevo v4 SDK — no SMTP, no nodemailer.
+ * Sends booking notification emails (owner + customer) via Resend or Brevo.
  */
 export async function sendBookingEmails(booking) {
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.FROM_EMAIL || 'noreply@albaith.in';
     const brevo = getBrevoClient();
-    if (!brevo) return;
-
-    const senderEmail = process.env.SENDER_EMAIL || 'booking@albaith.in';
     const hotelEmail = process.env.HOTEL_EMAIL || 'albaith.booking@gmail.com';
+    const senderEmail = process.env.SENDER_EMAIL || 'booking@albaith.in';
 
     const {
         id,
@@ -47,13 +46,12 @@ export async function sendBookingEmails(booking) {
         total_price,
     } = booking;
 
-    // Use standard booking number for display, fallback to short ID
     const displayId = booking_number || id.split('-')[0].toUpperCase();
 
     try {
-        console.log(`Sending booking emails for ${displayId} via Brevo HTTP API...`);
+        console.log(`Preparing emails for booking ${displayId}...`);
 
-        // ── Email 1 → Hotel Owner Notification ──
+        // ... (ownerHtml and customerHtml remain the same)
         const ownerHtml = `
             <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
                 <div style="background:linear-gradient(135deg,#1a3c34 0%,#2d6a4f 100%);padding:32px 24px;text-align:center;">
@@ -106,7 +104,6 @@ export async function sendBookingEmails(booking) {
                 </div>
             </div>`;
 
-        // ── Email 2 → Customer Confirmation ──
         const customerHtml = `
             <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
                 <div style="background:linear-gradient(135deg,#1a3c34 0%,#2d6a4f 100%);padding:40px 24px;text-align:center;">
@@ -146,7 +143,7 @@ export async function sendBookingEmails(booking) {
                     </div>
                     <div style="margin-top:24px;padding:20px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a;">
                         <p style="color:#92400e;font-size:14px;margin:0;line-height:1.6;">
-                            📞 For any queries, reach us at <strong>albaith.booking@gmail.com</strong><br>
+                            📞 For any queries, reach us at <strong>${hotelEmail}</strong><br>
                             We look forward to making your stay memorable!
                         </p>
                     </div>
@@ -157,36 +154,71 @@ export async function sendBookingEmails(booking) {
                 </div>
             </div>`;
 
-        // Send both in parallel
-        const results = await Promise.allSettled([
-            // To Owner
-            brevo.transactionalEmails.sendTransacEmail({
-                subject: `New Booking Alert [${displayId}] – Al-Baith Resort`,
-                htmlContent: ownerHtml,
-                sender: { email: senderEmail, name: 'Al-Baith Resort' },
-                to: [{ email: hotelEmail, name: 'Owner' }],
-            }),
-            // To Customer
-            brevo.transactionalEmails.sendTransacEmail({
-                subject: `Booking Confirmed [${displayId}] – Al-Baith Resort`,
-                htmlContent: customerHtml,
-                sender: { email: senderEmail, name: 'Al-Baith Resort' },
-                to: [{ email: guest_email, name: guest_name }],
-            })
-        ]);
+        // Preference 1: Resend
+        if (resendApiKey) {
+            console.log('Sending emails via Resend HTTP API...');
+            const results = await Promise.allSettled([
+                fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        from: `Al-Baith Resort <${fromEmail}>`,
+                        to: [hotelEmail],
+                        subject: `New Booking Alert [${displayId}] – Al-Baith Resort`,
+                        html: ownerHtml
+                    }),
+                }),
+                fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        from: `Al-Baith Resort <${fromEmail}>`,
+                        to: [guest_email],
+                        subject: `Booking Confirmed [${displayId}] – Al-Baith Resort`,
+                        html: customerHtml
+                    }),
+                })
+            ]);
+            results.forEach((r, idx) => {
+                const label = idx === 0 ? 'Owner' : 'Customer';
+                if (r.status === 'fulfilled' && r.value.ok) {
+                    console.log(`${label} email sent successfully via Resend ✅`);
+                } else {
+                    console.error(`${label} email failed via Resend:`, r.reason || 'Status not OK');
+                }
+            });
+            return;
+        }
 
-        results.forEach((r, idx) => {
-            const label = idx === 0 ? 'Owner' : 'Customer';
-            if (r.status === 'fulfilled') {
-                console.log(`${label} email sent successfully ✅`);
-            } else {
-                console.error(`${label} email failed:`, r.reason?.message || r.reason);
-            }
-        });
+        // Preference 2: Brevo
+        if (brevo) {
+            console.log('Sending emails via Brevo HTTP API...');
+            const results = await Promise.allSettled([
+                brevo.transactionalEmails.sendTransacEmail({
+                    subject: `New Booking Alert [${displayId}] – Al-Baith Resort`,
+                    htmlContent: ownerHtml,
+                    sender: { email: senderEmail, name: 'Al-Baith Resort' },
+                    to: [{ email: hotelEmail, name: 'Owner' }],
+                }),
+                brevo.transactionalEmails.sendTransacEmail({
+                    subject: `Booking Confirmed [${displayId}] – Al-Baith Resort`,
+                    htmlContent: customerHtml,
+                    sender: { email: senderEmail, name: 'Al-Baith Resort' },
+                    to: [{ email: guest_email, name: guest_name }],
+                })
+            ]);
 
+            results.forEach((r, idx) => {
+                const label = idx === 0 ? 'Owner' : 'Customer';
+                if (r.status === 'fulfilled') {
+                    console.log(`${label} email sent successfully via Brevo ✅`);
+                } else {
+                    console.error(`${label} email failed via Brevo:`, r.reason?.message || r.reason);
+                }
+            });
+        }
     } catch (error) {
         console.error('Email sending failed:', error.message || error);
-        // Don't throw — email failure should never break the booking flow
     }
 }
 
