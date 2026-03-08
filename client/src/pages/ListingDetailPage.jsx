@@ -81,7 +81,7 @@ export const LISTING_DATA = {
             { label: 'Jacuzzi', icon: <Waves size={24} /> },
             { label: 'Panoramic View', icon: <Trees size={24} /> }
         ],
-        price: 5000, cleaningFee: 350, serviceFee: 400
+        price: 3500, cleaningFee: 350, serviceFee: 400
     },
     'executive': {
         title: 'Executive Room',
@@ -126,7 +126,7 @@ export const LISTING_DATA = {
             { label: 'Living Room', icon: <Tv size={24} /> },
             { label: 'Free Parking', icon: <Car size={24} /> }
         ],
-        price: 3500, cleaningFee: 200, serviceFee: 250
+        price: 5000, cleaningFee: 200, serviceFee: 250
     },
     'apt2': {
         title: '2BHK Family Apartment',
