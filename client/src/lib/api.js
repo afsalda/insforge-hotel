@@ -11,9 +11,32 @@ const INSFORGE_URL = isProduction
     : (import.meta.env.VITE_INSFORGE_URL || 'https://hve9xz4u.us-east.insforge.app');
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 
-// All API calls use relative URLs (e.g. /api/bookings).
-// - Dev: Vite proxy forwards /api/* to http://localhost:5000
-// - Prod: Vercel rewrites handle /api/* routing
+/**
+ * In production, intercept global fetch to route InsForge database
+ * requests through our /api/insforge-proxy serverless function.
+ * 
+ * The InsForge SDK's Database module calls global fetch() directly (not
+ * through the HttpClient.fetch option), so we must intercept at this level.
+ * The proxy injects the service API key for write permissions.
+ */
+if (isProduction) {
+    const _originalFetch = globalThis.fetch;
+    globalThis.fetch = async function (input, init) {
+        const url = typeof input === 'string' ? input : (input instanceof Request ? input.url : input.toString());
+
+        // Intercept InsForge database requests (SDK constructs these)
+        const dbMatch = url.match(/\/api\/database\/(.+)/);
+        if (dbMatch) {
+            const fullSubPath = dbMatch[1]; // e.g. "records/bookings?select=*"
+            const [subPath, qs] = fullSubPath.split('?');
+            const proxyUrl = `/api/insforge-proxy?path=${encodeURIComponent(subPath)}${qs ? '&' + qs : ''}`;
+
+            return _originalFetch(proxyUrl, init);
+        }
+
+        return _originalFetch(input, init);
+    };
+}
 
 // Use InsForge SDK directly if anon key is available
 const useDirectSDK = !!INSFORGE_ANON_KEY;
@@ -26,6 +49,7 @@ if (useDirectSDK) {
     });
     db = client.database;
 }
+
 
 // ─── Bookings API ───
 

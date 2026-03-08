@@ -3,11 +3,11 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 /**
  * Vercel Serverless Function — InsForge Database Proxy
  *
- * Proxies all /api/database/* requests to the InsForge backend,
- * injecting the service-level API key for write permissions.
+ * The client sends the original InsForge path as a query parameter `path`.
+ * e.g. POST /api/insforge-proxy?path=records/bookings
  *
- * This solves the issue where the anon key only allows GET requests
- * but the SDK needs POST/PATCH/DELETE for CRUD operations.
+ * This function forwards the request to InsForge with the service API key,
+ * enabling write operations that the anon key doesn't support.
  */
 
 const INSFORGE_URL =
@@ -18,7 +18,7 @@ export default async function handler(
     req: VercelRequest,
     res: VercelResponse
 ) {
-    // Handle CORS preflight
+    // CORS headers
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
         "Access-Control-Allow-Methods",
@@ -26,39 +26,47 @@ export default async function handler(
     );
     res.setHeader(
         "Access-Control-Allow-Headers",
-        "Content-Type, Authorization, apikey, Prefer"
+        "Content-Type, Authorization, apikey, Prefer, x-insforge-path"
     );
 
     if (req.method === "OPTIONS") {
         return res.status(204).end();
     }
 
-    // Extract the path after /api/database/
-    const fullPath = req.url || "";
-    const pathMatch = fullPath.match(/^\/api\/database\/(.*)/);
-    if (!pathMatch) {
-        return res.status(400).json({ error: "Invalid path" });
+    // Get the target path from the custom header or query param
+    const insforgeSubPath =
+        (req.headers["x-insforge-path"] as string) ||
+        (req.query.path as string);
+
+    if (!insforgeSubPath) {
+        return res.status(400).json({ error: "Missing path parameter" });
     }
 
-    const subPath = pathMatch[1]; // e.g. "records/bookings?select=*"
-    const targetUrl = `${INSFORGE_URL}/api/database/${subPath}`;
+    // Build the full targetURL: reconstruct query params minus our 'path' param
+    const url = new URL(req.url || "/", `https://${req.headers.host}`);
+    url.searchParams.delete("path");
+    const queryString = url.searchParams.toString();
+    const targetUrl = `${INSFORGE_URL}/api/database/${insforgeSubPath}${queryString ? `?${queryString}` : ""
+        }`;
 
-    // Build headers
-    const headers: Record<string, string> = {
-        "Content-Type": req.headers["content-type"] || "application/json",
-    };
+    // Build headers for InsForge
+    const headers: Record<string, string> = {};
 
-    // Use service API key for authentication (enables write operations)
+    if (req.headers["content-type"]) {
+        headers["Content-Type"] = req.headers["content-type"] as string;
+    }
+
+    // Use service API key for authentication
     if (INSFORGE_API_KEY) {
         headers["apikey"] = INSFORGE_API_KEY;
     }
 
-    // Forward the Authorization header from the client
+    // Forward Authorization
     if (req.headers["authorization"]) {
         headers["Authorization"] = req.headers["authorization"] as string;
     }
 
-    // Forward the Prefer header (used by PostgREST for return=representation)
+    // Forward Prefer header (PostgREST uses this)
     if (req.headers["prefer"]) {
         headers["Prefer"] = req.headers["prefer"] as string;
     }
@@ -69,7 +77,6 @@ export default async function handler(
             headers,
         };
 
-        // Forward body for non-GET/HEAD requests
         if (req.method !== "GET" && req.method !== "HEAD" && req.body) {
             fetchOptions.body =
                 typeof req.body === "string" ? req.body : JSON.stringify(req.body);
@@ -78,17 +85,12 @@ export default async function handler(
         const proxyResponse = await fetch(targetUrl, fetchOptions);
         const responseText = await proxyResponse.text();
 
-        // Forward response headers
-        const contentType = proxyResponse.headers.get("content-type");
-        if (contentType) {
-            res.setHeader("Content-Type", contentType);
-        }
+        // Forward important response headers
+        const ct = proxyResponse.headers.get("content-type");
+        if (ct) res.setHeader("Content-Type", ct);
 
-        // Forward content-range for pagination
-        const contentRange = proxyResponse.headers.get("content-range");
-        if (contentRange) {
-            res.setHeader("Content-Range", contentRange);
-        }
+        const cr = proxyResponse.headers.get("content-range");
+        if (cr) res.setHeader("Content-Range", cr);
 
         return res.status(proxyResponse.status).send(responseText);
     } catch (error) {
