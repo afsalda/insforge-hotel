@@ -77,7 +77,21 @@ export async function getAllBookings() {
 }
 
 export async function createBooking(bookingData) {
-    // ── Strategy: Try direct SDK first, fallback to Express server ──
+    // ── In Production: Always use Vercel Serverless Function ──
+    // The anon key lacks permission to create records directly in InsForge, so we use
+    // the Vercel function which holds the service-level API key to bypass RLS.
+    if (import.meta.env.PROD) {
+        const res = await fetch(`/api/book-room`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingData),
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) throw new Error(json.error || 'Booking failed');
+        return json.data;
+    }
+
+    // ── Strategy for Local Dev: Try direct SDK first, fallback to Express server ──
     if (useDirectSDK) {
         try {
             const year = new Date().getFullYear();
