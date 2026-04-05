@@ -1,0 +1,101 @@
+﻿[36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+transforming...
+[32mΓ£ô[39m 2145 modules transformed.
+node.exe : [31mΓ£ù[39m 
+Build failed in 3.25s
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE 
+$NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (  
+  [31mΓ£ù[39m Build fa   
+ iled in 3.25s:String)    
+ [], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+[31merror during build:
+[31msrc/App.jsx (2:9): 
+"Navbar" is not exported 
+by "src/components/Navbar.
+jsx", imported by 
+"src/App.jsx".[31m
+file: [36mC:/Users/M S 
+I/Downloads/final hotel/cl
+ient/src/App.jsx:2:9[31m
+[33m
+1: import React from 
+'react';
+2: import { Navbar } from 
+'./components/Navbar';
+            ^
+3: import { Hero } from 
+'./components/Hero';
+4: import { About } from 
+'./components/About';
+[31m
+    at getRollupError (fil
+e:///C:/Users/M%20S%20I/Do
+wnloads/final%20hotel/node
+_modules/rollup/dist/es/sh
+ared/parseAst.js:402:41)
+    at error (file:///C:/U
+sers/M%20S%20I/Downloads/f
+inal%20hotel/node_modules/
+rollup/dist/es/shared/pars
+eAst.js:398:42)
+    at Module.error (file:
+///C:/Users/M%20S%20I/Down
+loads/final%20hotel/node_m
+odules/rollup/dist/es/shar
+ed/node-entry.js:17040:16)
+    at 
+Module.traceVariable (file
+:///C:/Users/M%20S%20I/Dow
+nloads/final%20hotel/node_
+modules/rollup/dist/es/sha
+red/node-entry.js:17452:29
+)
+    at 
+ModuleScope.findVariable (
+file:///C:/Users/M%20S%20I
+/Downloads/final%20hotel/n
+ode_modules/rollup/dist/es
+/shared/node-entry.js:1507
+0:39)
+    at FunctionScope.findV
+ariable (file:///C:/Users/
+M%20S%20I/Downloads/final%
+20hotel/node_modules/rollu
+p/dist/es/shared/node-entr
+y.js:5673:38)
+    at FunctionBodyScope.f
+indVariable (file:///C:/Us
+ers/M%20S%20I/Downloads/fi
+nal%20hotel/node_modules/r
+ollup/dist/es/shared/node-
+entry.js:5673:38)
+    at Identifier.bind (fi
+le:///C:/Users/M%20S%20I/D
+ownloads/final%20hotel/nod
+e_modules/rollup/dist/es/s
+hared/node-entry.js:5447:4
+0)
+    at 
+CallExpression.bind (file:
+///C:/Users/M%20S%20I/Down
+loads/final%20hotel/node_m
+odules/rollup/dist/es/shar
+ed/node-entry.js:2825:28)
+    at 
+CallExpression.bind (file:
+///C:/Users/M%20S%20I/Down
+loads/final%20hotel/node_m
+odules/rollup/dist/es/shar
+ed/node-entry.js:12179:15)
+[39m

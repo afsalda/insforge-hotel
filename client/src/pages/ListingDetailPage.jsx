@@ -16,11 +16,11 @@ export const LISTING_DATA = {
         rating: 4.85, reviews: 142,
         host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
-            'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80',
-            'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
-            'https://images.unsplash.com/photo-1584132967334-10e028b1db15?w=800&q=80',
-            'https://images.unsplash.com/photo-1560185127-6ed189bf02f4?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80'
+            '/images/rooms/standard_1.jpg',
+            '/images/rooms/standard_2.jpg',
+            '/images/rooms/standard_3.jpg',
+            '/images/rooms/standard_4.jpg',
+            '/images/rooms/standard_5.jpg'
         ],
         guests: 2, bedrooms: 1, beds: 1, baths: 1,
         description: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.',
@@ -38,11 +38,11 @@ export const LISTING_DATA = {
         rating: 4.95, reviews: 312,
         host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
-            'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80',
-            'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&q=80',
-            'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&q=80',
-            'https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&q=80',
-            'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=800&q=80'
+            '/images/rooms/deluxe_1.jpg',
+            '/images/rooms/deluxe_2.jpg',
+            '/images/rooms/deluxe_3.jpg',
+            '/images/rooms/deluxe_1.jpg',
+            '/images/rooms/deluxe_2.jpg'
         ],
         guests: 3, bedrooms: 1, beds: 2, baths: 1,
         description: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed available for small families.',
@@ -61,11 +61,11 @@ export const LISTING_DATA = {
         rating: 5.0, reviews: 89,
         host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
-            'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=1200&q=80',
-            'https://images.unsplash.com/photo-1561501878-aabd62634533?w=800&q=80',
-            'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?w=800&q=80',
-            'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80',
-            'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=800&q=80'
+            '/images/rooms/suite_1.jpg',
+            '/images/rooms/suite_2.jpg',
+            '/images/rooms/suite_3.jpg',
+            '/images/rooms/suite_4.jpg',
+            '/images/rooms/suite_5.jpg'
         ],
         guests: 4, bedrooms: 2, beds: 2, baths: 2,
         description: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.',
@@ -111,11 +111,10 @@ export const LISTING_DATA = {
         rating: 4.88, reviews: 54,
         host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&q=80',
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80',
-            'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&q=80'
+            '/images/rooms/apartments/3.jpg.jpeg',
+            '/images/rooms/apartments/1.jpg.jpeg',
+            '/images/rooms/apartments/2.jpg.jpeg',
+            '/images/rooms/apartments/25.jpg.jpeg'
         ],
         guests: 3, bedrooms: 1, beds: 1, baths: 1,
         description: 'Cozy fully furnished 1BHK apartment with a complete kitchen, living room, and high-speed Wi-Fi. Ideal for extended stays.',
@@ -134,11 +133,10 @@ export const LISTING_DATA = {
         rating: 4.90, reviews: 92,
         host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1200&q=80',
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
-            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&q=80',
-            'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=800&q=80',
-            'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=800&q=80'
+            '/images/rooms/apartments/5.jpg.jpeg',
+            '/images/rooms/apartments/6.jpg.jpeg',
+            '/images/rooms/apartments/4.jpg.jpeg',
+            '/images/rooms/apartments/12.jpg.jpeg'
         ],
         guests: 5, bedrooms: 2, beds: 2, baths: 2,
         description: 'Spacious 2BHK apartment ideal for families, featuring modern furnishings, great panoramic views, and large kitchen spaces.',
@@ -157,11 +155,12 @@ export const LISTING_DATA = {
         rating: 4.96, reviews: 120,
         host: { name: 'Al Baith', years: 10, image: null, superhost: true },
         images: [
-            'https://images.unsplash.com/photo-1560448204-61dc36dc98c8?w=1200&q=80',
-            'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80',
-            'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80',
-            'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=800&q=80',
-            'https://images.unsplash.com/photo-1505693314120-0d443867891c?w=800&q=80'
+            '/images/rooms/apartments/14.jpg.jpeg',
+            '/images/rooms/apartments/15.jpg.jpeg',
+            '/images/rooms/apartments/3.jpg.jpeg',
+            '/images/rooms/apartments/5.jpg.jpeg',
+            '/images/rooms/apartments/25.jpg.jpeg',
+            '/images/rooms/apartments/4.jpg.jpeg'
         ],
         guests: 8, bedrooms: 3, beds: 3, baths: 3,
         description: 'Luxury 3BHK penthouse style apartment perfect for large groups or families seeking premium privacy with extraordinary city views.',
@@ -229,7 +228,6 @@ export default function ListingDetailPage() {
     const [activePicker, setActivePicker] = useState(null);
     const [showAllAmenities, setShowAllAmenities] = useState(false);
     const [isSaved, setIsSaved] = useState(false);
-    const [showFullDesc, setShowFullDesc] = useState(false);
     const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [activeImgIndex, setActiveImgIndex] = useState(0);
     const [errors, setErrors] = useState({});
@@ -350,8 +348,8 @@ export default function ListingDetailPage() {
     return (
         <>
             <div className="detail-page">
-                <button className="detail-back" onClick={() => navigate(-1)}>
-                    <ArrowLeft size={18} /> Back
+                <button className="detail-back" onClick={() => navigate(-1)} style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>
+                    <ArrowLeft size={18} />
                 </button>
 
                 <div className="detail-header-compact">
@@ -434,16 +432,9 @@ export default function ListingDetailPage() {
                         </div>
 
                         <div className="desc-section">
-                            <p className={`desc-text ${!showFullDesc ? 'collapsed' : ''}`}>
-                                {listing.description}
-                                {listing.description}
+                            <p className="desc-text">
                                 {listing.description}
                             </p>
-                            {!showFullDesc && (
-                                <button className="show-more-btn" onClick={() => setShowFullDesc(true)}>
-                                    Read more <ChevronRight size={14} className="ml-1" />
-                                </button>
-                            )}
                         </div>
 
                         <div className="amenities-section">

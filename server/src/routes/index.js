@@ -21,6 +21,7 @@ router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/listings', listingRoutes);
 router.use('/bookings', bookingRoutes);
+router.use('/book-room', bookingRoutes); // Alias for fallback in dev
 router.use('/reviews', reviewRoutes);
 router.use('/messages', messageRoutes);
 router.use('/wishlists', wishlistRoutes);

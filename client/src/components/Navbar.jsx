@@ -52,20 +52,32 @@ export default function Navbar() {
 
         <Link to="/#rooms" onClick={(e) => handleNavClick(e, 'rooms')} className="btn-book-now">Book Now</Link>
 
-        <button
-          className="nav-toggle"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Open menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+        {!mobileOpen && (
+          <button
+            className="nav-toggle"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        )}
       </nav>
 
       {/* Mobile Nav Overlay */}
       <div className={`mobile-nav-overlay ${mobileOpen ? 'open' : ''}`}>
-        <button className="mobile-nav-close" onClick={() => setMobileOpen(false)} aria-label="Close menu">✕</button>
+        <button 
+          className="mobile-nav-close" 
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setMobileOpen(false);
+          }} 
+          aria-label="Close menu"
+        >
+          ✕
+        </button>
         <Link to="/#rooms" onClick={(e) => handleNavClick(e, 'rooms')}>Rooms</Link>
         <Link to="/#reviews" onClick={(e) => handleNavClick(e, 'reviews')}>Reviews</Link>
         <Link to="/#rooms" onClick={(e) => handleNavClick(e, 'rooms')} style={{ color: 'var(--accent-gold)', fontSize: '1.2rem' }}>Book Now</Link>

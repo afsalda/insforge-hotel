@@ -2,6 +2,7 @@
     "name": "@staybnb/shared",
     "version": "1.0.0",
     "private": true,
+    "type": "module",
     "main": "index.js",
     "dependencies": {
         "zod": "^3.22.4"

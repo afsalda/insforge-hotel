@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Phone, Mail, Clock, ShieldCheck, AlertCircle, RefreshCcw, UserMinus, ExternalLink } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Phone, Mail, Clock, ShieldCheck, AlertCircle, RefreshCcw, UserMinus, ChevronLeft } from 'lucide-react';
 
 /* ─── Ornamental SVG Divider ─── */
 function OrnamentalDivider() {
@@ -84,20 +84,26 @@ export default function CancellationPolicy() {
 
     return (
         <div className="policy-page-wrapper" ref={mainRef}>
+
+            
             {/* Page Load Curtain */}
             <div className="page-curtain">
                 <span className="curtain-logo">AL BAITH</span>
             </div>
 
-            {/* ─── Hero Section ─── */}
-            <section className="policy-hero-alt">
+            {/* Policy Hero Section */}
+            <div className="policy-hero-alt">
                 <div className="hero-bg-overlay">
-                    <img
-                        src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=1600&q=80"
-                        alt="Policy background"
-                        loading="eager"
+                    <img 
+                        src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2000" 
+                        alt="Policy Background" 
                     />
                 </div>
+                
+                <button className="policy-back-btn" onClick={() => window.history.back()} aria-label="Go back">
+                    <ChevronLeft strokeWidth={4.5} size={32} />
+                </button>
+
                 <div className="hero-content">
                     <div className="hero-text" style={{ textAlign: 'center' }}>
                         <h1 className="hero-headline">Cancellation Policy</h1>
@@ -106,7 +112,7 @@ export default function CancellationPolicy() {
                         </p>
                     </div>
                 </div>
-            </section>
+            </div>
 
             <OrnamentalDivider />
 
@@ -253,6 +259,39 @@ export default function CancellationPolicy() {
                     z-index: 2;
                     width: 100%;
                     padding: 0 24px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .policy-hero-header {
+                    width: 100%;
+                    max-width: 1100px;
+                    margin-bottom: 40px;
+                    display: flex;
+                    justify-content: flex-start;
+                }
+
+                .policy-back-btn {
+                    position: fixed;
+                    top: 110px;
+                    left: 20px;
+                    z-index: 9999;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    background: transparent;
+                    border: none;
+                    color: var(--accent-gold) !important; /* Brand Accent Gold */
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    cursor: pointer;
+                    padding: 0;
+                    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+                }
+
+                .policy-back-btn:hover {
+                    transform: scale(1.15) translateX(-4px);
+                    opacity: 0.8;
                 }
                 
                 .hero-headline {
@@ -571,6 +610,15 @@ export default function CancellationPolicy() {
                         margin-bottom: 16px;
                         gap: 12px;
                     }
+                    .policy-hero-header {
+                        margin-bottom: 24px;
+                    }
+
+                    .policy-back-btn {
+                        top: 90px !important;
+                        left: 14px !important;
+                    }
+
                     .policy-terms-card p, .policy-list li, .box-text {
                         font-size: 0.95rem;
                         line-height: 1.5;

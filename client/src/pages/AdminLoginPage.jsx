@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ChevronLeft } from 'lucide-react';
 import { Hotel, Lock, User, Eye, EyeOff } from 'lucide-react';
 
 export default function AdminLoginPage() {
@@ -180,7 +181,13 @@ export default function AdminLoginPage() {
                 }
             `}</style>
 
-            <div className="login-card">
+            <div className="login-card" style={{ position: 'relative' }}>
+                <button 
+                    onClick={() => navigate('/')} 
+                    style={{ position: 'absolute', top: '-60px', left: '0', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', borderRadius: '50%', width: '44px', height: '44px', border: '1px solid rgba(0,0,0,0.1)', color: 'var(--bg-deep-green)', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}
+                >
+                    <Hotel size={24} />
+                </button>
                 <div className="login-header">
                     <div className="brand-logo">
                         <Hotel size={32} strokeWidth={2.5} />

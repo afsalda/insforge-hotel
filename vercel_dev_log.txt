@@ -1,0 +1,25 @@
+﻿node.exe : Vercel CLI 
+49.1.2
+At C:\Program 
+Files\nodejs\npx.ps1:29 
+char:3
++   & $NODE_EXE 
+$NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (V  
+  ercel CLI 49.1.2:Stri   
+ ng) [], RemoteExcepti    
+on
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+Retrieving projectΓÇª
+> Creating initial build
+'yarn' is not recognized 
+as an internal or 
+external command,
+operable program or batch 
+file.

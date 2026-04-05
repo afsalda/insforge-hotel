@@ -122,6 +122,13 @@ export default function AdminDashboardPage() {
 
     return (
         <div className="dashboard-container">
+            <button 
+                onClick={() => navigate('/')}
+                className="checkout-back-btn"
+                style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 100, background: 'white', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', border: 'none', cursor: 'pointer' }}
+            >
+                <ArrowLeft size={24} color="var(--bg-deep-green)" />
+            </button>
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (
                 <div
@@ -144,6 +151,11 @@ export default function AdminDashboardPage() {
                         <X size={24} />
                     </button>
                 </div>
+                <div style={{ padding: '0 1rem', marginBottom: '1.5rem' }}>
+                    <Link to="/" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', color: 'rgba(255,255,255,0.7)', textDecoration: 'none', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }}>
+                        <ArrowLeft size={16} />
+                    </Link>
+                </div>
                 <nav>
                     <div className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => { setActiveTab('dashboard'); setMobileMenuOpen(false); }}>
                         <LayoutDashboard size={20} />
@@ -162,9 +174,8 @@ export default function AdminDashboardPage() {
                         <span>Settings</span>
                     </div>
                     <div style={{ marginTop: 'auto' }}>
-                        <Link to="/" className="nav-link" style={{ marginTop: '20px' }}>
-                            <ArrowLeft size={18} />
-                            <span>Back to Home</span>
+                        <Link to="/" className="nav-link" style={{ marginTop: '20px', padding: '12px', justifyContent: 'center' }}>
+                            <ArrowLeft size={20} />
                         </Link>
                         <div className="nav-link nav-link-danger" onClick={handleLogout} style={{ marginTop: '4px' }}>
                             <LogOut size={18} />

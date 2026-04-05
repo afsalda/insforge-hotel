@@ -73,3 +73,67 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-gold-bright);
 }
+
+.btn-view-room-new {
+  width: 100%;
+  max-width: 240px;
+  height: 48px;
+  border: 1.5px solid var(--accent-gold);
+  border-radius: 24px;
+  background: transparent;
+  color: var(--accent-gold);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-view-room-new:hover {
+  background: var(--accent-gold);
+  color: #162118;
+}
+
+.room-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.room-amenities-icons {
+  display: flex;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .room-card {
+    width: 85% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .room-card .relative.w-full.h-\[240px\] {
+    height: 320px !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .room-card {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .room-card .relative.w-full.h-\[240px\] {
+    height: 240px !important;
+  }
+}

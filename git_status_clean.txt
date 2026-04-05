@@ -1,0 +1,32 @@
+﻿ ? ".agent/skills/skill master/ui_ux_skill"
+ M api/book-room.ts
+ D client/src/components/ui/circular-gallery.jsx
+ M client/src/lib/api.js
+ M client/src/pages/CheckoutPage.jsx
+ M client/vercel.json
+ M client/vite.config.js
+ M package-lock.json
+ M server/package.json
+ M server/src/config/index.js
+ M server/src/routes/index.js
+ M vercel.json
+?? ".agent/skills/skill master/antigravity skills/"
+?? .git-status.txt
+?? api/create-booking.ts
+?? api/utils/
+?? api/verify-payment.ts
+?? client/build_out.txt
+?? client/build_out_utf8.txt
+?? client/test_anon.mjs
+?? client/test_post.mjs
+?? client/test_post2.mjs
+?? client/test_sdk.mjs
+?? dev-api-server.mjs
+?? git_status.txt
+?? git_status_clean.txt
+?? git_status_utf8.txt
+?? overview.md
+?? test_post.mjs
+?? tsconfig.json
+?? vercel_dev_log.txt
+?? vercel_dev_log2.txt

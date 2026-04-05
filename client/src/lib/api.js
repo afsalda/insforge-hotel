@@ -71,7 +71,10 @@ export async function getAllBookings() {
         }
     }
     const res = await fetch(`/api/bookings`);
-    const json = await res.json();
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const text = await res.text();
+    if (!text) throw new Error('Empty response from server');
+    const json = JSON.parse(text);
     if (!json.success) throw new Error(json.error || 'Failed to fetch bookings');
     return json.data;
 }
@@ -86,8 +89,16 @@ export async function createBooking(bookingData) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(bookingData),
         });
-        const json = await res.json();
-        if (!res.ok || !json.success) throw new Error(json.error || 'Booking failed');
+        
+        if (!res.ok) {
+            throw new Error(`Server error: ${res.status}`);
+        }
+
+        const text = await res.text();
+        if (!text) throw new Error('Empty response from server');
+
+        const json = JSON.parse(text);
+        if (!json.success) throw new Error(json.error || 'Booking failed');
         return json.data;
     }
 
@@ -177,8 +188,16 @@ export async function createBooking(bookingData) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bookingData),
     });
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.error || 'Booking failed');
+
+    if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+    }
+
+    const text = await res.text();
+    if (!text) throw new Error('Empty response from server');
+
+    const json = JSON.parse(text);
+    if (!json.success) throw new Error(json.error || 'Booking failed');
     return json.data;
 }
 
@@ -233,8 +252,16 @@ export async function updateBooking(id, updates) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates),
     });
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.error || 'Update failed');
+
+    if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+    }
+
+    const text = await res.text();
+    if (!text) throw new Error('Empty response from server');
+
+    const json = JSON.parse(text);
+    if (!json.success) throw new Error(json.error || 'Update failed');
     return json.data;
 }
 
@@ -259,7 +286,15 @@ export async function deleteBooking(id) {
         }
     }
     const res = await fetch(`/api/bookings/${id}`, { method: 'DELETE' });
-    const json = await res.json();
-    if (!res.ok || !json.success) throw new Error(json.error || 'Delete failed');
+    
+    if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+    }
+
+    const text = await res.text();
+    if (!text) throw new Error('Empty response from server');
+
+    const json = JSON.parse(text);
+    if (!json.success) throw new Error(json.error || 'Delete failed');
     return true;
 }

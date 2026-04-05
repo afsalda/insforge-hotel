@@ -9,16 +9,22 @@
         "server"
     ],
     "scripts": {
-        "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+        "dev": "concurrently \"npm run dev:api\" \"npm run dev:client\"",
+        "dev:all": "concurrently \"npm run dev:api\" \"npm run dev:server\" \"npm run dev:client\"",
         "dev:client": "npm run dev --workspace=client",
         "dev:server": "npm run dev --workspace=server",
+        "dev:api": "tsx dev-api-server.mjs",
         "build": "npm run build --workspace=client",
         "seed": "npm run seed --workspace=server",
         "lint": "concurrently \"npm run lint --workspace=client\" \"npm run lint --workspace=server\""
     },
     "devDependencies": {
         "@vercel/node": "^5.6.9",
-        "concurrently": "^8.2.2"
+        "autoprefixer": "10.4.27",
+        "concurrently": "^8.2.2",
+        "postcss": "8.5.8",
+        "tailwindcss": "3.4.17",
+        "tsx": "^4.21.0"
     },
     "engines": {
         "node": ">=20.0.0"

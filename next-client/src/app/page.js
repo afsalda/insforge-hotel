@@ -157,66 +157,69 @@ export default function HomePage() {
               title: "Standard Room", price: "₹1,500 / night",
               desc: "A cozy retreat with all essentials — WiFi, AC, smart TV, and garden views. Perfect for solo travelers or couples.",
               amenities: ["WiFi", "AC", "Garden View"],
-              img: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80"
+              img: "/images/rooms/standard_1.jpg"
             },
             {
               title: "Deluxe Room", price: "₹1,800 / night", badge: "Popular",
               desc: "Spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.",
               amenities: ["King Bed", "City View", "Extra Bed"],
-              img: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80"
+              img: "/images/rooms/deluxe_1.jpg"
             },
             {
               title: "Suite Room", price: "Contact for pricing", badge: "Premium",
               desc: "Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of elegance.",
               amenities: ["Mini Kitchen", "Jacuzzi", "550 sq ft"],
-              img: "https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80"
+              img: "/images/rooms/suite_1.jpg"
             },
             {
               title: "Apartments", price: "Extended stay available", badge: "Featured",
               desc: "Fully furnished private apartments in 1BHK, 2BHK and 3BHK layouts — complete kitchen, living room, parking, and luxury amenities.",
               amenities: ["1BHK", "2BHK", "3BHK"],
-              img: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80",
+              img: "/images/rooms/apartments/15.jpg.jpeg",
               isApt: true
             }
           ].map((room, i) => (
             <div
               key={i}
-              className="room-card group relative bg-white rounded-[20px] overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.08)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.14)] transition-all duration-300 transform hover:scale-[1.03] flex flex-col"
+              className="room-card group relative bg-[var(--bg-cream)] rounded-[32px] p-4 overflow-hidden border border-[var(--accent-gold)]/15 shadow-[0_4px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_30px_rgba(201,169,110,0.1)] transition-all duration-500 hover:-translate-y-1.5 flex flex-col"
             >
               {room.badge && (
-                <div className="absolute top-[18px] right-[14px] z-10 bg-[#C9A96E] text-[#162118] text-[10px] sm:text-[11px] font-bold tracking-wider uppercase clip-octagon w-[68px] h-[68px] flex items-center justify-center text-center leading-tight animate-[badgePulse_3s_ease-in-out_infinite]">
+                <div className="absolute top-[28px] right-[24px] z-10 bg-[#C9A96E] text-[#162118] text-[10px] font-bold tracking-wider uppercase px-4 py-1.5 rounded-lg shadow-lg">
                   {room.badge}
                 </div>
               )}
 
-              <div className="relative w-full h-[260px] overflow-hidden clip-horseshoe">
-                <img src={room.img} alt={room.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110" />
+              <div className="relative w-full h-[240px] rounded-[24px] overflow-hidden">
+                <img src={room.img} alt={room.title} className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105" />
               </div>
 
-              <div className="p-6 flex-1 flex flex-col">
-                <h3 className="font-serif text-2xl text-[#2C2C2C] mb-1">{room.title}</h3>
-                <p className="text-sm font-semibold text-[#C9A96E] mb-3">{room.price}</p>
-                <p className="text-sm text-[#666666] mb-4 leading-relaxed flex-1">{room.desc}</p>
-
-                <div className="flex flex-wrap gap-2 mb-5">
-                  {room.amenities.map((am, j) => (
-                    <span key={j} className="text-[11px] font-semibold tracking-wide uppercase text-[#2C2C2C] bg-[#F5F0E8] border border-[#C9A96E]/30 rounded-full px-3 py-1">
-                      {am}
-                    </span>
-                  ))}
+              <div className="pt-6 pb-2 px-2 flex-1 flex flex-col">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="font-serif text-2xl text-[#2C2C2C]">{room.title}</h3>
+                  <p className="text-lg font-semibold text-[#C9A96E]">{room.price}</p>
                 </div>
 
-                {room.isApt ? (
-                  <a href="/apartments" className="mt-auto group/btn relative flex items-center justify-center gap-2 w-full py-3.5 text-xs font-bold tracking-widest uppercase text-[#C9A96E] border border-[#C9A96E] rounded-full transition-colors hover:text-[#162118] overflow-hidden">
-                    <span className="relative z-10 flex items-center gap-2">Explore Apartments <ChevronRight size={14} className="transition-transform group-hover/btn:translate-x-1" /></span>
-                    <div className="absolute inset-0 bg-[#C9A96E] opacity-0 group-hover/btn:opacity-100 transition-opacity z-0" />
-                  </a>
-                ) : (
-                  <button className="mt-auto group/btn relative flex items-center justify-center gap-2 w-full py-3.5 text-xs font-bold tracking-widest uppercase text-[#C9A96E] border border-[#C9A96E] rounded-full transition-colors hover:text-[#162118] overflow-hidden">
-                    <span className="relative z-10">View Room</span>
-                    <div className="absolute inset-0 bg-[#C9A96E] opacity-0 group-hover/btn:opacity-100 transition-opacity z-0" />
-                  </button>
-                )}
+                <div className="flex justify-between items-center mb-8">
+                  <div className="flex gap-3 text-[#C9A96E]/80">
+                    {/* Simplified Amenities Icons mapped from data or default set */}
+                    <div className="w-5 h-5 bg-[#C9A96E]/10 rounded flex items-center justify-center p-1"><div className="w-full h-full bg-[#C9A96E] rounded-full" /></div>
+                    <div className="w-5 h-5 bg-[#C9A96E]/10 rounded flex items-center justify-center p-1"><div className="w-full h-full bg-[#C9A96E] rounded-full" /></div>
+                    <div className="w-5 h-5 bg-[#C9A96E]/10 rounded flex items-center justify-center p-1"><div className="w-full h-full bg-[#C9A96E] rounded-full" /></div>
+                  </div>
+                  <p className="text-[13px] font-medium text-[#94A3B8]">Capacity: Up to 2 Guests</p>
+                </div>
+
+                <div className="mt-auto flex justify-center">
+                  {room.isApt ? (
+                    <a href="/apartments" className="btn-view-room-new">
+                      EXPLORE APARTMENTS →
+                    </a>
+                  ) : (
+                    <button className="btn-view-room-new">
+                      VIEW ROOM →
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           ))}

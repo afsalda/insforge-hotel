@@ -2,7 +2,45 @@ import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@insforge/sdk';
 import { useNavigate } from 'react-router-dom';
 import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Square, Car, Sofa } from 'lucide-react';
-import { Leaf, Droplets, Sun, Wind, CheckCircle2 } from 'lucide-react';
+import { Leaf, Droplets, Sun, Wind, CheckCircle2, Users } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ReviewAutoSlider } from '../components/ui/review-auto-slider';
+
+const wrap = (min, max, v) => {
+    const rangeSize = max - min;
+    return ((((v - min) % rangeSize) + rangeSize) % rangeSize) + min;
+};
+
+const swipePower = (offset, velocity) => {
+    return Math.abs(offset) * velocity;
+};
+
+const TESTIMONIALS = [
+    {
+        name: 'Priya Menon',
+        location: 'Bangalore, India',
+        rating: 5,
+        text: 'Absolutely stunning stay! The suite room exceeded all our expectations. The jacuzzi with city views was pure magic. Staff was incredibly attentive and warm.',
+        avatar: 'PM',
+        date: 'February 2026'
+    },
+    {
+        name: 'Ahmed Al-Rashid',
+        location: 'Dubai, UAE',
+        rating: 5,
+        text: 'Al Baith reminds me of the finest Arabian hospitality. The attention to detail, the elegant décor, and the warmth of the hosts made this a memorable experience.',
+        avatar: 'AR',
+        date: 'January 2026'
+    },
+    {
+        name: 'Sarah Johnson',
+        location: 'London, UK',
+        rating: 5,
+        text: 'We booked the 2BHK apartment for a family vacation. Spacious, clean, and beautifully furnished. The kids loved it! Best value for money in Kochi.',
+        avatar: 'SJ',
+        date: 'March 2026'
+    }
+];
 
 /* ─── InsForge Client ─── */
 const isProduction = import.meta.env.PROD;
@@ -74,10 +112,10 @@ function AnimatedCheckmark() {
 
 
 const ROOM_DATA = {
-    standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift'], extraBedAvailable: false, img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80' },
-    deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600&q=80' },
-    suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=600&q=80' },
-    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80' }
+    standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift'], extraBedAvailable: false, img: '/images/rooms/standard_1.jpg' },
+    deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/rooms/deluxe_1.jpg' },
+    suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/rooms/suite_1.jpg' },
+    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/rooms/apartments/15.jpg.jpeg' }
 };
 
 const AMENITY_ICONS = {
@@ -197,43 +235,32 @@ export default function HomePage() {
         return () => observer.disconnect();
     }, []);
 
-    const [activeRoomIndex, setActiveRoomIndex] = useState(0);
-    const [activeTestimonialIndex, setActiveTestimonialIndex] = useState(0);
+    // ── Resizing Logic (Debounced) ──
+    useEffect(() => {
+        let timeoutId;
+        const handleResize = () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                // This will trigger a re-render if we really need it,
+                // but we'll primarily use CSS for the primary layout shift.
+                window.dispatchEvent(new Event('resize-debounced'));
+            }, 200);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
-    const roomsRef = useRef(null);
-    const testimonialsRef = useRef(null);
+    const [[roomPage, roomDirection], setRoomPage] = useState([0, 0]);
+    const numRooms = Object.keys(ROOM_DATA).length;
+    const activeRoomIndex = wrap(0, numRooms, roomPage);
 
-    const scrollToRoom = (index) => {
-        if (!roomsRef.current) return;
-        const itemWidth = roomsRef.current.scrollWidth / Object.keys(ROOM_DATA).length;
-        roomsRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
-        setActiveRoomIndex(index);
+    const paginateRoom = (newDirection) => {
+        setRoomPage([roomPage + newDirection, newDirection]);
     };
 
-    const scrollToTestimonial = (index) => {
-        if (!testimonialsRef.current) return;
-        const itemWidth = testimonialsRef.current.scrollWidth / 3;
-        testimonialsRef.current.scrollTo({ left: index * itemWidth, behavior: 'smooth' });
-        setActiveTestimonialIndex(index);
-    };
 
-    const handleRoomsScroll = (e) => {
-        if (window.innerWidth > 768) return;
-        const { scrollLeft, scrollWidth } = e.target;
-        const totalItems = Object.keys(ROOM_DATA).length;
-        const itemWidth = scrollWidth / totalItems;
-        const index = Math.round(scrollLeft / itemWidth);
-        if (index !== activeRoomIndex) setActiveRoomIndex(index);
-    };
 
-    const handleTestimonialsScroll = (e) => {
-        if (window.innerWidth > 768) return;
-        const { scrollLeft, scrollWidth } = e.target;
-        const totalItems = 3; // Static number of testimonials
-        const itemWidth = scrollWidth / totalItems;
-        const index = Math.round(scrollLeft / itemWidth);
-        if (index !== activeTestimonialIndex) setActiveTestimonialIndex(index);
-    };
+
 
     return (
         <div ref={mainRef}>
@@ -249,8 +276,15 @@ export default function HomePage() {
                 <div className="hero-sticky-container">
                     <div className="hero-bg">
                         <img
-                            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80"
-                            alt="Luxury hotel lobby with lush botanical interior"
+                            src="/images/hero_bg.png"
+                            className="hero-desktop-img"
+                            alt="Al Baith Rest House - Luxury Rooms and Apartments"
+                            loading="eager" decoding="async"
+                        />
+                        <img
+                            src="/images/hero_mobile_actual.png"
+                            className="hero-mobile-img"
+                            alt="Al Baith Rest House - Luxury Rooms and Apartments"
                             loading="eager" decoding="async"
                         />
                     </div>
@@ -294,173 +328,145 @@ export default function HomePage() {
                     </p>
                 </div>
 
-                <div className="rooms-grid-wrapper">
-                    <div
-                        ref={roomsRef}
-                        className="rooms-grid-layout"
-                        onScroll={handleRoomsScroll}
-                    >
-                        {Object.values(ROOM_DATA).map((room, idx) => (
-                            <div className="room-card-anim-wrapper room-reveal" style={{ transitionDelay: `${300 + (idx * 100)}ms` }} key={room.id}>
-                                <div className={`room-card float-anim delay-${idx}`}>
-                                    <div className="room-card-image-wrapper">
-                                        <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
-                                    </div>
-                                    <div className="room-card-content">
-                                        <div className="room-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '12px', minHeight: '50px' }}>
-                                            <h3 className="room-card-title" style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', color: 'var(--text-charcoal)', margin: 0, fontWeight: 500 }}>{room.name}</h3>
-                                            <span className="room-card-price" style={{ fontSize: '1.1rem', color: 'var(--accent-gold)', fontWeight: 600, whiteSpace: 'nowrap' }}>{room.price}</span>
-                                        </div>
-                                        <p className="room-card-desc" style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '20px', lineHeight: 1.6, flexGrow: 1 }}>{room.desc}</p>
+                <div className="rooms-content-container">
+                    {/* MOBILE VERSION: Stacked 3D Carousel (Visible only on <769px) */}
+                    <div className="mobile-rooms-only">
+                        <div className="rooms-grid-wrapper room-reveal revealed-mobile" style={{ transitionDelay: '300ms' }}>
+                            {Object.values(ROOM_DATA).map((room, idx) => {
+                                let offset = idx - activeRoomIndex;
+                                const halfLength = numRooms / 2;
+                                if (offset > halfLength) offset -= numRooms;
+                                if (offset < -halfLength) offset += numRooms;
 
-                                        <div className="room-amenities-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px', marginBottom: '24px' }}>
-                                            {room.amenities.slice(0, 4).map((amenity, amIdx) => {
-                                                const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
-                                                return (
-                                                    <div key={amIdx} className="amenity-chip" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '0.8rem', color: 'var(--text-charcoal)', fontWeight: 500 }}>
-                                                        <IconComponent size={14} className="amenity-icon-anim" />
-                                                        {amenity}
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
+                                const isActive = offset === 0;
 
-                                        <div className="room-card-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '16px', borderTop: '1px solid rgba(0,0,0,0.05)', marginTop: 'auto' }}>
-                                            <div className="room-guests" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
-                                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                                Up to {room.maxGuests} Guests
+                                return (
+                                    <motion.div
+                                        key={room.id}
+                                        className="room-card-anim-wrapper"
+                                        animate={{
+                                            opacity: Math.abs(offset) > 1 ? 0 : 1,
+                                            scale: isActive ? 1 : 0.85,
+                                            y: isActive ? 0 : 35,
+                                            x: isActive ? 0 : (offset > 0 ? 55 : -55),
+                                            zIndex: isActive ? 10 : (5 - Math.abs(offset)),
+                                            pointerEvents: isActive ? 'auto' : 'none'
+                                        }}
+                                        transition={{
+                                            type: "spring", stiffness: 300, damping: 25
+                                        }}
+                                        drag="x"
+                                        dragConstraints={{ left: 0, right: 0 }}
+                                        dragElastic={1}
+                                        onDragEnd={(e, { offset: dragOffset, velocity }) => {
+                                            const swipe = swipePower(dragOffset.x, velocity.x);
+                                            if (swipe < -10000 || dragOffset.x < -100) {
+                                                paginateRoom(1);
+                                            } else if (swipe > 10000 || dragOffset.x > 100) {
+                                                paginateRoom(-1);
+                                            }
+                                        }}
+                                        style={{ position: 'absolute', touchAction: 'none' }}
+                                    >
+                                        <div className={`room-card float-anim delay-${idx}`}>
+                                            <div className="room-card-image-wrapper">
+                                                <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
                                             </div>
-                                            <button className="btn-view-room" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
-                                                <span>View Room</span>
-                                                <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" strokeWidth="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                                            </button>
+                                            <div className="room-card-content">
+                                                <div className="room-card-header">
+                                                    <h3 className="room-card-title">{room.name}</h3>
+                                                    <span className="room-card-price">{room.price}</span>
+                                                </div>
+                                                
+                                                <div className="room-info-row">
+                                                    <div className="room-amenities-icons">
+                                                        {room.amenities.slice(0, 4).map((amenity, amIdx) => {
+                                                            const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
+                                                            return <IconComponent key={amIdx} size={18} className="amenity-icon" />
+                                                        })}
+                                                    </div>
+                                                    <div className="room-capacity-label">
+                                                        Capacity: Up to {room.maxGuests} Guests
+                                                    </div>
+                                                </div>
+
+                                                <div className="room-card-action">
+                                                    <button className="btn-view-room-new" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
+                                                        VIEW ROOM →
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </motion.div>
+                                );
+                            })}
+                        </div>
+                    </div>
+
+                    {/* DESKTOP VERSION: Informational Grid (Visible only on >768px) */}
+                    <div className="desktop-rooms-only">
+                        <div className="rooms-grid-wrapper room-reveal" style={{ transitionDelay: '300ms' }}>
+                            <div className="rooms-grid-layout">
+                                {Object.values(ROOM_DATA).map((room, idx) => (
+                                    <div className="desktop-room-card-wrapper" key={room.id}>
+                                        <div className={`room-card float-anim delay-${idx}`}>
+                                            <div className="room-card-image-wrapper">
+                                                <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
+                                            </div>
+                                            <div className="room-card-content">
+                                                <div className="room-card-header">
+                                                    <h3 className="room-card-title">{room.name}</h3>
+                                                    <span className="room-card-price">{room.price}</span>
+                                                </div>
+
+                                                <div className="room-description">
+                                                    {room.desc}
+                                                </div>
+                                                
+                                                <div className="room-key-amenities">
+                                                    {room.amenities.slice(0, 4).map((amenity, amIdx) => {
+                                                        const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
+                                                        return (
+                                                            <div key={amIdx} className="key-amenity">
+                                                                <IconComponent size={18} />
+                                                                <span>{amenity}</span>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+
+                                                <div className="room-guests-label">
+                                                    <Users size={18} />
+                                                    <span>Up to {room.maxGuests} Guests</span>
+                                                </div>
+
+                                                <div className="room-card-action">
+                                                    <button className="btn-view-room-new" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
+                                                        VIEW ROOM →
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
-                        ))}
-                    </div>
-                    <div className="rooms-scroll-dots hide-desktop">
-                        {Object.values(ROOM_DATA).map((_, idx) => (
-                            <button
-                                key={idx}
-                                className={`scroll-dot ${activeRoomIndex === idx ? 'active' : ''}`}
-                                onClick={() => scrollToRoom(idx)}
-                                aria-label={`Go to room ${idx + 1}`}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-            </section>
-
-            {/* ══════════════════════════════════════════
-          3. TESTIMONIALS SECTION
-          ══════════════════════════════════════════ */}
-            <section className="testimonials-section" id="reviews" style={{ opacity: 1 }}>
-                <div className="section-header">
-                    <h2 className="section-title room-reveal" style={{ transitionDelay: '150ms' }}>The Words of Our Guests</h2>
-                    <p className="section-subtitle room-reveal" style={{ transitionDelay: '300ms' }}>Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
-                </div>
-
-                <div className="room-reveal" style={{ transitionDelay: '450ms' }}>
-                    <div className="testimonials-scroll-container">
-                        <div className="testimonials-infinite-track">
-                            {[
-                                {
-                                    name: "Anjali Menon",
-                                    location: "Kochi, Kerala",
-                                    image: "https://images.unsplash.com/photo-1594744803329-a584af1cae21?w=100&q=80",
-                                    quote: "An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!"
-                                },
-                                {
-                                    name: "Rahul Krishnan",
-                                    location: "Trivandrum, Kerala",
-                                    image: "https://images.unsplash.com/photo-1618331835717-801e976710b2?w=100&q=80",
-                                    quote: "The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon."
-                                },
-                                {
-                                    name: "Meera Nair",
-                                    location: "Wayanad, Kerala",
-                                    image: "https://images.unsplash.com/photo-1610030469983-98e6f24965ce?w=100&q=80",
-                                    quote: "I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!"
-                                },
-                                {
-                                    name: "Aditya Varma",
-                                    location: "Bangalore, India",
-                                    image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&q=80",
-                                    quote: "A serene oasis perfectly placed. The blend of biophilic design and classic hospitality made our anniversary trip unforgettable. The staff anticipated our every need."
-                                },
-                                {
-                                    name: "Priya Lakshmi",
-                                    location: "Calicut, Kerala",
-                                    image: "https://images.unsplash.com/photo-1649123245135-4db6ec9337ec?w=100&q=80",
-                                    quote: "Exceptional dining and luxurious amenities. The private cabanas and the personalized service created a boutique experience that we simply cannot stop raving about to our friends."
-                                },
-                                {
-                                    name: "Siddharth Das",
-                                    location: "Mumbai, India",
-                                    image: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=100&q=80",
-                                    quote: "True Arabian hospitality at its finest. The majestic architecture is matched only by the warmth of the staff. A remarkable stay that truly felt like a home away from home."
-                                }
-                            ].concat([
-                                // Duplicate array for seamless infinite looping
-                                {
-                                    name: "Anjali Menon",
-                                    location: "Kochi, Kerala",
-                                    image: "https://images.unsplash.com/photo-1594744803329-a584af1cae21?w=100&q=80",
-                                    quote: "An absolutely magical experience. The interior design merges Arabian artistry with incredible comfort. Waking up to the garden views each morning was pure bliss. I've never felt so pampered!"
-                                },
-                                {
-                                    name: "Rahul Krishnan",
-                                    location: "Trivandrum, Kerala",
-                                    image: "https://images.unsplash.com/photo-1618331835717-801e976710b2?w=100&q=80",
-                                    quote: "The attention to detail is extraordinary. From the geometric tile work to the fragrant lobbies — every corner is a masterpiece. The spa treatment was a highlight of our honeymoon."
-                                },
-                                {
-                                    name: "Meera Nair",
-                                    location: "Wayanad, Kerala",
-                                    image: "https://images.unsplash.com/photo-1610030469983-98e6f24965ce?w=100&q=80",
-                                    quote: "I travel frequently and Al Baith sets a new standard. The executive suite is unparalleled — the service, the cuisine, absolutely everything exceeded my expectations. Will return!"
-                                },
-                                {
-                                    name: "Aditya Varma",
-                                    location: "Bangalore, India",
-                                    image: "https://images.unsplash.com/photo-1633332755192-727a05c4013d?w=100&q=80",
-                                    quote: "A serene oasis perfectly placed. The blend of biophilic design and classic hospitality made our anniversary trip unforgettable. The staff anticipated our every need."
-                                },
-                                {
-                                    name: "Priya Lakshmi",
-                                    location: "Calicut, Kerala",
-                                    image: "https://images.unsplash.com/photo-1649123245135-4db6ec9337ec?w=100&q=80",
-                                    quote: "Exceptional dining and luxurious amenities. The private cabanas and the personalized service created a boutique experience that we simply cannot stop raving about to our friends."
-                                },
-                                {
-                                    name: "Siddharth Das",
-                                    location: "Mumbai, India",
-                                    image: "https://images.unsplash.com/photo-1628157588553-5eeea00af15c?w=100&q=80",
-                                    quote: "True Arabian hospitality at its finest. The majestic architecture is matched only by the warmth of the staff. A remarkable stay that truly felt like a home away from home."
-                                }
-                            ]).map((review, idx) => (
-                                <div className="testimonial-card" key={idx}>
-                                    <div className="testimonial-quote">«</div>
-                                    <blockquote>{review.quote}</blockquote>
-                                    <div className="testimonial-stars"><StarIcon /><StarIcon /><StarIcon /><StarIcon /><StarIcon /></div>
-                                    <div className="testimonial-author">
-                                        <div className="testimonial-avatar">
-                                            <img src={review.image} alt={review.name} loading="lazy" decoding="async" />
-                                        </div>
-                                        <div className="testimonial-author-info">
-                                            <h5>{review.name}</h5>
-                                            <span>{review.location}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 </div>
+
             </section>
+
+            <section className="testimonials-section" id="reviews" style={{ paddingBottom: '80px', overflow: 'hidden' }}>
+                <div className="section-header">
+                    <h2 className="section-title">The Words of Our Guests</h2>
+                    <p className="section-subtitle">Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
+                </div>
+
+                <div className="review-slider-wrapper">
+                    <ReviewAutoSlider />
+                </div>
+            </section>
+
         </div >
     );
 }

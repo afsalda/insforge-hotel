@@ -1,21 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ChevronLeft, CheckCircle2, Lock, Loader2, Star, CheckCircle } from 'lucide-react';
+import { ChevronLeft, CheckCircle2, Lock, Loader2, Star, Shield, MessageCircle } from 'lucide-react';
 import { getListingDetail } from './ListingDetailPage';
-import { createBooking } from '../lib/api';
+
+/**
+ * CheckoutPage — Razorpay 30% Deposit Flow
+ *
+ * Flow:
+ * 1. Guest fills in details (name, email, phone)
+ * 2. Clicks "Pay 30% Deposit" → Razorpay checkout opens
+ * 3. On success → POST /api/verify-payment → WhatsApp sent to customer + owner
+ * 4. Success screen shown
+ */
+
+// Load Razorpay SDK dynamically
+function loadRazorpayScript() {
+    return new Promise((resolve) => {
+        if (window.Razorpay) {
+            resolve(true);
+            return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+    });
+}
 
 export default function CheckoutPage() {
     const { id } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
 
-    // The data passed from previous route via "navigate('/book/id', { state: {...} })"
     const { checkIn, checkOut, guestsCount, nights, total, subtotal, listing: stateListing } = location.state || {};
-
-    // We fetch the listing manually if not in state
     const listing = stateListing || getListingDetail(id);
 
-    // If user loaded the page without dates, redirect back
     useEffect(() => {
         if (!checkIn || !checkOut) {
             navigate(`/room/${id}`);
@@ -23,25 +43,9 @@ export default function CheckoutPage() {
         window.scrollTo(0, 0);
     }, [checkIn, checkOut, id, navigate]);
 
-    // Flow steps: 1: Details, 2: Payment, 3: Review, 4: Success
+    // Steps: 1 = Details, 2 = Review & Pay, 3 = Success
     const [step, setStep] = useState(1);
 
-    const formatDateRange = (start, end) => {
-        if (!start || !end) return '';
-        try {
-            const options = { month: 'short', day: 'numeric', year: 'numeric' };
-            const startDate = new Date(start);
-            const endDate = new Date(end);
-
-            // If same month and year, we can optionally simplify it, 
-            // but standard "MMM D, YYYY – MMM D, YYYY" is what's requested
-            return `${startDate.toLocaleDateString('en-US', options)} – ${endDate.toLocaleDateString('en-US', options)}`;
-        } catch (e) {
-            return `${start} – ${end}`;
-        }
-    };
-
-    // Step 1 Form
     const [guestName, setGuestName] = useState('');
     const [guestEmail, setGuestEmail] = useState('');
     const [guestPhone, setGuestPhone] = useState('');
@@ -49,21 +53,34 @@ export default function CheckoutPage() {
     const [bookingStatus, setBookingStatus] = useState('idle');
     const [confirmedBooking, setConfirmedBooking] = useState(null);
 
-    // Play premium success sound effect when booking is confirmed
+    const depositAmount = Math.round(total * 0.3);
+    const balanceAmount = total - depositAmount;
+
+    // Play success sound
     useEffect(() => {
-        if (step === 4 && bookingStatus === 'success') {
+        if (step === 3 && bookingStatus === 'success') {
             const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magical-win-confirmation-2033.mp3');
             audio.volume = 0.5;
-            audio.play().catch(err => console.log('Audio playback prevented by browser:', err));
+            audio.play().catch(() => {});
         }
     }, [step, bookingStatus]);
+
+    const formatDateRange = (start, end) => {
+        if (!start || !end) return '';
+        try {
+            const options = { month: 'short', day: 'numeric', year: 'numeric' };
+            return `${new Date(start).toLocaleDateString('en-US', options)} – ${new Date(end).toLocaleDateString('en-US', options)}`;
+        } catch {
+            return `${start} – ${end}`;
+        }
+    };
 
     const validateField = (name, value) => {
         let error = '';
         if (!value.trim()) {
             error = 'This field is required.';
-        } else if (name === 'email' && !value.toLowerCase().endsWith('@gmail.com')) {
-            error = 'Please enter a valid Gmail address (example@gmail.com).';
+        } else if (name === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+            error = 'Please enter a valid email address.';
         } else if (name === 'phone' && !/^\d{10}$/.test(value.replace(/\D/g, ''))) {
             error = 'Please enter a valid 10-digit phone number.';
         }
@@ -75,53 +92,130 @@ export default function CheckoutPage() {
         const nameError = validateField('name', guestName);
         const emailError = validateField('email', guestEmail);
         const phoneError = validateField('phone', guestPhone);
-
-        if (nameError || emailError || phoneError) {
-            return;
-        }
-
+        if (nameError || emailError || phoneError) return;
         setStep(2);
     };
 
-    const handleConfirmPayment = () => {
-        setStep(3);
-    };
-
-    const handleAddPaymentAndBook = async () => {
+    // ─── Razorpay Payment Flow ───
+    const handlePayDeposit = async () => {
         setBookingStatus('loading');
         setErrors(prev => ({ ...prev, api: '' }));
 
         try {
-            const result = await createBooking({
-                guestName: guestName.trim(),
-                guestEmail: guestEmail.trim(),
-                guestPhone: guestPhone.trim(),
-                roomId: `${id}`,
-                checkInDate: checkIn,
-                checkOutDate: checkOut,
-                listingTitle: listing.title,
-                guestsCount: guestsCount || 1,
-                totalPrice: total || 0,
-                status: 'pending',
-                totalNights: nights || 1,
-                extraBed: false,
-                specialRequests: ''
+            // Step A: Load Razorpay SDK
+            const loaded = await loadRazorpayScript();
+            if (!loaded) {
+                throw new Error('Failed to load payment gateway. Please check your internet connection.');
+            }
+
+            // Step B: Create order on backend
+            const orderRes = await fetch('/api/create-booking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    guestName: guestName.trim(),
+                    guestEmail: guestEmail.trim(),
+                    guestPhone: guestPhone.trim(),
+                    roomId: id,
+                    checkInDate: checkIn,
+                    checkOutDate: checkOut,
+                    listingTitle: listing.title,
+                    guestsCount: guestsCount || 1,
+                    totalPrice: total || 0,
+                    totalNights: nights || 1,
+                }),
             });
 
-            setConfirmedBooking(result);
-            setBookingStatus('success');
-            setStep(4);
+            if (!orderRes.ok) {
+                const errData = await orderRes.json().catch(() => ({}));
+                throw new Error(errData.error || `Server error: ${orderRes.status}`);
+            }
+
+            const { data: orderData } = await orderRes.json();
+
+            // Step C: Open Razorpay checkout
+            const options = {
+                key: orderData.key || import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: orderData.amount,
+                currency: orderData.currency,
+                name: 'Al Baith Rest House',
+                description: `30% Deposit — ${listing.title}`,
+                order_id: orderData.orderId,
+                prefill: {
+                    name: guestName.trim(),
+                    email: guestEmail.trim(),
+                    contact: guestPhone.trim(),
+                },
+                theme: {
+                    color: '#1a5c3a',
+                },
+                handler: async function (response) {
+                    // Step D: Verify payment on backend
+                    try {
+                        const verifyRes = await fetch('/api/verify-payment', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                                bookingDetails: {
+                                    bookingNumber: orderData.bookingNumber,
+                                    guestName: guestName.trim(),
+                                    guestEmail: guestEmail.trim(),
+                                    guestPhone: guestPhone.trim(),
+                                    listingTitle: listing.title,
+                                    checkInDate: checkIn,
+                                    checkOutDate: checkOut,
+                                    totalPrice: total,
+                                    depositAmount: orderData.depositAmount,
+                                    guestsCount: guestsCount || 1,
+                                    totalNights: nights || 1,
+                                },
+                            }),
+                        });
+
+                        if (!verifyRes.ok) {
+                            const errData = await verifyRes.json().catch(() => ({}));
+                            throw new Error(errData.error || 'Payment verification failed');
+                        }
+
+                        const { data: verifiedData } = await verifyRes.json();
+                        setConfirmedBooking(verifiedData);
+                        setBookingStatus('success');
+                        setStep(3);
+                    } catch (verifyErr) {
+                        setBookingStatus('error');
+                        setErrors(prev => ({
+                            ...prev,
+                            api: `Payment received but verification failed. Your Ref: ${orderData.bookingNumber}. Please contact us with this reference.`,
+                        }));
+                    }
+                },
+                modal: {
+                    ondismiss: function () {
+                        setBookingStatus('idle');
+                    },
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.on('payment.failed', function (response) {
+                setBookingStatus('error');
+                setErrors(prev => ({
+                    ...prev,
+                    api: response.error?.description || 'Payment failed. Please try again.',
+                }));
+            });
+            rzp.open();
         } catch (err) {
             setBookingStatus('error');
-            // ── Meaningful Error Messages (Troubleshooting Skill Best Practice #3) ──
             let userMessage = 'Something went wrong. Please try again.';
             const raw = (err.message || '').toLowerCase();
-            if (raw.includes('failed to fetch') || raw.includes('networkerror') || raw.includes('fetch')) {
-                userMessage = 'Unable to connect to our servers. Please check your internet connection and try again.';
-            } else if (raw.includes('no backend services') || raw.includes('503') || raw.includes('unavailable')) {
-                userMessage = 'Our booking service is temporarily unavailable. Please try again in a few moments.';
-            } else if (raw.includes('400') || raw.includes('bad request')) {
-                userMessage = 'There was an issue with your booking details. Please review and try again.';
+            if (raw.includes('failed to fetch') || raw.includes('networkerror') || raw.includes('network')) {
+                userMessage = 'Unable to connect to our servers. Please check your internet connection.';
+            } else if (raw.includes('503') || raw.includes('unavailable')) {
+                userMessage = 'Our booking service is temporarily unavailable. Please try again shortly.';
             } else if (err.message) {
                 userMessage = err.message;
             }
@@ -129,9 +223,10 @@ export default function CheckoutPage() {
         }
     };
 
-    if (!checkIn || !checkOut) return null; // Avoid render crash while redirecting
+    if (!checkIn || !checkOut) return null;
 
-    if (step === 4 && bookingStatus === 'success') {
+    // ─── SUCCESS SCREEN ───
+    if (step === 3 && bookingStatus === 'success') {
         return (
             <div className="checkout-success-page">
                 <div className="checkout-success-container">
@@ -147,7 +242,7 @@ export default function CheckoutPage() {
 
                         <h2 className="success-title">Booking Confirmed!</h2>
                         <div className="success-booking-id">
-                            Ref: {confirmedBooking?.booking_number || confirmedBooking?.id?.split('-')[0].toUpperCase()}
+                            Ref: {confirmedBooking?.bookingNumber || confirmedBooking?.paymentId?.slice(0, 12)}
                         </div>
 
                         <div className="success-details-group">
@@ -158,12 +253,40 @@ export default function CheckoutPage() {
                                 <span>{checkOut}</span>
                                 <span className="summary-divider">·</span>
                                 <span>{guestsCount} guest{guestsCount > 1 ? 's' : ''}</span>
-                                <span className="summary-divider">·</span>
-                                <strong className="success-price">₹{total}</strong>
                             </div>
-                            <p className="success-confirmation-msg">
-                                Your reservation has been securely saved. A confirmation email has been sent to <strong className="success-email">{guestEmail}</strong>.
-                            </p>
+
+                            <div style={{
+                                background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
+                                borderRadius: '12px',
+                                padding: '16px',
+                                marginTop: '16px',
+                                border: '1px solid #bbf7d0'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                    <span style={{ color: '#166534', fontSize: '0.9rem' }}>Deposit Paid</span>
+                                    <strong style={{ color: '#166534' }}>₹{confirmedBooking?.depositAmount || depositAmount}</strong>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ color: '#166534', fontSize: '0.9rem' }}>Balance Due at Check-in</span>
+                                    <strong style={{ color: '#166534' }}>₹{(confirmedBooking?.totalPrice || total) - (confirmedBooking?.depositAmount || depositAmount)}</strong>
+                                </div>
+                            </div>
+
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                marginTop: '16px',
+                                padding: '12px',
+                                background: '#f0f9ff',
+                                borderRadius: '10px',
+                                border: '1px solid #bae6fd'
+                            }}>
+                                <MessageCircle size={18} color="#0284c7" />
+                                <p style={{ color: '#0369a1', fontSize: '0.85rem', margin: 0, lineHeight: 1.4 }}>
+                                    A WhatsApp confirmation has been sent to <strong>{guestPhone}</strong>
+                                </p>
+                            </div>
                         </div>
 
                         <div className="success-action-area">
@@ -180,6 +303,7 @@ export default function CheckoutPage() {
         );
     }
 
+    // ─── MAIN CHECKOUT UI ───
     return (
         <div className="checkout-main-wrapper">
             <div className="checkout-page-container">
@@ -191,10 +315,10 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="checkout-content-layout">
-                    {/* Left Column (Process Steps) */}
+                    {/* Left Column */}
                     <div className="checkout-steps-column">
 
-                        {/* STEP 1: LOGIN/DETAILS */}
+                        {/* STEP 1: DETAILS */}
                         <div className={`checkout-card-pro ${step === 1 ? 'active-step' : 'completed-step'}`}>
                             <div className="step-card-header">
                                 <h2 className="step-card-title">1. Your Details</h2>
@@ -220,7 +344,7 @@ export default function CheckoutPage() {
                                                 }}
                                                 onBlur={e => validateField('name', e.target.value)}
                                                 className={errors.name ? 'error' : ''}
-                                                placeholder="e.g. Muhammed Afsal"
+                                                placeholder="e.g. John Doe"
                                             />
                                             {errors.name && <span className="error-message">{errors.name}</span>}
                                         </div>
@@ -240,7 +364,7 @@ export default function CheckoutPage() {
                                             {errors.email && <span className="error-message">{errors.email}</span>}
                                         </div>
                                         <div className="input-group-pro full-width">
-                                            <label>Phone Number</label>
+                                            <label>Phone Number (WhatsApp)</label>
                                             <input
                                                 type="tel"
                                                 value={guestPhone}
@@ -253,10 +377,11 @@ export default function CheckoutPage() {
                                                 placeholder="9876543210"
                                             />
                                             {errors.phone && <span className="error-message">{errors.phone}</span>}
+                                            <span style={{ fontSize: '0.78rem', color: '#6b7280', marginTop: '4px', display: 'block' }}>
+                                                Booking confirmation will be sent via WhatsApp
+                                            </span>
                                         </div>
                                     </div>
-
-                                    {errors.api && <p className="error-message">{errors.api}</p>}
 
                                     <button onClick={handleConfirmDetails} className="btn-step-continue">
                                         Continue to Payment
@@ -264,58 +389,40 @@ export default function CheckoutPage() {
                                 </div>
                             ) : (
                                 <div className="step-content-collapsed">
-                                    <p className="collapsed-info-text">Confirmed as <strong>{guestEmail}</strong></p>
+                                    <p className="collapsed-info-text">
+                                        <strong>{guestName}</strong> · {guestEmail} · {guestPhone}
+                                    </p>
+                                    <button
+                                        onClick={() => setStep(1)}
+                                        style={{
+                                            background: 'none', border: 'none', color: '#1a5c3a',
+                                            cursor: 'pointer', fontSize: '0.85rem', textDecoration: 'underline',
+                                            padding: 0, marginTop: '4px'
+                                        }}
+                                    >
+                                        Edit
+                                    </button>
                                 </div>
                             )}
                         </div>
 
-                        {/* STEP 2: PAYMENT */}
-                        <div className={`checkout-card-pro ${step === 2 ? 'active-step' : step > 2 ? 'completed-step' : 'locked-step'}`}>
+                        {/* STEP 2: REVIEW & PAY */}
+                        <div className={`checkout-card-pro ${step === 2 ? 'active-step' : 'locked-step'}`}>
                             <div className="step-card-header">
-                                <h2 className="step-card-title">2. Payment Method</h2>
-                                {step === 2 && (
-                                    <button onClick={handleConfirmPayment} className="btn-step-action-sm">
-                                        Confirm
-                                    </button>
-                                )}
-                                {step > 2 && (
-                                    <div className="step-complete-badge">
-                                        <CheckCircle2 size={18} /> <span>Paid</span>
-                                    </div>
-                                )}
+                                <h2 className="step-card-title">2. Review & Pay Deposit</h2>
+                                {step < 2 && <Lock size={20} className="step-lock-icon" />}
                             </div>
 
                             {step === 2 && (
                                 <div className="step-content-expanded">
-                                    <div className="payment-gateway-info">
-                                        <div className="secure-badge">
-                                            <div className="pulse-dot"></div>
-                                            Secure Al-Baith Encrypted Gateway
-                                        </div>
-                                        <p className="payment-subtext">Click the button above to authorize payment for this reservation.</p>
-                                    </div>
-                                </div>
-                            )}
+                                    <p className="step-description">Review your booking and pay the 30% deposit to confirm.</p>
 
-                            {step > 2 && (
-                                <div className="step-content-collapsed">
-                                    <p className="collapsed-info-text">Securely processed via <strong>Encrypted Gateway</strong></p>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* STEP 3: REVIEW */}
-                        <div className={`checkout-card-pro ${step === 3 ? 'active-step' : 'locked-step'}`}>
-                            <div className="step-card-header">
-                                <h2 className="step-card-title">3. Final Review</h2>
-                                {step < 3 && <Lock size={20} className="step-lock-icon" />}
-                            </div>
-
-                            {step === 3 && (
-                                <div className="step-content-expanded">
-                                    <p className="step-description">Please double-check your arrival dates and guest information.</p>
-
+                                    {/* Booking Summary */}
                                     <div className="review-summary-box">
+                                        <div className="review-stat">
+                                            <span className="stat-label">Room</span>
+                                            <span className="stat-value">{listing.title}</span>
+                                        </div>
                                         <div className="review-stat">
                                             <span className="stat-label">Dates</span>
                                             <span className="stat-value">{formatDateRange(checkIn, checkOut)}</span>
@@ -328,12 +435,46 @@ export default function CheckoutPage() {
                                             <span className="stat-label">Guest</span>
                                             <span className="stat-value">{guestName}</span>
                                         </div>
-                                        <div className="review-stat">
-                                            <span className="stat-label">Total Amount</span>
-                                            <span className="stat-value highlight">₹{total}</span>
+                                    </div>
+
+                                    {/* Payment Breakdown */}
+                                    <div style={{
+                                        background: 'linear-gradient(135deg, #fefce8, #fef9c3)',
+                                        borderRadius: '12px',
+                                        padding: '16px',
+                                        marginBottom: '16px',
+                                        border: '1px solid #fde68a'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ color: '#713f12', fontSize: '0.9rem' }}>Total Booking Amount</span>
+                                            <span style={{ color: '#713f12', fontWeight: 600 }}>₹{total}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                            <span style={{ color: '#166534', fontSize: '0.9rem', fontWeight: 600 }}>
+                                                30% Deposit (Pay Now)
+                                            </span>
+                                            <strong style={{ color: '#166534', fontSize: '1.1rem' }}>₹{depositAmount}</strong>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <span style={{ color: '#713f12', fontSize: '0.85rem' }}>Balance at Check-in</span>
+                                            <span style={{ color: '#713f12', fontSize: '0.9rem' }}>₹{balanceAmount}</span>
                                         </div>
                                     </div>
 
+                                    {/* Secure Badge */}
+                                    <div style={{
+                                        display: 'flex', alignItems: 'center', gap: '8px',
+                                        marginBottom: '16px', padding: '10px 14px',
+                                        background: '#f0fdf4', borderRadius: '8px',
+                                        border: '1px solid #bbf7d0'
+                                    }}>
+                                        <Shield size={16} color="#16a34a" />
+                                        <span style={{ fontSize: '0.82rem', color: '#15803d' }}>
+                                            Secured by Razorpay — 256-bit encryption
+                                        </span>
+                                    </div>
+
+                                    {/* Error Display */}
                                     {errors.api && (
                                         <div style={{
                                             background: '#FEF2F2',
@@ -348,7 +489,7 @@ export default function CheckoutPage() {
                                             <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>⚠️</span>
                                             <div>
                                                 <p style={{ color: '#991B1B', fontSize: '0.9rem', fontWeight: 600, margin: '0 0 4px' }}>
-                                                    Booking Failed
+                                                    Payment Failed
                                                 </p>
                                                 <p style={{ color: '#B91C1C', fontSize: '0.85rem', margin: 0, lineHeight: 1.5 }}>
                                                     {errors.api}
@@ -358,26 +499,29 @@ export default function CheckoutPage() {
                                     )}
 
                                     <button
-                                        onClick={handleAddPaymentAndBook}
+                                        onClick={handlePayDeposit}
                                         className="btn-final-confirm"
                                         disabled={bookingStatus === 'loading'}
                                     >
                                         {bookingStatus === 'loading' ? (
-                                            <><Loader2 size={20} className="spin-icon" /> Reserving...</>
+                                            <><Loader2 size={20} className="spin-icon" /> Processing...</>
                                         ) : (
-                                            'Confirm and Reserve Now'
+                                            `Pay ₹${depositAmount} Deposit`
                                         )}
                                     </button>
+
                                     <p className="checkout-policy-text">
-                                        By confirming, you agree to our <span className="underline">Terms of Service</span>.
+                                        Remaining ₹{balanceAmount} is payable at check-in. By confirming, you agree to our{' '}
+                                        <span className="underline" onClick={() => navigate('/cancellation-policy')} style={{ cursor: 'pointer' }}>
+                                            Cancellation Policy
+                                        </span>.
                                     </p>
                                 </div>
                             )}
                         </div>
-
                     </div>
 
-                    {/* Right Column (Sidebar Summary) */}
+                    {/* Right Column (Sidebar) */}
                     <div className="checkout-sidebar-column">
                         <div className="sidebar-sticky-card">
                             <div className="sidebar-room-preview">
@@ -415,9 +559,23 @@ export default function CheckoutPage() {
                                 <span className="total-label">Total Amount</span>
                                 <span className="total-value">₹{total}</span>
                             </div>
+
+                            <div style={{
+                                borderTop: '1px solid #e5e7eb',
+                                paddingTop: '16px',
+                                marginTop: '8px'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                                    <span style={{ fontWeight: 600, color: '#166534' }}>Pay Now (30%)</span>
+                                    <span style={{ fontWeight: 700, color: '#166534', fontSize: '1.05rem' }}>₹{depositAmount}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>Due at Check-in</span>
+                                    <span style={{ fontSize: '0.85rem', color: '#6b7280' }}>₹{balanceAmount}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
