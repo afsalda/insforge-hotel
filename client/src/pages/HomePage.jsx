@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@insforge/sdk';
 import { useNavigate } from 'react-router-dom';
 import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Square, Car, Sofa } from 'lucide-react';
-import { Leaf, Droplets, Sun, Wind, CheckCircle2, Users } from 'lucide-react';
+import { Leaf, Droplets, Sun, Wind, CheckCircle2, Users, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ReviewAutoSlider } from '../components/ui/review-auto-slider';
 
@@ -452,6 +452,37 @@ export default function HomePage() {
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div className="view-all-rooms-container" style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '40px',
+                    width: '100%'
+                }}>
+                    <button 
+                        onClick={() => navigate('/rooms')}
+                        className="btn-view-all-rooms"
+                        style={{
+                            fontFamily: 'var(--font-body)',
+                            fontWeight: '600',
+                            fontSize: '0.9rem',
+                            letterSpacing: '0.05em',
+                            color: 'var(--accent-gold)',
+                            background: 'transparent',
+                            border: '1px solid var(--accent-gold)',
+                            padding: '12px 32px',
+                            borderRadius: '30px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            transition: 'all 0.3s ease',
+                            minHeight: '44px'
+                        }}
+                    >
+                        VIEW ALL ROOMS <ArrowRight size={18} />
+                    </button>
                 </div>
 
             </section>

@@ -124,9 +124,12 @@ server.listen(PORT, () => {
     console.log(`    POST /api/create-booking`);
     console.log(`    POST /api/verify-payment`);
     console.log(`    POST /api/book-room`);
+    console.log(`    POST /api/notify`);
     console.log(`\n  ENV loaded:`);
     console.log(`    RAZORPAY_KEY_ID: ${process.env.RAZORPAY_KEY_ID ? "✅ set" : "❌ missing"}`);
     console.log(`    RAZORPAY_KEY_SECRET: ${process.env.RAZORPAY_KEY_SECRET ? "✅ set" : "❌ missing"}`);
-    console.log(`    WHATSAPP_OWNER_PHONE: ${process.env.WHATSAPP_OWNER_PHONE ? "✅ set" : "❌ missing"}`);
+    console.log(`    WHATSAPP_TOKEN: ${process.env.WHATSAPP_TOKEN ? "✅ set" : "❌ missing"}`);
+    console.log(`    WHATSAPP_PHONE_NUMBER_ID: ${process.env.WHATSAPP_PHONE_NUMBER_ID ? "✅ set" : "❌ missing"}`);
+    console.log(`    OWNER_WHATSAPP: ${process.env.OWNER_WHATSAPP ? "✅ set" : "❌ missing"}`);
     console.log("");
 });

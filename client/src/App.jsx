@@ -9,6 +9,7 @@ import ListingDetailPage from './pages/ListingDetailPage';
 import CheckoutPage from './pages/CheckoutPage';
 import ContactPage from './pages/ContactPage';
 import CancellationPolicy from './pages/CancellationPolicy';
+import RoomsPage from './pages/RoomsPage';
 import './index.css';
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -99,6 +100,14 @@ function App() {
           <>
             <Navbar />
             <CancellationPolicy />
+            <Footer />
+          </>
+        } />
+
+        <Route path="/rooms" element={
+          <>
+            <Navbar />
+            <RoomsPage />
             <Footer />
           </>
         } />

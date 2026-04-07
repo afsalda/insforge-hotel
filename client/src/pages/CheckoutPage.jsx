@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, CheckCircle2, Lock, Loader2, Star, Shield, MessageCircle } from 'lucide-react';
 import { getListingDetail } from './ListingDetailPage';
+import BookingConfirmationModal from '../components/BookingConfirmationModal';
+import { sendBookingNotifications } from '../utils/notify';
 
 /**
  * CheckoutPage — Razorpay 30% Deposit Flow
@@ -56,14 +58,7 @@ export default function CheckoutPage() {
     const depositAmount = Math.round(total * 0.3);
     const balanceAmount = total - depositAmount;
 
-    // Play success sound
-    useEffect(() => {
-        if (step === 3 && bookingStatus === 'success') {
-            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-magical-win-confirmation-2033.mp3');
-            audio.volume = 0.5;
-            audio.play().catch(() => {});
-        }
-    }, [step, bookingStatus]);
+
 
     const formatDateRange = (start, end) => {
         if (!start || !end) return '';
@@ -184,6 +179,17 @@ export default function CheckoutPage() {
                         setConfirmedBooking(verifiedData);
                         setBookingStatus('success');
                         setStep(3);
+
+                        // Trigger WhatsApp notifications (non-blocking)
+                        sendBookingNotifications({
+                            customerName: guestName,
+                            customerPhone: "91" + guestPhone.replace(/\D/g, ''), // add country code and clean digits
+                            roomType: listing.title,
+                            checkIn: checkIn,
+                            checkOut: checkOut,
+                            totalAmount: total,
+                            bookingId: verifiedData.bookingNumber || verifiedData.paymentId || 'N/A',
+                        });
                     } catch (verifyErr) {
                         setBookingStatus('error');
                         setErrors(prev => ({
@@ -227,79 +233,23 @@ export default function CheckoutPage() {
 
     // ─── SUCCESS SCREEN ───
     if (step === 3 && bookingStatus === 'success') {
+        const bookingRef = confirmedBooking?.bookingNumber || confirmedBooking?.paymentId?.slice(0, 12) || 'ALB-PENDING';
         return (
-            <div className="checkout-success-page">
-                <div className="checkout-success-container">
-                    <div className="success-modal-animated checkout-success-card">
-                        <div className="icon-container-success">
-                            <div className="check-circle-wrapper">
-                                <svg className="check-svg" viewBox="0 0 24 24" fill="none" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-                                    <polyline points="22 4 12 14.01 9 11.01" />
-                                </svg>
-                            </div>
-                        </div>
-
-                        <h2 className="success-title">Booking Confirmed!</h2>
-                        <div className="success-booking-id">
-                            Ref: {confirmedBooking?.bookingNumber || confirmedBooking?.paymentId?.slice(0, 12)}
-                        </div>
-
-                        <div className="success-details-group">
-                            <p className="success-room-type">{listing.title}</p>
-                            <div className="success-booking-summary">
-                                <span>{checkIn}</span>
-                                <span className="summary-arrow">→</span>
-                                <span>{checkOut}</span>
-                                <span className="summary-divider">·</span>
-                                <span>{guestsCount} guest{guestsCount > 1 ? 's' : ''}</span>
-                            </div>
-
-                            <div style={{
-                                background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)',
-                                borderRadius: '12px',
-                                padding: '16px',
-                                marginTop: '16px',
-                                border: '1px solid #bbf7d0'
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                    <span style={{ color: '#166534', fontSize: '0.9rem' }}>Deposit Paid</span>
-                                    <strong style={{ color: '#166534' }}>₹{confirmedBooking?.depositAmount || depositAmount}</strong>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                    <span style={{ color: '#166534', fontSize: '0.9rem' }}>Balance Due at Check-in</span>
-                                    <strong style={{ color: '#166534' }}>₹{(confirmedBooking?.totalPrice || total) - (confirmedBooking?.depositAmount || depositAmount)}</strong>
-                                </div>
-                            </div>
-
-                            <div style={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '8px',
-                                marginTop: '16px',
-                                padding: '12px',
-                                background: '#f0f9ff',
-                                borderRadius: '10px',
-                                border: '1px solid #bae6fd'
-                            }}>
-                                <MessageCircle size={18} color="#0284c7" />
-                                <p style={{ color: '#0369a1', fontSize: '0.85rem', margin: 0, lineHeight: 1.4 }}>
-                                    A WhatsApp confirmation has been sent to <strong>{guestPhone}</strong>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="success-action-area">
-                            <button
-                                className="btn-success-return"
-                                onClick={() => navigate('/')}
-                            >
-                                Return Home
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BookingConfirmationModal
+                booking={{
+                  guestName: guestName,
+                  guests: guestsCount,
+                  ref: bookingRef,
+                  roomType: listing.title,
+                  checkIn: checkIn,
+                  checkOut: checkOut,
+                  nights: nights,
+                  depositPaid: confirmedBooking?.depositAmount || depositAmount,
+                  balanceDue: (confirmedBooking?.totalPrice || total) - (confirmedBooking?.depositAmount || depositAmount),
+                  whatsappNumber: guestPhone,
+                }}
+                onClose={() => navigate('/')}
+            />
         );
     }
 
