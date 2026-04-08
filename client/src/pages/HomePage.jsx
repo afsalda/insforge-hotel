@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@insforge/sdk';
 import { useNavigate } from 'react-router-dom';
-import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Square, Car, Sofa } from 'lucide-react';
+import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Square, Car, Sofa, Coffee } from 'lucide-react';
 import { Leaf, Droplets, Sun, Wind, CheckCircle2, Users, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ReviewAutoSlider } from '../components/ui/review-auto-slider';
@@ -112,17 +112,20 @@ function AnimatedCheckmark() {
 
 
 const ROOM_DATA = {
-    standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift'], extraBedAvailable: false, img: '/images/rooms/standard_1.jpg' },
-    deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/rooms/deluxe_1.jpg' },
-    suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['WiFi', 'AC', 'Smart TV', 'Heater', 'Power Backup', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/rooms/suite_1.jpg' },
-    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['WiFi', 'Kitchen', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/rooms/apartments/15.jpg.jpeg' }
+    standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift'], extraBedAvailable: false, img: '/images/rooms/standard_1.jpg' },
+    deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/rooms/deluxe_1.jpg' },
+    suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/rooms/suite_1.jpg' },
+    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['Free Wi-Fi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/rooms/apartments/15.jpg.jpeg' }
 };
 
 const AMENITY_ICONS = {
+    'Free Wi-Fi': Wifi,
     'WiFi': Wifi,
     'AC': Wind,
+    'Electric Kettle': Coffee,
     'Smart TV': Tv,
     'Heater': Thermometer,
+    'Power Backup 24/7': Sun,
     'Power Backup': Sun,
     'Lift': Building,
     'King Bed': BedDouble,
@@ -150,7 +153,7 @@ export default function HomePage() {
     useEffect(() => {
         const gsap = window.gsap;
         const ScrollTrigger = window.ScrollTrigger;
-        const Lenis = window.Lenis;
+        // Lenis is initialized globally in App.jsx
 
         if (!gsap || !ScrollTrigger) return;
         gsap.registerPlugin(ScrollTrigger);
@@ -205,34 +208,29 @@ export default function HomePage() {
                 duration: 0.2
             }, 0);
 
-            // ── matchMedia — Desktop vs Mobile ──
-            const mm = gsap.matchMedia();
+            // ── Rooms Section Reveal (GSAP Text Reveal) ──
+            const roomsTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: '.rooms-section',
+                    start: 'top 80%',
+                }
+            });
 
+            roomsTl.fromTo('.gs-word', 
+                { yPercent: 100 }, 
+                { yPercent: 0, duration: 0.8, stagger: 0.05, ease: 'power3.out' }
+            )
+            .fromTo('.gs-reveal-subheading', 
+                { opacity: 0, y: 20 }, 
+                { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+                "-=0.4"
+            );
 
-            // Removed GSAP animations for testimonials (using CSS animations now)
         }, mainRef);
 
         return () => {
             ctx.revert();
         };
-    }, []);
-
-    // ── Intersection Observer for Reveals ──
-    useEffect(() => {
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const reveals = entry.target.querySelectorAll('.room-reveal');
-                    reveals.forEach(el => el.classList.add('revealed'));
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-
-        const sections = document.querySelectorAll('.rooms-section, .testimonials-section');
-        sections.forEach(section => observer.observe(section));
-
-        return () => observer.disconnect();
     }, []);
 
     // ── Resizing Logic (Debounced) ──
@@ -322,8 +320,14 @@ export default function HomePage() {
           ══════════════════════════════════════════ */}
             <section className="rooms-section" id="rooms">
                 <div className="section-header">
-                    <h2 className="section-title room-reveal" style={{ transitionDelay: '100ms' }}>Choose the Best Room for Your Perfect Stay!</h2>
-                    <p className="section-subtitle room-reveal" style={{ transitionDelay: '200ms' }}>
+                    <h2 className="section-title">
+                        {'Choose the Best Room for Your Perfect Stay!'.split(' ').map((word, i) => (
+                            <span key={i} style={{ display: 'inline-block', overflow: 'hidden', verticalAlign: 'bottom' }}>
+                                <span className="gs-word" style={{ display: 'inline-block' }}>{word}&nbsp;</span>
+                            </span>
+                        ))}
+                    </h2>
+                    <p className="section-subtitle gs-reveal-subheading">
                         Experience the art of comfort and luxury. Designed to embrace you in elegance.
                     </p>
                 </div>
@@ -331,7 +335,7 @@ export default function HomePage() {
                 <div className="rooms-content-container">
                     {/* MOBILE VERSION: Stacked 3D Carousel (Visible only on <769px) */}
                     <div className="mobile-rooms-only">
-                        <div className="rooms-grid-wrapper room-reveal revealed-mobile" style={{ transitionDelay: '300ms' }}>
+                        <div className="rooms-grid-wrapper">
                             {Object.values(ROOM_DATA).map((room, idx) => {
                                 let offset = idx - activeRoomIndex;
                                 const halfLength = numRooms / 2;
@@ -368,35 +372,43 @@ export default function HomePage() {
                                         }}
                                         style={{ position: 'absolute', touchAction: 'none' }}
                                     >
-                                        <div className={`room-card float-anim delay-${idx}`}>
-                                            <div className="room-card-image-wrapper">
-                                                <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
-                                            </div>
-                                            <div className="room-card-content">
-                                                <div className="room-card-header">
-                                                    <h3 className="room-card-title">{room.name}</h3>
-                                                    <span className="room-card-price">{room.price}</span>
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                            viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                                            transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                                            style={{ width: '100%', height: '100%' }}
+                                        >
+                                            <div className={`room-card float-anim delay-${idx}`}>
+                                                <div className="room-card-image-wrapper">
+                                                    <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
                                                 </div>
-                                                
-                                                <div className="room-info-row">
-                                                    <div className="room-amenities-icons">
-                                                        {room.amenities.slice(0, 4).map((amenity, amIdx) => {
-                                                            const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
-                                                            return <IconComponent key={amIdx} size={18} className="amenity-icon" />
-                                                        })}
+                                                <div className="room-card-content">
+                                                    <div className="room-card-header">
+                                                        <h3 className="room-card-title">{room.name}</h3>
+                                                        <span className="room-card-price">{room.price}</span>
                                                     </div>
-                                                    <div className="room-capacity-label">
-                                                        Capacity: Up to {room.maxGuests} Guests
+                                                    
+                                                    <div className="room-info-row">
+                                                        <div className="room-amenities-icons">
+                                                            {room.amenities.slice(0, 4).map((amenity, amIdx) => {
+                                                                const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
+                                                                return <IconComponent key={amIdx} size={18} className="amenity-icon" />
+                                                            })}
+                                                        </div>
+                                                        <div className="room-capacity-label">
+                                                            Capacity: Up to {room.maxGuests} Guests
+                                                        </div>
                                                     </div>
-                                                </div>
 
-                                                <div className="room-card-action">
-                                                    <button className="btn-view-room-new" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
-                                                        VIEW ROOM →
-                                                    </button>
+                                                    <div className="room-card-action">
+                                                        <button className="btn-view-room-new" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
+                                                            VIEW ROOM →
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </motion.div>
                                     </motion.div>
                                 );
                             })}
@@ -405,10 +417,17 @@ export default function HomePage() {
 
                     {/* DESKTOP VERSION: Informational Grid (Visible only on >768px) */}
                     <div className="desktop-rooms-only">
-                        <div className="rooms-grid-wrapper room-reveal" style={{ transitionDelay: '300ms' }}>
+                        <div className="rooms-grid-wrapper">
                             <div className="rooms-grid-layout">
                                 {Object.values(ROOM_DATA).map((room, idx) => (
-                                    <div className="desktop-room-card-wrapper" key={room.id}>
+                                    <motion.div 
+                                        className="desktop-room-card-wrapper" 
+                                        key={room.id}
+                                        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                        viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                                        transition={{ duration: 0.6, delay: idx * 0.15, ease: [0.16, 1, 0.3, 1] }}
+                                    >
                                         <div className={`room-card float-anim delay-${idx}`}>
                                             <div className="room-card-image-wrapper">
                                                 <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
@@ -423,12 +442,12 @@ export default function HomePage() {
                                                     {room.desc}
                                                 </div>
                                                 
-                                                <div className="room-key-amenities">
+                                                <div className="feature-chips-container">
                                                     {room.amenities.slice(0, 4).map((amenity, amIdx) => {
                                                         const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
                                                         return (
-                                                            <div key={amIdx} className="key-amenity">
-                                                                <IconComponent size={18} />
+                                                            <div key={amIdx} className="feature-chip">
+                                                                <IconComponent size={14} />
                                                                 <span>{amenity}</span>
                                                             </div>
                                                         )
@@ -447,7 +466,7 @@ export default function HomePage() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 ))}
                             </div>
                         </div>
@@ -466,19 +485,17 @@ export default function HomePage() {
                         style={{
                             fontFamily: 'var(--font-body)',
                             fontWeight: '600',
-                            fontSize: '0.9rem',
-                            letterSpacing: '0.05em',
-                            color: 'var(--accent-gold)',
+                            fontSize: '0.8rem',
+                            color: '#1C1C1C',
                             background: 'transparent',
-                            border: '1px solid var(--accent-gold)',
-                            padding: '12px 32px',
-                            borderRadius: '30px',
+                            border: 'none',
+                            padding: '8px 0',
                             cursor: 'pointer',
                             display: 'flex',
                             alignItems: 'center',
+                            justifyContent: 'center',
                             gap: '8px',
-                            transition: 'all 0.3s ease',
-                            minHeight: '44px'
+                            transition: 'all 0.3s ease'
                         }}
                     >
                         VIEW ALL ROOMS <ArrowRight size={18} />

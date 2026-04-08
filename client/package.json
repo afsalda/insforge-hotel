@@ -13,6 +13,8 @@
     "@insforge/sdk": "^1.1.5",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.34.3",
+    "gsap": "^3.14.2",
+    "lenis": "^1.3.21",
     "lucide-react": "^0.574.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

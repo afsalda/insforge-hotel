@@ -258,7 +258,18 @@ export default function CheckoutPage() {
         <div className="checkout-main-wrapper">
             <div className="checkout-page-container">
                 <div className="checkout-header-section">
-                    <button onClick={() => navigate(-1)} className="checkout-back-btn" aria-label="Go back">
+                    <button 
+                        type="button"
+                        onClick={() => {
+                            if (window.history.length > 1) {
+                                navigate(-1);
+                            } else {
+                                navigate('/');
+                            }
+                        }} 
+                        className="checkout-back-btn" 
+                        aria-label="Go back"
+                    >
                         <ChevronLeft size={24} />
                     </button>
                     <h1 className="checkout-page-title">Confirm and Pay</h1>

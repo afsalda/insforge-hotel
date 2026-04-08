@@ -33,9 +33,9 @@ export default function Footer() {
                 {/* Features Column */}
                 <div className="footer-col">
                     <h4>Features</h4>
-                    <a href="#">Free Wi-Fi</a>
-                    <a href="#">Power Backup 24/7</a>
-                    <a href="#">Lift</a>
+                    <span>Free Wi-Fi</span>
+                    <span>Power Backup 24/7</span>
+                    <span>Lift</span>
                 </div>
 
                 {/* Social Column */}

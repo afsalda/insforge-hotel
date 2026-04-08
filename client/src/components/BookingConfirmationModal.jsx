@@ -96,27 +96,31 @@ export default function BookingConfirmationModal({ booking, onClose }) {
       <div
         onClick={onClose}
         style={{
-          position: "fixed", inset: 0,
-          background: "rgba(10, 26, 15, 0.9)",
-          backdropFilter: "blur(8px)",
-          zIndex: 9999,
-          display: "flex", alignItems: "center", justifyContent: "center",
+          position: "fixed",
+          inset: 0,
+          background: "rgba(0,0,0,0.55)",
+          backdropFilter: "blur(3px)",
+          zIndex: 999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
           animation: "fadeIn 0.3s ease",
-          padding: "20px"
         }}
       >
         {/* Ticket Modal */}
         <div 
           onClick={e => e.stopPropagation()}
+          className="modal-ticket-container"
           style={{
             position: "relative",
-            width: "min(380px, 94vw)",
+            width: "min(400px, 92vw)",
+            maxHeight: "90dvh",
+            overflowY: "auto",
             background: "#fff",
-            borderRadius: "24px",
-            overflow: "visible", // For notches
-            zIndex: 10000,
-            boxShadow: "0 30px 60px rgba(0,0,0,0.5)",
-            animation: "ticketSlideUp 0.5s cubic-bezier(0.34,1.56,0.64,1)",
+            borderRadius: "20px",
+            zIndex: 1000,
+            boxShadow: "0 24px 60px rgba(0,0,0,0.3)",
+            animation: "slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1)",
             fontFamily: "'Segoe UI', system-ui, sans-serif",
           }}
         >
@@ -128,7 +132,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           <div style={{
             background: "linear-gradient(165deg, #1a3d2b 0%, #0a1a0f 100%)",
             borderRadius: "24px 24px 0 0",
-            padding: "32px 24px 28px",
+            padding: "16px 18px 14px",
             textAlign: "center",
             position: "relative",
             overflow: "hidden"
@@ -153,23 +157,23 @@ export default function BookingConfirmationModal({ booking, onClose }) {
 
             {/* Checkmark Icon */}
             <div style={{
-              width: 58, height: 58,
+              width: 44, height: 44,
               background: "rgba(201,168,76,0.12)",
               border: "2.5px solid #C9A84C",
               borderRadius: "50%",
               display: "flex", alignItems: "center", justifyContent: "center",
-              margin: "0 auto 14px",
+              margin: "0 auto 8px",
               animation: "popIn 0.5s 0.2s cubic-bezier(0.34,1.56,0.64,1) both",
             }}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" style={{ strokeDasharray: 30, strokeDashoffset: 30, animation: "drawCheck 0.6s 0.5s ease forwards" }} />
                 </svg>
             </div>
 
-            <h2 style={{ color: "#fff", fontSize: 24, fontWeight: 700, margin: "0 0 6px", letterSpacing: "-0.5px" }}>
+            <h2 style={{ color: "#fff", fontSize: 16, fontWeight: 700, margin: "0 0 3px", letterSpacing: "-0.5px" }}>
               Booking Confirmed!
             </h2>
-            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 14, margin: "0 0 18px", fontWeight: 500 }}>
+            <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 12, margin: "0 0 10px", fontWeight: 500 }}>
               {guestName} · {guests} guest{guests > 1 ? "s" : ""}
             </p>
 
@@ -178,7 +182,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
               display: "inline-flex", alignItems: "center", gap: 8,
               background: "rgba(255,255,255,0.06)",
               border: "1px solid rgba(201,168,76,0.45)",
-              borderRadius: 30, padding: "7px 18px",
+              borderRadius: 30, padding: "4px 12px",
             }}>
               <span style={{ fontSize: 13 }}>🔖</span>
               <span style={{ color: "#C9A84C", fontFamily: "monospace", fontWeight: 700, fontSize: 13, letterSpacing: 0.5 }}>
@@ -188,22 +192,22 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           </div>
 
           {/* ── Body ── */}
-          <div style={{ padding: "28px 24px 32px", background: "#fff", borderRadius: "0 0 24px 24px" }}>
+          <div style={{ padding: "12px 16px 16px", background: "#fff", borderRadius: "0 0 24px 24px" }}>
 
             {/* Room Info */}
-            <div style={{ textAlign: "center", marginBottom: 24 }}>
-                <p style={{ fontWeight: 800, fontSize: 16, color: "#1a3d2b", margin: "0 0 12px", textTransform: "uppercase", letterSpacing: "1px" }}>
+            <div style={{ textAlign: "center", marginBottom: 10, padding: "10px 14px" }}>
+                <p style={{ fontWeight: 400, fontSize: 13, color: "#1a3d2b", margin: "0 0 6px", textTransform: "uppercase", letterSpacing: "1px", lineHeight: "1.1" }}>
                 {roomType}
                 </p>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, fontSize: 13 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, fontSize: 12 }}>
                 <span style={{
                     background: "#f0f7f4", color: "#2d6a4f",
-                    padding: "5px 14px", borderRadius: 8, fontWeight: 700, border: "1px solid #e2ece6"
+                    padding: "2px 8px", borderRadius: 8, fontWeight: 700, border: "1px solid #e2ece6"
                 }}>{checkIn}</span>
                 <span style={{ color: "#C9A84C", fontWeight: 800 }}>→</span>
                 <span style={{
                     background: "#f0f7f4", color: "#2d6a4f",
-                    padding: "5px 14px", borderRadius: 8, fontWeight: 700, border: "1px solid #e2ece6"
+                    padding: "2px 8px", borderRadius: 8, fontWeight: 700, border: "1px solid #e2ece6"
                 }}>{checkOut}</span>
                 <span style={{ color: "#999", fontWeight: 600 }}>· {nights}N</span>
                 </div>
@@ -217,20 +221,20 @@ export default function BookingConfirmationModal({ booking, onClose }) {
               border: "1px solid #f0f4f1", overflow: "hidden", marginBottom: 20,
             }}>
               <div style={{
-                display: "flex", justify_content: "space-between", align_items: "center",
-                padding: "14px 18px", borderBottom: "1px solid #f0f4f1",
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "9px 14px", borderBottom: "1px solid #f0f4f1",
               }}>
-                <span style={{ fontSize: 14, color: "#666", fontWeight: 500 }}>Deposit Paid</span>
-                <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 15, color: "#1a3a2a" }}>
+                <span style={{ fontSize: 12, color: "#666", fontWeight: 500 }}>Deposit Paid</span>
+                <span style={{ fontFamily: "monospace", fontWeight: 700, fontSize: 13, color: "#1a3a2a" }}>
                   ₹{depositPaid.toLocaleString("en-IN")}
                 </span>
               </div>
               <div style={{
-                display: "flex", justify_content: "space-between", align_items: "center",
-                padding: "14px 18px", background: "#fffdf9",
+                display: "flex", justifyContent: "space-between", alignItems: "center",
+                padding: "9px 14px", background: "#fffdf9",
               }}>
-                <span style={{ fontSize: 14, color: "#666", fontWeight: 500 }}>Balance at Check-in</span>
-                <span style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 17, color: "#c0392b" }}>
+                <span style={{ fontSize: 12, color: "#666", fontWeight: 500 }}>Balance at Check-in</span>
+                <span style={{ fontFamily: "monospace", fontWeight: 800, fontSize: 13, color: "#c0392b" }}>
                   ₹{balanceDue.toLocaleString("en-IN")}
                 </span>
               </div>
@@ -241,10 +245,10 @@ export default function BookingConfirmationModal({ booking, onClose }) {
               <div style={{
                 display: "flex", alignItems: "center", gap: 12,
                 background: "#f0fbf5", border: "1px solid #dceedf",
-                borderRadius: 12, padding: "12px 18px", marginBottom: 24,
+                borderRadius: 12, padding: "8px 12px", marginBottom: 10,
               }}>
                 <span style={{ fontSize: 20 }}>💬</span>
-                <p style={{ margin: 0, fontSize: 13, color: "#2d6a4f", lineHeight: 1.5, fontWeight: 500 }}>
+                <p style={{ margin: 0, fontSize: 11.5, color: "#2d6a4f", lineHeight: 1.5, fontWeight: 500 }}>
                   A WhatsApp confirmation has been sent to{" "}
                   <strong style={{ color: "#1a3a2a" }}>{whatsappNumber}</strong>
                 </p>
@@ -255,18 +259,18 @@ export default function BookingConfirmationModal({ booking, onClose }) {
 
             {/* Barcode Section */}
             <div style={{ textAlign: "center", marginBottom: 28 }}>
-              <canvas ref={barcodeRef} style={{ maxWidth: "100%", borderRadius: 4, height: 50 }} />
-              <p style={{ fontFamily: "monospace", fontSize: 11, color: "#aaa", marginTop: 8, letterSpacing: 4, textTransform: "uppercase" }}>
+              <canvas ref={barcodeRef} style={{ maxWidth: "90%", height: 40, borderRadius: 4 }} />
+              <p style={{ fontFamily: "monospace", fontSize: 9, color: "#aaa", marginTop: 2, marginBottom: 10, letterSpacing: 4, textTransform: "uppercase" }}>
                 {bookingRef}
               </p>
             </div>
 
             {/* Close Button */}
             <button onClick={onClose} style={{
-              width: "100%", padding: "18px",
+              width: "100%", padding: "11px",
               background: "linear-gradient(135deg, #1a3d2b, #2d6a4f)",
-              color: "#fff", fontWeight: 800, fontSize: 15,
-              border: "none", borderRadius: 16, cursor: "pointer",
+              color: "#fff", fontWeight: 800, fontSize: 13,
+              border: "none", borderRadius: 10, cursor: "pointer",
               letterSpacing: 1, textTransform: "uppercase",
               boxShadow: "0 10px 20px rgba(45,106,79,0.2)",
               transition: "transform 0.2s, background 0.2s",
@@ -282,8 +286,8 @@ export default function BookingConfirmationModal({ booking, onClose }) {
 
       <style>{`
         @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
-        @keyframes ticketSlideUp {
-          from { opacity: 0; transform: translateY(60px) scale(0.9); }
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(40px) scale(0.95); }
           to   { opacity: 1; transform: translateY(0) scale(1); }
         }
         @keyframes popIn {
@@ -292,6 +296,14 @@ export default function BookingConfirmationModal({ booking, onClose }) {
         }
         @keyframes drawCheck {
           to { stroke-dashoffset: 0 }
+        }
+        
+        .modal-ticket-container::-webkit-scrollbar {
+          display: none;
+        }
+        .modal-ticket-container {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
         }
       `}</style>
     </>

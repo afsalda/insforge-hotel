@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
     ArrowLeft, Star, Share2, Heart, Award, KeyRound, Wifi,
     Car, Snowflake, CookingPot, Tv, WashingMachine, Waves,
-    Trees, ChevronRight, CheckCircle, Loader2, X
+    Trees, ChevronRight, CheckCircle, Loader2, X, Coffee
 } from 'lucide-react';
 import { createBooking } from '../lib/api.js';
 import BookingCalendar from '../components/BookingCalendar';
@@ -25,10 +25,11 @@ export const LISTING_DATA = {
         guests: 2, bedrooms: 1, beds: 1, baths: 1,
         description: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.',
         amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
+            { label: 'Free Wi-Fi', icon: <Wifi size={24} /> },
             { label: 'Air conditioning', icon: <Snowflake size={24} /> },
+            { label: 'Electric Kettle', icon: <Coffee size={24} /> },
             { label: 'Smart TV', icon: <Tv size={24} /> },
-            { label: 'Power Backup', icon: <KeyRound size={24} /> }
+            { label: 'Power Backup 24/7', icon: <KeyRound size={24} /> }
         ],
         price: 1500, cleaningFee: 200, serviceFee: 150
     },
@@ -47,8 +48,9 @@ export const LISTING_DATA = {
         guests: 3, bedrooms: 1, beds: 2, baths: 1,
         description: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed available for small families.',
         amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
+            { label: 'Free Wi-Fi', icon: <Wifi size={24} /> },
             { label: 'Air conditioning', icon: <Snowflake size={24} /> },
+            { label: 'Electric Kettle', icon: <Coffee size={24} /> },
             { label: 'Smart TV', icon: <Tv size={24} /> },
             { label: 'City View', icon: <Tv size={24} /> },
             { label: 'Extra Bed (Free)', icon: <Trees size={24} /> }
@@ -70,11 +72,12 @@ export const LISTING_DATA = {
         guests: 4, bedrooms: 2, beds: 2, baths: 2,
         description: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.',
         amenities: [
-            { label: 'WiFi', icon: <Wifi size={24} /> },
+            { label: 'Free Wi-Fi', icon: <Wifi size={24} /> },
             { label: 'Air conditioning', icon: <Snowflake size={24} /> },
+            { label: 'Electric Kettle', icon: <Coffee size={24} /> },
             { label: 'Smart TV', icon: <Tv size={24} /> },
             { label: 'Heater', icon: <Snowflake size={24} /> },
-            { label: 'Power Backup', icon: <KeyRound size={24} /> },
+            { label: 'Power Backup 24/7', icon: <KeyRound size={24} /> },
             { label: 'Lift', icon: <ArrowLeft size={24} /> },
             { label: 'Mini Kitchen', icon: <CookingPot size={24} /> },
             { label: 'Mini Fridge', icon: <Snowflake size={24} /> },
@@ -100,6 +103,7 @@ export const LISTING_DATA = {
         amenities: [
             { label: 'WiFi', icon: <Wifi size={24} /> },
             { label: 'Air conditioning', icon: <Snowflake size={24} /> },
+            { label: 'Electric Kettle', icon: <Coffee size={24} /> },
             { label: 'Work Desk', icon: <Tv size={24} /> },
             { label: 'Balcony', icon: <Trees size={24} /> }
         ],
@@ -121,6 +125,7 @@ export const LISTING_DATA = {
         amenities: [
             { label: 'WiFi', icon: <Wifi size={24} /> },
             { label: 'Air conditioning', icon: <Snowflake size={24} /> },
+            { label: 'Electric Kettle', icon: <Coffee size={24} /> },
             { label: 'Full Kitchen', icon: <CookingPot size={24} /> },
             { label: 'Living Room', icon: <Tv size={24} /> },
             { label: 'Free Parking', icon: <Car size={24} /> }
@@ -348,7 +353,12 @@ export default function ListingDetailPage() {
     return (
         <>
             <div className="detail-page">
-                <button className="detail-back" onClick={() => navigate(-1)} style={{ width: '40px', height: '40px', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%' }}>
+                <button 
+                    type="button"
+                    className="detail-back" 
+                    onClick={() => navigate('/rooms')}
+                    aria-label="Go back"
+                >
                     <ArrowLeft size={18} />
                 </button>
 
@@ -439,10 +449,10 @@ export default function ListingDetailPage() {
 
                         <div className="amenities-section">
                             <h3>What this place offers</h3>
-                            <div className="amenities-grid">
-                                {listing.amenities.slice(0, 4).map((a, idx) => (
-                                    <div className="amenity-row" key={idx}>
-                                        <div className="amenity-icon-anim">{a.icon}</div>
+                            <div className="feature-chips-container">
+                                {listing.amenities.map((a, idx) => (
+                                    <div className="feature-chip" key={idx}>
+                                        {a.icon}
                                         <span>{a.label}</span>
                                     </div>
                                 ))}
