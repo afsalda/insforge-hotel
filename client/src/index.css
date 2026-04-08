@@ -769,7 +769,7 @@ img {
 .booking-field label {
   display: block;
   font-size: 0.81rem;
-  font-weight: 600;
+  font-weight: 400;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-cream);
@@ -2852,7 +2852,7 @@ img {
 
 .booking-field label {
   font-size: 0.6rem;
-  font-weight: 800;
+  font-weight: 400;
   margin-bottom: 4px;
   color: #222222;
   text-transform: uppercase;
@@ -4629,7 +4629,7 @@ body {
     gap: 12px !important;
   }
 
-  .checkout-page-title {
+  h1.checkout-page-title {
     font-size: 1.8rem !important;
   }
 
@@ -4799,8 +4799,8 @@ body {
   transform: translateX(-4px);
 }
 
-.checkout-page-title {
-  font-family: var(--font-heading);
+h1.checkout-page-title {
+  font-family: var(--font-heading) !important;
   font-size: 2.8rem;
   color: var(--text-charcoal);
   margin: 0;
@@ -5191,7 +5191,7 @@ body {
     padding: 100px 16px 40px;
   }
 
-  .checkout-page-title {
+  h1.checkout-page-title {
     font-size: 2rem;
   }
 
