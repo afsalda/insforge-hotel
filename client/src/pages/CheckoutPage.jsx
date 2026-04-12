@@ -408,11 +408,11 @@ export default function CheckoutPage() {
 
                                     {/* Payment Breakdown */}
                                     <div style={{
-                                        background: 'linear-gradient(135deg, #fefce8, #fef9c3)',
+                                        background: '#F8FAFC',
                                         borderRadius: '12px',
                                         padding: '16px',
                                         marginBottom: '16px',
-                                        border: '1px solid #fde68a'
+                                        border: '1px solid #E2E8F0'
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                                             <span style={{ color: '#713f12', fontSize: '0.9rem' }}>Total Booking Amount</span>

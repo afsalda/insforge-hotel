@@ -3093,11 +3093,11 @@ img {
 }
 
 .calendar-day.selected {
-  background: transparent !important;
-  color: #1a2e1a !important;
+  background: var(--accent-gold) !important;
+  color: #FFFFFF !important;
   font-weight: 700;
-  outline: 1.5px solid var(--accent-gold);
-  outline-offset: -1px;
+  box-shadow: 0 4px 12px rgba(201, 169, 110, 0.4);
+  transform: scale(1.05);
 }
 
 .calendar-day.disabled {
@@ -4662,7 +4662,7 @@ body {
 
   .checkout-card-pro {
     padding: 20px !important;
-    border-radius: 16px !important;
+    border-radius: 24px !important;
     margin-bottom: 16px !important;
   }
 
@@ -4849,8 +4849,8 @@ h1.checkout-page-title {
 }
 
 .checkout-card-pro.active-step {
-  border-color: var(--accent-gold);
-  box-shadow: 0 20px 40px rgba(201, 169, 110, 0.1);
+  border-color: #EBEBEB;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
 .checkout-card-pro.completed-step {
@@ -4939,9 +4939,9 @@ h1.checkout-page-title {
 }
 
 .input-group-pro input:focus {
-  border-color: var(--accent-gold);
+  border-color: #CBD5E1;
   outline: none;
-  box-shadow: 0 0 0 4px rgba(201, 169, 110, 0.1);
+  box-shadow: 0 0 0 4px rgba(0, 0, 0, 0.05);
 }
 
 /* Buttons */
@@ -5227,7 +5227,7 @@ h1.checkout-page-title {
 
   .checkout-card-pro {
     padding: 24px 20px;
-    border-radius: 18px;
+    border-radius: 24px;
   }
 
   .sidebar-sticky-card {
