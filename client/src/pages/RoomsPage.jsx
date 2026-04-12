@@ -65,6 +65,8 @@ export default function RoomsPage() {
     const fetchRooms = async () => {
         try {
             setLoading(true);
+            // In a real app we fetch from 'listings' or 'room_types' table
+            // For now we use the same fallback data as HomePage for consistency if DB fails
             const fallbackRooms = [
                 { id: 'standard', name: 'Standard Room', pricing_per_night: 1500, details_max_guests: 2, description: 'A cozy and comfortable room with all essential amenities for a relaxing stay.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater'], photos: ['/images/webp/rooms/standard_1.webp'] },
                 { id: 'deluxe', name: 'Deluxe Room', pricing_per_night: 1800, details_max_guests: 3, description: 'A spacious king bed retreat with premium furnishings and city views.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Smart TV', 'King Bed'], photos: ['/images/webp/rooms/deluxe_1.webp'] },

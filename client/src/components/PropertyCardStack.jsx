@@ -17,9 +17,29 @@ const PropertyCardStack = ({ room, onClick }) => {
       {/* Card Stack Container */}
       <div className="relative w-full h-[510px] flex items-center justify-center">
         
+        {/* Dummy Card Left - More rounded */}
+        <div 
+          className="absolute w-[85%] h-[450px] bg-white rounded-[40px] shadow-lg opacity-25 blur-[1.5px]"
+          style={{ 
+            transform: 'scale(0.9) rotate(-8deg) translateX(-15%)',
+            zIndex: 10,
+            border: '1px solid rgba(0,0,0,0.02)'
+          }}
+        ></div>
+
+        {/* Dummy Card Right - More rounded */}
+        <div 
+          className="absolute w-[85%] h-[450px] bg-white rounded-[40px] shadow-lg opacity-25 blur-[1.5px]"
+          style={{ 
+            transform: 'scale(0.9) rotate(8deg) translateX(15%)',
+            zIndex: 10,
+            border: '1px solid rgba(0,0,0,0.02)'
+          }}
+        ></div>
+
         {/* Main Card */}
         <motion.div 
-          className="relative z-20 w-[91%] md:w-[90%] h-[470px] bg-white rounded-[40px] border border-gray-50 overflow-hidden flex flex-col cursor-pointer group"
+          className="relative z-20 w-[91%] md:w-[90%] h-[470px] bg-white rounded-[40px] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-50 overflow-hidden flex flex-col cursor-pointer group"
           whileHover={{ y: -8, transition: { duration: 0.3 } }}
           onClick={onClick}
         >

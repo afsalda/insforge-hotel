@@ -405,12 +405,11 @@ export default function HomePage() {
                                             pointerEvents: isActive ? 'auto' : 'none'
                                         }}
                                         transition={{
-                                            type: "spring", stiffness: 400, damping: 30, bounce: 0,
-                                            force3D: true
+                                            type: "spring", stiffness: 300, damping: 25
                                         }}
                                         drag="x"
                                         dragConstraints={{ left: 0, right: 0 }}
-                                        dragElastic={0.05}
+                                        dragElastic={1}
                                         onDragEnd={(e, { offset: dragOffset, velocity }) => {
                                             const swipe = swipePower(dragOffset.x, velocity.x);
                                             if (swipe < -10000 || dragOffset.x < -100) {
@@ -419,12 +418,7 @@ export default function HomePage() {
                                                 paginateRoom(-1);
                                             }
                                         }}
-                                        style={{ 
-                                            position: 'absolute', 
-                                            touchAction: 'none',
-                                            willChange: 'transform, opacity',
-                                            transform: 'translateZ(0)'
-                                        }}
+                                        style={{ position: 'absolute', touchAction: 'none' }}
                                     >
                                         <motion.div
                                             initial={{ opacity: 0, y: 50, scale: 0.95 }}
