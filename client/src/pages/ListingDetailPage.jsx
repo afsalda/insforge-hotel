@@ -251,8 +251,10 @@ export default function ListingDetailPage() {
 
     const formatDisplayDate = (dateStr) => {
         if (!dateStr) return null;
+        // Parse YYYY-MM-DD
         const [y, m, d] = dateStr.split('-');
-        return `${m}/${d}/${y}`;
+        const date = new Date(y, parseInt(m) - 1, parseInt(d));
+        return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     };
 
     useEffect(() => {
@@ -971,14 +973,54 @@ export default function ListingDetailPage() {
                 >
                     <div 
                         onClick={e => e.stopPropagation()}
-                        style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: '24px 24px 0 0', padding: '24px', position: 'relative' }}
+                        style={{ width: '100%', backgroundColor: '#FFFFFF', borderRadius: '24px 24px 0 0', padding: '24px', position: 'relative', boxShadow: '0 -10px 25px rgba(0,0,0,0.1)' }}
                     >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', alignItems: 'center' }}>
+                            <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontSize: '1.2rem' }}>
+                                {(!activePicker || activePicker === 'in') ? 'Select Check-in' : 'Select Checkout'}
+                            </h3>
+                            <button onClick={() => setShowBottomSheet(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}><X size={24} /></button>
+                        </div>
+
+                        {/* CLEAR DATE DISPLAY SUMMARY */}
+                        <div style={{ display: 'flex', gap: '8px', marginBottom: '24px' }}>
+                            <div 
+                                onClick={() => setActivePicker('in')}
+                                style={{ 
+                                    flex: 1, 
+                                    padding: '12px', 
+                                    borderRadius: '12px', 
+                                    border: (!activePicker || activePicker === 'in') ? '2.5px solid var(--bg-deep-green)' : '1px solid #EEE', 
+                                    backgroundColor: '#F9F9F9',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                <div style={{ fontSize: '10px', textTransform: 'uppercase', color: '#666', fontWeight: 600, marginBottom: '4px' }}>Check-in</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: checkIn ? '#000' : '#AAA' }}>
+                                    {formatDisplayDate(checkIn) || 'Tap to select'}
+                                </div>
+                            </div>
+                            <div 
+                                onClick={() => checkIn && setActivePicker('out')}
+                                style={{ 
+                                    flex: 1, 
+                                    padding: '12px', 
+                                    borderRadius: '12px', 
+                                    border: (activePicker === 'out') ? '2.5px solid var(--bg-deep-green)' : '1px solid #EEE', 
+                                    backgroundColor: '#F9F9F9',
+                                    cursor: checkIn ? 'pointer' : 'default',
+                                    opacity: checkIn ? 1 : 0.6
+                                }}
+                            >
+                                <div style={{ fontSize: '10px', textTransform: 'uppercase', color: '#666', fontWeight: 600, marginBottom: '4px' }}>Checkout</div>
+                                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: checkOut ? '#000' : '#AAA' }}>
+                                    {formatDisplayDate(checkOut) || 'Tap to select'}
+                                </div>
+                            </div>
+                        </div>
+
                         {(!activePicker || activePicker === 'in') ? (
                             <>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', alignItems: 'center' }}>
-                                    <h3 style={{ margin: 0 }}>Select check-in</h3>
-                                    <button onClick={() => setShowBottomSheet(false)} style={{ background: 'none', border: 'none' }}><X /></button>
-                                </div>
                                 <BookingCalendar
                                     selectedDate={checkIn}
                                     onSelect={(date) => { setCheckIn(date); setActivePicker('out'); setErrors({}); }}
@@ -986,17 +1028,24 @@ export default function ListingDetailPage() {
                                 />
                                 <button 
                                     onClick={() => setActivePicker('out')}
-                                    style={{ width: '100%', height: '52px', backgroundColor: '#BE9F76', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontWeight: 600, marginTop: '20px' }}
+                                    disabled={!checkIn}
+                                    style={{ 
+                                        width: '100%', 
+                                        height: '52px', 
+                                        backgroundColor: checkIn ? 'var(--bg-deep-green)' : '#D0D0D0', 
+                                        color: '#FFFFFF', 
+                                        border: 'none', 
+                                        borderRadius: '12px', 
+                                        fontWeight: 600, 
+                                        marginTop: '20px',
+                                        transition: 'all 0.3s ease'
+                                    }}
                                 >
-                                    Next
+                                    Select Checkout Date
                                 </button>
                             </>
                         ) : (
                             <>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', alignItems: 'center' }}>
-                                    <h3 style={{ margin: 0 }}>Select checkout</h3>
-                                    <button onClick={() => setActivePicker('in')} style={{ background: 'none', border: 'none' }}><X /></button>
-                                </div>
                                 <BookingCalendar
                                     selectedDate={checkOut}
                                     onSelect={(date) => { setCheckOut(date); setErrors({}); }}
@@ -1004,7 +1053,18 @@ export default function ListingDetailPage() {
                                 />
                                 <button 
                                     onClick={handleReserve}
-                                    style={{ width: '100%', height: '52px', backgroundColor: '#000000', color: '#FFFFFF', border: 'none', borderRadius: '12px', fontWeight: 700, marginTop: '20px' }}
+                                    disabled={!checkIn || !checkOut}
+                                    style={{ 
+                                        width: '100%', 
+                                        height: '52px', 
+                                        backgroundColor: (checkIn && checkOut) ? '#000000' : '#D0D0D0', 
+                                        color: '#FFFFFF', 
+                                        border: 'none', 
+                                        borderRadius: '12px', 
+                                        fontWeight: 700, 
+                                        marginTop: '20px',
+                                        transition: 'all 0.3s ease'
+                                    }}
                                 >
                                     Confirm Dates
                                 </button>
