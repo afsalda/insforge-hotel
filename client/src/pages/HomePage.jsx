@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import { createClient } from '@insforge/sdk';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Wifi, Thermometer, Tv, TreePine, BedDouble, Building, ChefHat, Bath, Square, Car, Sofa, Coffee } from 'lucide-react';
 import { Leaf, Droplets, Sun, Wind, CheckCircle2, Users, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { ReviewAutoSlider } from '../components/ui/review-auto-slider';
+import PropertyCardStack from '../components/PropertyCardStack';
 
 const wrap = (min, max, v) => {
     const rangeSize = max - min;
@@ -112,10 +114,10 @@ function AnimatedCheckmark() {
 
 
 const ROOM_DATA = {
-    standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift'], extraBedAvailable: false, img: '/images/rooms/standard_1.jpg' },
-    deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/rooms/deluxe_1.jpg' },
-    suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/rooms/suite_1.jpg' },
-    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['Free Wi-Fi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/rooms/apartments/15.jpg.jpeg' }
+    standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift'], extraBedAvailable: false, img: '/images/webp/rooms/standard_1.webp' },
+    deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/webp/rooms/deluxe_1.webp' },
+    suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/webp/rooms/suite_1.webp' },
+    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['Free Wi-Fi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/15.jpg.webp' }
 };
 
 const AMENITY_ICONS = {
@@ -233,6 +235,31 @@ export default function HomePage() {
         };
     }, []);
 
+    // ── Timeline Reveal IntersectionObserver ──
+    useEffect(() => {
+        // Use a small timeout to ensure elements are in the DOM and measured
+        const timer = setTimeout(() => {
+            const elements = document.querySelectorAll('.timeline-reveal');
+            if (elements.length === 0) return;
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                },
+                { threshold: 0.01 } // Lower threshold to ensure trigger even on partial intersections
+            );
+
+            elements.forEach(el => observer.observe(el));
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, []);
+
     // ── Resizing Logic (Debounced) ──
     useEffect(() => {
         let timeoutId;
@@ -262,6 +289,27 @@ export default function HomePage() {
 
     return (
         <div ref={mainRef}>
+            <style>{`
+                .timeline-reveal {
+                  opacity: 0;
+                  filter: blur(10px);
+                  transform: translateY(40px);
+                  transition: opacity 0.7s ease-out, filter 0.7s ease-out, transform 0.7s ease-out;
+                  will-change: opacity, filter, transform;
+                }
+                .timeline-reveal.visible {
+                  opacity: 1;
+                  filter: blur(0px);
+                  transform: translateY(0);
+                }
+            `}</style>
+            <Helmet>
+                <title>Al Baith Rest House – Hotel Near Lakeshore Hospital, Ernakulam</title>
+                <meta
+                    name="description"
+                    content="Al Baith Rest House is located just minutes from Lakeshore Hospital, Ernakulam, Kerala. Clean AC rooms, free Wi-Fi, hot water. Ideal for patient families and medical staff. Book online now."
+                />
+            </Helmet>
             {/* Page Load Curtain */}
             <div className="page-curtain">
                 <span className="curtain-logo">AL BAITH</span>
@@ -274,15 +322,15 @@ export default function HomePage() {
                 <div className="hero-sticky-container">
                     <div className="hero-bg">
                         <img
-                            src="/images/hero_bg.png"
+                            src="/images/webp/hero_bg.webp"
                             className="hero-desktop-img"
-                            alt="Al Baith Rest House - Luxury Rooms and Apartments"
+                            alt="Al Baith Rest House – Hotel near Lakeshore Hospital, Ernakulam, Kerala"
                             loading="eager" decoding="async"
                         />
                         <img
-                            src="/images/hero_mobile_actual.png"
+                            src="/images/webp/hero_mobile_actual.webp"
                             className="hero-mobile-img"
-                            alt="Al Baith Rest House - Luxury Rooms and Apartments"
+                            alt="Al Baith Rest House – Hotel near Lakeshore Hospital, Ernakulam, Kerala"
                             loading="eager" decoding="async"
                         />
                     </div>
@@ -294,7 +342,7 @@ export default function HomePage() {
                                 <div className="hero-gold-line"></div>
                             </div>
                             <h1 className="hero-headline">
-                                {'Book Your Comfort Room Today!'.split(' ').map((word, i) => (
+                                {'Al Baith Rest House, Ernakulam'.split(' ').map((word, i) => (
                                     <span className="word" key={i}>
                                         <span className="hero-word">{word}</span>{' '}
                                     </span>
@@ -302,8 +350,7 @@ export default function HomePage() {
                             </h1>
                             <div className="hero-short-line"></div>
                             <p className="hero-subtext">
-                                Immerse yourself in the harmony of Arabian heritage and modern serenity.
-                                Every room tells a story of timeless luxury.
+                                Comfortable Rooms Steps Away from Lakeshore Hospital, Ernakulam
                             </p>
                             <div className="hero-cta-row">
                                 <a href="#rooms" className="btn-primary font-inter-numbers">EXPLORE ROOMS</a>
@@ -314,6 +361,7 @@ export default function HomePage() {
             </section>
 
             <OrnamentalDivider />
+
 
             {/* ══════════════════════════════════════════
           2. ROOMS SECTION
@@ -379,35 +427,10 @@ export default function HomePage() {
                                             transition={{ duration: 0.6, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
                                             style={{ width: '100%', height: '100%' }}
                                         >
-                                            <div className={`room-card float-anim delay-${idx}`}>
-                                                <div className="room-card-image-wrapper">
-                                                    <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
-                                                </div>
-                                                <div className="room-card-content">
-                                                    <div className="room-card-header">
-                                                        <h3 className="room-card-title">{room.name}</h3>
-                                                        <span className="room-card-price">{room.price}</span>
-                                                    </div>
-                                                    
-                                                    <div className="room-info-row">
-                                                        <div className="room-amenities-icons">
-                                                            {room.amenities.slice(0, 4).map((amenity, amIdx) => {
-                                                                const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
-                                                                return <IconComponent key={amIdx} size={18} className="amenity-icon" />
-                                                            })}
-                                                        </div>
-                                                        <div className="room-capacity-label">
-                                                            Capacity: Up to {room.maxGuests} Guests
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="room-card-action">
-                                                        <button className="btn-view-room-new" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
-                                                            VIEW ROOM →
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <PropertyCardStack 
+                                                room={room} 
+                                                onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/rooms/${room.id}`)}
+                                            />
                                         </motion.div>
                                     </motion.div>
                                 );
@@ -428,44 +451,10 @@ export default function HomePage() {
                                         viewport={{ once: true, margin: "0px 0px -50px 0px" }}
                                         transition={{ duration: 0.6, delay: idx * 0.15, ease: [0.16, 1, 0.3, 1] }}
                                     >
-                                        <div className={`room-card float-anim delay-${idx}`}>
-                                            <div className="room-card-image-wrapper">
-                                                <img src={room.img} alt={room.name} loading="lazy" decoding="async" />
-                                            </div>
-                                            <div className="room-card-content">
-                                                <div className="room-card-header">
-                                                    <h3 className="room-card-title">{room.name}</h3>
-                                                    <span className="room-card-price">{room.price}</span>
-                                                </div>
-
-                                                <div className="room-description">
-                                                    {room.desc}
-                                                </div>
-                                                
-                                                <div className="feature-chips-container">
-                                                    {room.amenities.slice(0, 4).map((amenity, amIdx) => {
-                                                        const IconComponent = AMENITY_ICONS[amenity] || CheckCircle2;
-                                                        return (
-                                                            <div key={amIdx} className="feature-chip">
-                                                                <IconComponent size={14} />
-                                                                <span>{amenity}</span>
-                                                            </div>
-                                                        )
-                                                    })}
-                                                </div>
-
-                                                <div className="room-guests-label">
-                                                    <Users size={18} />
-                                                    <span>Up to {room.maxGuests} Guests</span>
-                                                </div>
-
-                                                <div className="room-card-action">
-                                                    <button className="btn-view-room-new" onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/room/${room.id}`)}>
-                                                        VIEW ROOM →
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <PropertyCardStack 
+                                            room={room} 
+                                            onClick={() => navigate(room.id === 'apartments' ? '/apartments' : `/rooms/${room.id}`)}
+                                        />
                                     </motion.div>
                                 ))}
                             </div>
@@ -476,7 +465,7 @@ export default function HomePage() {
                 <div className="view-all-rooms-container" style={{
                     display: 'flex',
                     justifyContent: 'center',
-                    marginTop: '40px',
+                    marginTop: '24px',
                     width: '100%'
                 }}>
                     <button 
@@ -504,7 +493,7 @@ export default function HomePage() {
 
             </section>
 
-            <section className="testimonials-section" id="reviews" style={{ paddingBottom: '80px', overflow: 'hidden' }}>
+            <section className="testimonials-section" id="reviews" style={{ paddingBottom: '0px', overflow: 'hidden' }}>
                 <div className="section-header">
                     <h2 className="section-title">The Words of Our Guests</h2>
                     <p className="section-subtitle">Real stories from real guests. Discover why they call Al Baith their home away from home.</p>
@@ -512,6 +501,35 @@ export default function HomePage() {
 
                 <div className="review-slider-wrapper">
                     <ReviewAutoSlider />
+                </div>
+            </section>
+
+            {/* ══════════════════════════════════════════
+              ABOUT / DESCRIPTION SECTION
+              ══════════════════════════════════════════ */}
+            <section className="testimonials-section" style={{ paddingTop: '80px', paddingBottom: '0px', overflow: 'hidden' }}>
+                <div className="section-header">
+                    <h2 className="section-title timeline-reveal">The Closest Comfortable Stay to Lakeshore Hospital</h2>
+                    <p className="section-subtitle" style={{ maxWidth: '720px', margin: '0 auto', lineHeight: '1.8' }}>
+                        <span style={{ display: 'block', transitionDelay: '0s' }} className="timeline-reveal">When a loved one is receiving care at Lakeshore Hospital in Ernakulam, the last thing you need is a long commute back to your hotel.</span>
+                        <span style={{ display: 'block', transitionDelay: '0.15s' }} className="timeline-reveal">Al Baith Rest House is located just a short distance from Lakeshore Hospital — making us the first choice for patient families, visiting doctors, and medical staff looking for accommodation in Ernakulam, Kochi.</span>
+                        <span style={{ display: 'block', transitionDelay: '0.3s' }} className="timeline-reveal">We offer clean AC rooms, free Wi-Fi, hot water, and daily housekeeping — everything you need for a comfortable stay during a difficult time.</span>
+                        <span style={{ display: 'block', transitionDelay: '0.45s' }} className="timeline-reveal">Book directly online or call us for immediate room availability.</span>
+                    </p>
+                </div>
+            </section>
+
+            {/* ══════════════════════════════════════════
+              LOCATION SECTION
+              ══════════════════════════════════════════ */}
+            <section className="testimonials-section" style={{ paddingBottom: '80px', overflow: 'hidden' }}>
+                <div className="section-header">
+                    <h2 className="section-title timeline-reveal">How to Find Us — Ernakulam, Kerala</h2>
+                    <p className="section-subtitle" style={{ maxWidth: '720px', margin: '0 auto', lineHeight: '1.8' }}>
+                        <span style={{ display: 'block', transitionDelay: '0s' }} className="timeline-reveal">Al Baith Rest House is situated in Ernakulam, Kochi, Kerala — within close proximity to Lakeshore Hospital.</span>
+                        <span style={{ display: 'block', transitionDelay: '0.15s' }} className="timeline-reveal">We are easily reachable from Ernakulam Junction Railway Station, Cochin International Airport, and the Kochi Metro.</span>
+                        <span style={{ display: 'block', transitionDelay: '0.3s' }} className="timeline-reveal">Auto-rickshaws and cabs are available at all hours from our location.</span>
+                    </p>
                 </div>
             </section>
 

@@ -241,7 +241,7 @@ img {
   width: 100%;
   position: relative;
   z-index: 10;
-  margin-top: -150vh;
+  margin-top: -20vh;
   background: var(--bg-off-white);
 }
 
@@ -495,7 +495,7 @@ img {
 .hero {
   position: relative;
   width: 100%;
-  height: 250vh;
+  height: 120vh;
   background: var(--bg-deep-green);
 }
 
@@ -980,8 +980,8 @@ img {
    ROOMS SECTION
    ═══════════════════════════════════════════════════ */
 .rooms-section {
-  padding: 40px 0;
-  /* Reduced from 80px */
+  padding: 24px 0;
+  /* Reduced from 40px */
   background: var(--bg-off-white);
   position: relative;
   overflow: visible;
@@ -1000,6 +1000,28 @@ img {
   opacity: 0.15;
 }
 
+.rooms-grid-layout {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 24px !important;
+  width: 100% !important;
+  max-width: 1280px !important;
+  padding: 0 24px !important;
+  margin: 0 auto !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+@media (max-width: 768px) {
+  .rooms-grid-layout {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
 .parallax-bg-text {
   font-family: 'ZeistN2Web', sans-serif;
   font-size: 25vw;
@@ -1014,8 +1036,8 @@ img {
 
 .section-header {
   text-align: center;
-  margin-bottom: 40px;
-  /* Reduced from 64px */
+  margin-bottom: 24px;
+  /* Reduced from 40px */
   will-change: transform, opacity;
   transform: translateZ(0);
 }
@@ -1046,7 +1068,7 @@ img {
 
 .rooms-grid-wrapper {
   width: 100%;
-  padding: 20px 0 20px;
+  padding: 8px 0 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1499,7 +1521,7 @@ img {
 @media (min-width: 769px) {
   .rooms-grid-wrapper {
     height: auto !important;
-    padding: 80px 0 !important;
+    padding: 32px 0 !important;
   }
   
   .room-card-anim-wrapper {
@@ -6063,4 +6085,25 @@ textarea.error {
     font-size: 0.8rem;
     border-radius: 10px;
   }
-}
+}
+/* -- Premium Detail Page Tweak -- */
+.premium-detail-page {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.premium-detail-page button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.premium-detail-page .flex.overflow-x-auto {
+  -webkit-overflow-scrolling: touch;
+}

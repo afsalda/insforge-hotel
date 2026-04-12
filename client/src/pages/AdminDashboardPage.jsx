@@ -23,7 +23,7 @@ export default function AdminDashboardPage() {
     const handleLogout = () => {
         localStorage.removeItem('isAdminLoggedIn');
         localStorage.removeItem('adminUser');
-        navigate('/admin/login');
+        navigate('/login');
     };
 
     useEffect(() => {

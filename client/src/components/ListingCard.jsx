@@ -7,30 +7,13 @@ export default function ListingCard({ listing }) {
     const [liked, setLiked] = useState(false);
 
     return (
-        <div className="listing-card fade-in-up" onClick={() => navigate(`/listing/${listing.id}`)}>
+        <div className="listing-card fade-in-up" onClick={() => navigate(`/rooms/${listing.id}`)}>
             <div className="card-image-wrapper">
                 <img
                     src={listing.image}
-                    alt={listing.title}
+                    alt={`${listing.title} – Al Baith Rest House, Ernakulam, Kerala`}
                     loading="lazy"
                 />
-                <button
-                    className="favorite-btn"
-                    onClick={e => { e.stopPropagation(); setLiked(!liked); }}
-                    aria-label={liked ? 'Remove from wishlist' : 'Add to wishlist'}
-                >
-                    <Heart
-                        size={24}
-                        fill={liked ? '#FF385C' : 'rgba(0,0,0,0.5)'}
-                        color={liked ? '#FF385C' : 'white'}
-                        strokeWidth={liked ? 0 : 2}
-                    />
-                </button>
-                <div className="card-dots">
-                    <span className="card-dot active"></span>
-                    <span className="card-dot"></span>
-                    <span className="card-dot"></span>
-                </div>
             </div>
             <div className="card-info">
                 <div className="card-header">

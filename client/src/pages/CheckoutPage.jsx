@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, CheckCircle2, Lock, Loader2, Star, Shield, MessageCircle } from 'lucide-react';
 import { getListingDetail } from './ListingDetailPage';
@@ -40,7 +41,7 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         if (!checkIn || !checkOut) {
-            navigate(`/room/${id}`);
+            navigate(`/rooms/${id}`);
         }
         window.scrollTo(0, 0);
     }, [checkIn, checkOut, id, navigate]);
@@ -256,6 +257,13 @@ export default function CheckoutPage() {
     // ─── MAIN CHECKOUT UI ───
     return (
         <div className="checkout-main-wrapper">
+            <Helmet>
+                <title>Book a Room – Al Baith Rest House Ernakulam</title>
+                <meta
+                    name="description"
+                    content="Complete your room booking at Al Baith Rest House, Ernakulam. Secure online payment. Instant confirmation. Best rates for stays near Lakeshore Hospital, Kochi."
+                />
+            </Helmet>
             <div className="checkout-page-container">
                 <div className="checkout-header-section">
                     <button 
@@ -487,7 +495,7 @@ export default function CheckoutPage() {
                         <div className="sidebar-sticky-card">
                             <div className="sidebar-room-preview">
                                 <div className="preview-img-container">
-                                    <img src={listing.images[0]} alt={listing.title} className="preview-img" />
+                                    <img src={listing.images[0]} alt={`${listing.title} – Al Baith Rest House, Ernakulam, Kerala`} className="preview-img" />
                                 </div>
                                 <div className="preview-info">
                                     <span className="preview-location">{listing.location || 'Al Baith Hotel'}</span>

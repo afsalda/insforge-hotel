@@ -1,10 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
+import PropertyCardStack from '../components/PropertyCardStack';
 
 const APARTMENT_DATA = {
-    '1bhk': { id: 'apt1', name: '1BHK Apartment', price: '₹5,000 / night', maxGuests: 3, desc: 'Cozy fully furnished 1BHK apartment with complete kitchen and living room.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking'], extraBedAvailable: false, img: '/images/rooms/apartments/3.jpg.jpeg' },
-    '2bhk': { id: 'apt2', name: '2BHK Apartment', price: '₹5,500 / night', maxGuests: 5, desc: 'Spacious 2BHK apartment ideal for families, featuring modern furnishings and great views.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '2 Baths'], extraBedAvailable: true, img: '/images/rooms/apartments/5.jpg.jpeg' },
-    '3bhk': { id: 'apt3', name: '3BHK Apartment', price: '₹8,500 / night', maxGuests: 8, desc: 'Luxury 3BHK penthouse style apartment for large groups with premium amenities.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '3 Baths', 'Balcony'], extraBedAvailable: true, img: '/images/rooms/apartments/14.jpg.jpeg' }
+    '1bhk': { id: 'apt1', name: '1BHK Apartment', pricing_per_night: 5000, maxGuests: 3, desc: 'Cozy fully furnished 1BHK apartment with complete kitchen and living room.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking'], extraBedAvailable: false, img: '/images/webp/rooms/apartments/3.jpg.webp' },
+    '2bhk': { id: 'apt2', name: '2BHK Apartment', pricing_per_night: 5500, maxGuests: 5, desc: 'Spacious 2BHK apartment ideal for families, featuring modern furnishings and great views.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '2 Baths'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/5.jpg.webp' },
+    '3bhk': { id: 'apt3', name: '3BHK Apartment', pricing_per_night: 8500, maxGuests: 8, desc: 'Luxury 3BHK penthouse style apartment for large groups with premium amenities.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '3 Baths', 'Balcony'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/14.jpg.webp' }
 };
 
 export default function ApartmentsPage() {
@@ -13,7 +14,7 @@ export default function ApartmentsPage() {
     return (
         <div style={{ paddingTop: '100px', minHeight: '100vh', background: 'var(--bg-off-white)', paddingBottom: '60px' }}>
             {/* Back Button Container (Static) */}
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+            <div className="px-4 md:px-6 mx-auto max-w-[1200px]">
                 <button 
                     onClick={() => navigate('/')} 
                     className="checkout-back-btn" 
@@ -28,36 +29,18 @@ export default function ApartmentsPage() {
                 <p className="section-subtitle">Extended stay private apartments.</p>
             </div>
 
-            <div className="container" style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-                <div className="rooms-all-grid">
+            <div className="container mx-auto max-w-[1200px] px-4 md:px-6">
+                <div className="rooms-all-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-10 w-full">
                     {Object.values(APARTMENT_DATA).map(apt => (
-                        <div className="room-card-v2" key={apt.id}>
-                            <div className="room-card-image">
-                                <img src={apt.img} alt={apt.name} />
-                                <div className="room-card-price-tag">{apt.price}</div>
-                            </div>
-                            <div className="room-card-info-v2">
-                                <h3>{apt.name}</h3>
-                                <p>{apt.desc}</p>
-                                <div className="feature-chips-container" style={{ marginBottom: '16px' }}>
-                                    {apt.amenities.slice(0, 4).map(a => (
-                                        <div key={a} className="feature-chip" style={{ padding: '4px 10px', fontSize: '0.75rem' }}>
-                                            <span>{a}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="room-card-actions">
-                                    <button className="btn-rooms-primary" onClick={() => navigate(`/room/${apt.id}`)}>
-                                        BOOK NOW
-                                    </button>
-                                </div>
-                            </div>
+                        <div key={apt.id}>
+                            <PropertyCardStack 
+                                room={apt} 
+                                onClick={() => navigate(`/rooms/${apt.id}`)}
+                            />
                         </div>
                     ))}
                 </div>
             </div>
-
-
         </div>
     );
 }

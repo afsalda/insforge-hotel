@@ -96,7 +96,7 @@ export default function CancellationPolicy() {
                 <div className="hero-bg-overlay">
                     <img 
                         src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=2000" 
-                        alt="Policy Background" 
+                        alt="Al Baith Rest House – Policy and Guidelines" 
                     />
                 </div>
                 

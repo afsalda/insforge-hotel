@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { Mail, Phone, MapPin, Clock, X, ExternalLink, ArrowLeft } from 'lucide-react';
 
 /* ─── Ornamental SVG Divider ─── */
@@ -41,6 +42,13 @@ export default function ContactPage() {
 
     return (
         <div className="contact-page-wrapper">
+            <Helmet>
+                <title>Contact Us – Al Baith Rest House Ernakulam</title>
+                <meta
+                    name="description"
+                    content="Get in touch with Al Baith Rest House in Ernakulam, Kerala. We are located near Lakeshore Hospital. Call us or book online for immediate room availability."
+                />
+            </Helmet>
             <button 
                 onClick={() => window.history.back()}
                 style={{ position: 'fixed', top: '100px', left: '20px', zIndex: 100, background: 'white', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', border: 'none', cursor: 'pointer' }}

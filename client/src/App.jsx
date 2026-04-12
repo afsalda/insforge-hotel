@@ -1,3 +1,15 @@
+// ROUTES:
+// /                  → HomePage
+// /rooms             → RoomsPage
+// /rooms/:id         → ListingDetailPage
+// /apartments        → ApartmentsPage
+// /checkout/:id      → CheckoutPage
+// /contact           → ContactPage
+// /cancellation-policy → CancellationPolicy
+// /login             → AdminLoginPage
+// /admin             → AdminDashboardPage
+// *                  → NotFoundPage
+
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -10,6 +22,8 @@ import CheckoutPage from './pages/CheckoutPage';
 import ContactPage from './pages/ContactPage';
 import CancellationPolicy from './pages/CancellationPolicy';
 import RoomsPage from './pages/RoomsPage';
+import NotFoundPage from './pages/NotFoundPage';
+import PropertyCardStack from './components/PropertyCardStack';
 import './index.css';
 import { useEffect } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -72,7 +86,7 @@ function App() {
           </>
         } />
 
-        <Route path="/room/:id" element={
+        <Route path="/rooms/:id" element={
           <>
             <Navbar />
             <ListingDetailPage />
@@ -113,12 +127,15 @@ function App() {
         } />
 
         {/* Admin Routes */}
-        <Route path="/admin/login" element={<AdminLoginPage />} />
+        <Route path="/login" element={<AdminLoginPage />} />
         <Route path="/admin" element={
           <ProtectedRoute>
             <AdminDashboardPage />
           </ProtectedRoute>
         } />
+
+        {/* 404 catch-all */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
@@ -127,7 +144,8 @@ function App() {
 // Protected Route Component
 function ProtectedRoute({ children }) {
   const isLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
-  return isLoggedIn ? children : <Navigate to="/admin/login" replace />;
+  return isLoggedIn ? children : <Navigate to="/login" replace />;
 }
 
 export default App;
+

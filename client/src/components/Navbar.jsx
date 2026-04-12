@@ -41,7 +41,7 @@ export default function Navbar() {
             <polygon points="33,8 34.2,11.6 38,11.6 35,14 36,17.6 33,15.2 30,17.6 31,14 28,11.6 31.8,11.6" fill="currentColor" />
           </svg>
           <span className="logo-text-group">
-            <span className="logo-name">Al Baith</span>
+            <span className="logo-name">AL BAITH</span>
           </span>
         </Link>
 
@@ -50,7 +50,7 @@ export default function Navbar() {
           <li><Link to="/#reviews" onClick={(e) => handleNavClick(e, 'reviews')}>Reviews</Link></li>
         </ul>
 
-        <Link to="/#rooms" onClick={(e) => handleNavClick(e, 'rooms')} className="btn-book-now">Book Now</Link>
+        <Link to="/#rooms" onClick={(e) => handleNavClick(e, 'rooms')} className="btn-book-now">BOOK NOW</Link>
 
         {!mobileOpen && (
           <button

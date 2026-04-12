@@ -283,7 +283,7 @@ export default function RoomModal({ isOpen, onClose, room }) {
 
                         {/* ── ROOM DETAILS PANEL ── */}
                         <div className="modal-panel" ref={detailsRef} style={{ visibility: view === 'success' ? 'hidden' : 'visible' }}>
-                            <img src={room.img} alt={room.name} className="room-img" />
+                            <img src={room.img} alt={`${room.name} – Al Baith Rest House, Ernakulam, Kerala`} className="room-img" />
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
                                 <div>
                                     <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2rem', color: '#2C2C2C', margin: 0 }}>{room.name}</h2>

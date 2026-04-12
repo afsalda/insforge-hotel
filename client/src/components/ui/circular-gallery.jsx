@@ -135,7 +135,7 @@ const CircularGallery = React.forwardRef(
                                     cursor: 'pointer'
                                 }}
                                 onClick={() => {
-                                    if (item.id) navigate(`/room/${item.id}`);
+                                    if (item.id) navigate(`/rooms/${item.id}`);
                                 }}
                             >
                                 <div
