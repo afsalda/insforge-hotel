@@ -3,9 +3,9 @@ import { ChevronLeft } from 'lucide-react';
 import PropertyCardStack from '../components/PropertyCardStack';
 
 const APARTMENT_DATA = {
-    '1bhk': { id: 'apt1', name: '1BHK Apartment', pricing_per_night: 5000, maxGuests: 3, desc: 'Cozy fully furnished 1BHK apartment with complete kitchen and living room.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking'], extraBedAvailable: false, img: '/images/webp/rooms/apartments/3.jpg.webp' },
-    '2bhk': { id: 'apt2', name: '2BHK Apartment', pricing_per_night: 5500, maxGuests: 5, desc: 'Spacious 2BHK apartment ideal for families, featuring modern furnishings and great views.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '2 Baths'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/5.jpg.webp' },
-    '3bhk': { id: 'apt3', name: '3BHK Apartment', pricing_per_night: 8500, maxGuests: 8, desc: 'Luxury 3BHK penthouse style apartment for large groups with premium amenities.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '3 Baths', 'Balcony'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/14.jpg.webp' }
+    '1bhk': { id: 'apt1', name: '1BHK Apartment', pricing_per_night: 2500, maxGuests: 3, desc: 'Cozy fully furnished 1BHK apartment with complete kitchen and living room.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking'], extraBedAvailable: false, img: '/images/webp/rooms/apartments/3.jpg.webp' },
+    '2bhk': { id: 'apt2', name: '2BHK Apartment', pricing_per_night: 4000, maxGuests: 5, desc: 'Spacious 2BHK apartment ideal for families, featuring modern furnishings and great views.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '2 Baths'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/5.jpg.webp' },
+    '3bhk': { id: 'apt3', name: '3BHK Apartment', pricing_per_night: 5000, maxGuests: 8, desc: 'Luxury 3BHK penthouse style apartment for large groups with premium amenities.', amenities: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'AC', 'Parking', '3 Baths', 'Balcony'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/14.jpg.webp' }
 };
 
 export default function ApartmentsPage() {

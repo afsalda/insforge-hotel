@@ -34,7 +34,7 @@ export default async function handler(
         } = req.body;
 
         // ─── Step 1: Verify Razorpay Signature ───
-        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+        const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
         if (!keySecret) {
             return res.status(500).json({ error: "Server misconfiguration: missing payment secret" });
         }
@@ -132,6 +132,9 @@ export default async function handler(
         });
     } catch (error: any) {
         console.error("Verify payment error:", error);
-        return res.status(500).json({ error: error.message || "Internal server error" });
+        return res.status(500).json({ 
+            error: error.message || "Internal server error",
+            details: error.toString()
+        });
     }
 }

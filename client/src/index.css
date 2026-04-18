@@ -4643,7 +4643,7 @@ body {
 
   /* CHECKOUT PAGE MOBILE */
   .checkout-main-wrapper {
-    padding: 80px 16px 40px !important;
+    padding: 100px 16px 40px !important;
   }
 
   .checkout-header-section {
@@ -4812,7 +4812,7 @@ body {
   transition: all 0.2s ease;
   color: var(--text-charcoal);
   position: relative;
-  z-index: 1001;
+  z-index: 10;
 }
 
 .checkout-back-btn:hover {

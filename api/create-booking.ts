@@ -23,13 +23,14 @@ export default async function handler(
 
     try {
         // Validate Razorpay env vars
-        const keyId = process.env.RAZORPAY_KEY_ID;
-        const keySecret = process.env.RAZORPAY_KEY_SECRET;
+        const keyId = process.env.RAZORPAY_KEY_ID?.trim();
+        const keySecret = process.env.RAZORPAY_KEY_SECRET?.trim();
 
         if (!keyId || !keySecret) {
             console.error("Missing Razorpay env vars:", { keyId: !!keyId, keySecret: !!keySecret });
             return res.status(500).json({
                 error: "Server misconfiguration: Razorpay credentials not found",
+                details: { keyId: !!keyId, keySecret: !!keySecret }
             });
         }
 
@@ -46,6 +47,8 @@ export default async function handler(
             totalPrice,
             totalNights,
         } = req.body;
+        
+        const numericPrice = Number(totalPrice);
 
         // Validate required fields
         if (!guestName || !guestEmail || !guestPhone || !checkInDate || !totalPrice) {
@@ -53,8 +56,9 @@ export default async function handler(
         }
 
         // Calculate 30% deposit (in paise for Razorpay — INR × 100)
-        const depositAmount = Math.round(totalPrice * 0.3);
-        const depositPaise = depositAmount * 100;
+        // Ensure a minimum of 100 paise (1 INR) for Razorpay API constraints
+        const depositAmount = Math.round(numericPrice * 0.3);
+        const depositPaise = Math.max(100, Math.floor(depositAmount * 100));
 
         // Generate booking reference
         const year = new Date().getFullYear();
@@ -91,11 +95,17 @@ export default async function handler(
                 bookingNumber,
                 depositAmount,
                 totalPrice,
-                key: process.env.RAZORPAY_KEY_ID,
+                key: keyId,
             },
         });
     } catch (error: any) {
         console.error("Create booking error:", error);
-        return res.status(500).json({ error: error.message || "Internal server error" });
+        
+        // Handle Razorpay specific errors
+        const errorMessage = error.error?.description || error.message || "Internal server error";
+        return res.status(500).json({ 
+            error: errorMessage,
+            code: error.error?.code || 'UNKNOWN_ERROR'
+        });
     }
 }

@@ -27,7 +27,9 @@ export default function Footer() {
                     <a href="#reviews">Reviews</a>
                     <Link to="/admin">Admin Access</Link>
                     <Link to="/contact">Contact</Link>
-                    <Link to="/cancellation-policy">Cancellation Policy</Link>
+                    <Link to="/cancellation-policy">Cancellation & Refund Policy</Link>
+                    <Link to="/privacy-policy">Privacy Policy</Link>
+                    <Link to="/terms">Terms & Conditions</Link>
                 </div>
 
                 {/* Features Column */}

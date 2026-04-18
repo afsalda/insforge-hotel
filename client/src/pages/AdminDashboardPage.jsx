@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import {
     CreditCard, Users, Calendar, LayoutDashboard, Hotel,
-    Settings, Bell, CheckCircle, Clock, ArrowLeft, Trash2,
+    Settings, Bell, CheckCircle, Clock, ChevronLeft, Trash2,
     RefreshCw, DollarSign, LogOut, Menu, X, Plus, Edit,
-    Mail, Phone, Briefcase, Calendar as CalendarIcon, Loader2
+    Mail, Phone, Briefcase, Calendar as CalendarIcon, Loader2, ArrowLeft
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as api from '../lib/api.js';
@@ -125,9 +125,9 @@ export default function AdminDashboardPage() {
             <button 
                 onClick={() => navigate('/')}
                 className="checkout-back-btn"
-                style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 100, background: 'white', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', border: 'none', cursor: 'pointer' }}
+                style={{ position: 'fixed', top: '20px', left: '20px', zIndex: 100 }}
             >
-                <ArrowLeft size={24} color="var(--bg-deep-green)" />
+                <ChevronLeft size={24} color="var(--accent-gold)" />
             </button>
             {/* Mobile Menu Overlay */}
             {mobileMenuOpen && (

@@ -278,7 +278,7 @@ export default function CheckoutPage() {
                         className="checkout-back-btn" 
                         aria-label="Go back"
                     >
-                        <ChevronLeft size={24} />
+                        <ChevronLeft size={24} color="var(--accent-gold)" />
                     </button>
                     <h1 className="checkout-page-title">Confirm and Pay</h1>
                 </div>

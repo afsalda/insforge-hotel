@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef, cloneElement } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
-    ArrowLeft, Star, Share2, Heart, Award, KeyRound, Wifi,
+    ChevronLeft, Star, Share2, Heart, Award, KeyRound, Wifi,
     Car, Snowflake, CookingPot, Tv, WashingMachine, Waves,
     Trees, ChevronRight, CheckCircle, Loader2, X, Coffee,
-    MapPin
+    MapPin, ArrowLeft
 } from 'lucide-react';
 import '../ListingDetailRedesign.css';
 import { createBooking } from '../lib/api.js';
@@ -132,7 +132,7 @@ export const LISTING_DATA = {
             { label: 'Living Room', icon: <Tv size={24} /> },
             { label: 'Free Parking', icon: <Car size={24} /> }
         ],
-        price: 5000, cleaningFee: 200, serviceFee: 250
+        price: 2500, cleaningFee: 200, serviceFee: 250
     },
     'apt2': {
         title: '2BHK Family Apartment',
@@ -154,7 +154,7 @@ export const LISTING_DATA = {
             { label: 'Washing Machine', icon: <WashingMachine size={24} /> },
             { label: 'Free Parking', icon: <Car size={24} /> }
         ],
-        price: 5500, cleaningFee: 300, serviceFee: 350
+        price: 4000, cleaningFee: 300, serviceFee: 350
     },
     'apt3': {
         title: '3BHK Penthouse Apartment',
@@ -178,7 +178,22 @@ export const LISTING_DATA = {
             { label: 'In-Unit Washer', icon: <WashingMachine size={24} /> },
             { label: 'Reserved Parking', icon: <Car size={24} /> }
         ],
-        price: 8500, cleaningFee: 450, serviceFee: 500
+        price: 5000, cleaningFee: 450, serviceFee: 500
+    },
+    'test-room': {
+        title: 'Razorpay Test Room',
+        location: 'Al Baith Hotel',
+        rating: 5.0, reviews: 0,
+        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
+        images: [
+            'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1200'
+        ],
+        guests: 1, bedrooms: 1, beds: 1, baths: 1,
+        description: 'SPECIAL TEST ROOM: Use this to test Razorpay integration with a 1 INR price.',
+        amenities: [
+            { label: 'Razorpay Testing', icon: <KeyRound size={24} /> }
+        ],
+        price: 1, cleaningFee: 0, serviceFee: 0
     }
 };
 
@@ -710,7 +725,7 @@ export default function ListingDetailPage() {
 
     // MOBILE VIEW
     return (
-        <div style={{ width: '100%', overflowX: 'hidden', backgroundColor: '#fcfcfc', paddingTop: '56px' }}>
+        <div style={{ width: '100%', overflowX: 'hidden', backgroundColor: '#fcfcfc', paddingTop: '80px' }}>
             {/* Image Section */}
             <div style={{ position: 'relative', width: '100%', height: '280px', overflow: 'hidden', borderRadius: '0 0 24px 24px' }}>
                 {/* Overlay Navigation/Action Icons */}
@@ -727,20 +742,9 @@ export default function ListingDetailPage() {
                 }}>
                     <button 
                         onClick={() => navigate('/rooms')}
-                        style={{ 
-                            background: '#FFFFFF', 
-                            borderRadius: '50%', 
-                            width: '40px', 
-                            height: '40px', 
-                            border: 'none', 
-                            display: 'flex', 
-                            alignItems: 'center', 
-                            justifyContent: 'center', 
-                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)', 
-                            cursor: 'pointer' 
-                        }}
+                        className="checkout-back-btn"
                     >
-                        <ArrowLeft size={20} color="#000000" />
+                        <ChevronLeft size={24} color="var(--accent-gold)" />
                     </button>
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button 

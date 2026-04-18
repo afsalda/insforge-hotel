@@ -100,13 +100,18 @@ export default function CancellationPolicy() {
                     />
                 </div>
                 
-                <button className="policy-back-btn" onClick={() => window.history.back()} aria-label="Go back">
-                    <ChevronLeft strokeWidth={4.5} size={32} />
+                <button 
+                    className="checkout-back-btn" 
+                    onClick={() => window.history.back()} 
+                    aria-label="Go back"
+                    style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 9999 }}
+                >
+                    <ChevronLeft size={24} color="var(--accent-gold)" />
                 </button>
 
                 <div className="hero-content">
                     <div className="hero-text" style={{ textAlign: 'center' }}>
-                        <h1 className="hero-headline">Cancellation Policy</h1>
+                        <h1 className="hero-headline">Cancellation & Refund Policy</h1>
                         <p className="hero-subtext" style={{ marginInline: 'auto' }}>
                             Please review our rules regarding booking cancellations and refunds to ensure a smooth administrative process.
                         </p>
@@ -272,27 +277,7 @@ export default function CancellationPolicy() {
                     justify-content: flex-start;
                 }
 
-                .policy-back-btn {
-                    position: fixed;
-                    top: 110px;
-                    left: 20px;
-                    z-index: 9999;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    background: transparent;
-                    border: none;
-                    color: var(--accent-gold) !important; /* Brand Accent Gold */
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    cursor: pointer;
-                    padding: 0;
-                    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
-                }
 
-                .policy-back-btn:hover {
-                    transform: scale(1.15) translateX(-4px);
-                    opacity: 0.8;
-                }
                 
                 .hero-headline {
                     font-family: var(--font-heading);
@@ -614,10 +599,7 @@ export default function CancellationPolicy() {
                         margin-bottom: 24px;
                     }
 
-                    .policy-back-btn {
-                        top: 90px !important;
-                        left: 14px !important;
-                    }
+
 
                     .policy-terms-card p, .policy-list li, .box-text {
                         font-size: 0.95rem;

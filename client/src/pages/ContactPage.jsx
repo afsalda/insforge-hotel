@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Mail, Phone, MapPin, Clock, X, ExternalLink, ArrowLeft } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, X, ExternalLink, ChevronLeft } from 'lucide-react';
 
 /* ─── Ornamental SVG Divider ─── */
 function OrnamentalDivider() {
@@ -51,9 +51,10 @@ export default function ContactPage() {
             </Helmet>
             <button 
                 onClick={() => window.history.back()}
-                style={{ position: 'fixed', top: '100px', left: '20px', zIndex: 100, background: 'white', borderRadius: '50%', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.15)', border: 'none', cursor: 'pointer' }}
+                className="checkout-back-btn"
+                style={{ position: 'fixed', top: '100px', left: '20px', zIndex: 100 }}
             >
-                <ArrowLeft size={24} color="var(--bg-deep-green)" />
+                <ChevronLeft size={24} color="var(--accent-gold)" />
             </button>
             {/* ─── Hero Section ─── */}
             <section className="contact-hero-alt">

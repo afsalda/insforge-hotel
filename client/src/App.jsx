@@ -22,6 +22,8 @@ import CheckoutPage from './pages/CheckoutPage';
 import ContactPage from './pages/ContactPage';
 import CancellationPolicy from './pages/CancellationPolicy';
 import RoomsPage from './pages/RoomsPage';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsConditions from './pages/TermsConditions';
 import NotFoundPage from './pages/NotFoundPage';
 import PropertyCardStack from './components/PropertyCardStack';
 import './index.css';
@@ -114,6 +116,22 @@ function App() {
           <>
             <Navbar />
             <CancellationPolicy />
+            <Footer />
+          </>
+        } />
+
+        <Route path="/privacy-policy" element={
+          <>
+            <Navbar />
+            <PrivacyPolicy />
+            <Footer />
+          </>
+        } />
+
+        <Route path="/terms" element={
+          <>
+            <Navbar />
+            <TermsConditions />
             <Footer />
           </>
         } />

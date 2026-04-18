@@ -68,10 +68,11 @@ export default function RoomsPage() {
             // In a real app we fetch from 'listings' or 'room_types' table
             // For now we use the same fallback data as HomePage for consistency if DB fails
             const fallbackRooms = [
+                { id: 'test-room', name: 'Razorpay Test Room (₹1)', pricing_per_night: 1, details_max_guests: 1, description: 'SPECIAL TEST ROOM: Use this to test Razorpay integration with a 1 INR price.', amenity_ids: ['WiFi'], photos: ['https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1200'] },
                 { id: 'standard', name: 'Standard Room', pricing_per_night: 1500, details_max_guests: 2, description: 'A cozy and comfortable room with all essential amenities for a relaxing stay.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater'], photos: ['/images/webp/rooms/standard_1.webp'] },
                 { id: 'deluxe', name: 'Deluxe Room', pricing_per_night: 1800, details_max_guests: 3, description: 'A spacious king bed retreat with premium furnishings and city views.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Smart TV', 'King Bed'], photos: ['/images/webp/rooms/deluxe_1.webp'] },
                 { id: 'suite', name: 'Suite Room', pricing_per_night: 3500, details_max_guests: 4, description: 'Luxury suite with separate lounge, mini kitchen, and jacuzzi.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Jacuzzi', 'Mini Kitchen'], photos: ['/images/webp/rooms/suite_1.webp'] },
-                { id: 'apartments', name: 'Apartments', pricing_per_night: 5000, details_max_guests: 8, description: 'Fully furnished apartments for large groups and extended stays.', amenity_ids: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking'], photos: ['/images/webp/rooms/apartments/15.jpg.webp'] }
+                { id: 'apartments', name: 'Apartments', pricing_per_night: 2500, details_max_guests: 8, description: 'Fully furnished apartments for large groups and extended stays.', amenity_ids: ['WiFi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking'], photos: ['/images/webp/rooms/apartments/15.jpg.webp'] }
             ];
 
             const { data, error } = await insforge.database
@@ -100,7 +101,7 @@ export default function RoomsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                style={{ paddingTop: '60px', minHeight: '100vh', backgroundColor: 'var(--bg-off-white)', paddingBottom: '60px' }}
+                style={{ paddingTop: '100px', minHeight: '100vh', backgroundColor: 'var(--bg-off-white)', paddingBottom: '60px' }}
             >
                 <Helmet>
                     <title>Our Rooms – Al Baith Rest House, Ernakulam Kerala</title>

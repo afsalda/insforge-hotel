@@ -114,10 +114,11 @@ function AnimatedCheckmark() {
 
 
 const ROOM_DATA = {
+    test_room: { id: 'test-room', name: 'Razorpay Test Room (₹1)', price: '₹1 / night', maxGuests: 1, desc: 'SPECIAL TEST ROOM: Use this to test Razorpay integration with a 1 INR price.', amenities: ['WiFi'], extraBedAvailable: false, img: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1200' },
     standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift'], extraBedAvailable: false, img: '/images/webp/rooms/standard_1.webp' },
     deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/webp/rooms/deluxe_1.webp' },
     suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/webp/rooms/suite_1.webp' },
-    apartments: { id: 'apartments', name: 'Apartments', price: '₹5,000 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['Free Wi-Fi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/15.jpg.webp' }
+    apartments: { id: 'apartments', name: 'Apartments', price: '₹2,500 / night', maxGuests: 8, desc: 'Fully furnished apartments ranging from 1BHK to luxurious 3BHK penthouses for large groups and extended stays.', amenities: ['Free Wi-Fi', 'Kitchen', 'Electric Kettle', 'Living Room', 'Parking', 'AC', 'Balcony'], extraBedAvailable: true, img: '/images/webp/rooms/apartments/15.jpg.webp' }
 };
 
 const AMENITY_ICONS = {
