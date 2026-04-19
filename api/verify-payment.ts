@@ -78,32 +78,62 @@ export default async function handler(
 
         const customerPhone = formatPhone(guestPhone);
 
+        // ─── Log WhatsApp config status ───
+        console.log("WhatsApp config:", {
+            WHATSAPP_PHONE_NUMBER_ID: process.env.WHATSAPP_PHONE_NUMBER_ID ? "✅ set" : "❌ missing",
+            WHATSAPP_ACCESS_TOKEN: process.env.WHATSAPP_ACCESS_TOKEN ? "✅ set" : "❌ missing",
+            WHATSAPP_OWNER_PHONE: process.env.WHATSAPP_OWNER_PHONE ? "✅ set" : "❌ missing",
+            customerPhone,
+            guestPhoneRaw: guestPhone,
+        });
+
+        // Format dates for human-readable WhatsApp messages
+        const formatDate = (dateStr: string): string => {
+            if (!dateStr) return "N/A";
+            try {
+                return new Date(dateStr).toLocaleDateString("en-IN", {
+                    day: "numeric", month: "short", year: "numeric"
+                });
+            } catch {
+                return dateStr;
+            }
+        };
+
+        const formattedCheckIn = formatDate(checkInDate);
+        const formattedCheckOut = formatDate(checkOutDate);
+
         // ─── Step 3: Send WhatsApp to Customer ───
-        try {
-            await sendWhatsApp(customerPhone, "_booking_confirmed", [
-                guestName || "Guest",
-                listingTitle || "Room",
-                checkInDate || "N/A",
-                checkOutDate || "N/A",
-                `₹${depositAmount || 0}`
-            ]);
-        } catch (waErr: any) {
-            console.error("Customer WhatsApp failed:", waErr.message);
-            // Non-blocking — booking is still confirmed
+        if (customerPhone) {
+            try {
+                const result = await sendWhatsApp(customerPhone, "_booking_confirmed", [
+                    guestName || "Guest",
+                    listingTitle || "Room",
+                    formattedCheckIn,
+                    formattedCheckOut,
+                    `₹${depositAmount || 0}`
+                ]);
+                console.log("✅ Customer WhatsApp sent:", result?.messages?.[0]?.id || "ok");
+            } catch (waErr: any) {
+                console.error("❌ Customer WhatsApp failed:", waErr.message);
+                // Non-blocking — booking is still confirmed
+            }
+        } else {
+            console.warn("⚠️ Customer phone empty — skipping customer notification");
         }
 
         // ─── Step 4: Send WhatsApp to Hotel Owner ───
         const ownerPhone = process.env.WHATSAPP_OWNER_PHONE;
         if (ownerPhone) {
             try {
-                await sendWhatsApp(ownerPhone, "new_booking_alert", [
+                const result = await sendWhatsApp(ownerPhone, "new_booking_alert", [
                     guestName || "Guest",
                     listingTitle || "Room",
-                    checkInDate || "N/A",
-                    checkOutDate || "N/A"
+                    formattedCheckIn,
+                    formattedCheckOut
                 ]);
+                console.log("✅ Owner WhatsApp sent:", result?.messages?.[0]?.id || "ok");
             } catch (waErr: any) {
-                console.error("Owner WhatsApp failed:", waErr.message);
+                console.error("❌ Owner WhatsApp failed:", waErr.message);
             }
         } else {
             console.warn("⚠️ WHATSAPP_OWNER_PHONE not set — owner notification skipped");

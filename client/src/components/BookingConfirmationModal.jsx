@@ -100,10 +100,12 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           inset: 0,
           background: "rgba(0,0,0,0.55)",
           backdropFilter: "blur(3px)",
-          zIndex: 999,
+          zIndex: 10000,
           display: "flex",
-          alignItems: "center",
           justifyContent: "center",
+          alignItems: "flex-start", // Start at top for long content
+          padding: "50px 16px",
+          overflowY: "auto",
           animation: "fadeIn 0.3s ease",
         }}
       >
@@ -114,25 +116,20 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           style={{
             position: "relative",
             width: "min(400px, 92vw)",
-            maxHeight: "90dvh",
-            overflowY: "auto",
             background: "#fff",
-            borderRadius: "20px",
-            zIndex: 1000,
+            borderRadius: "24px",
+            zIndex: 10001,
             boxShadow: "0 24px 60px rgba(0,0,0,0.3)",
             animation: "slideUp 0.35s cubic-bezier(0.34,1.56,0.64,1)",
             fontFamily: "'Segoe UI', system-ui, sans-serif",
+            margin: "0 auto"
           }}
         >
-          {/* Ticket Notches */}
-          <div style={{ position: "absolute", width: 32, height: 32, background: "rgba(10, 26, 15, 1)", borderRadius: "50%", left: -16, top: "42%", zIndex: 10 }}></div>
-          <div style={{ position: "absolute", width: 32, height: 32, background: "rgba(10, 26, 15, 1)", borderRadius: "50%", right: -16, top: "42%", zIndex: 10 }}></div>
 
           {/* ── Header Area ── */}
-          <div style={{
+          <div className="modal-ticket-header" style={{
             background: "linear-gradient(165deg, #1a3d2b 0%, #0a1a0f 100%)",
             borderRadius: "24px 24px 0 0",
-            padding: "16px 18px 14px",
             textAlign: "center",
             position: "relative",
             overflow: "hidden"
@@ -140,23 +137,14 @@ export default function BookingConfirmationModal({ booking, onClose }) {
              {/* Glossy Overlay */}
              <div style={{ position: "absolute", top: "-50%", left: "-50%", width: "200%", height: "200%", background: "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)", pointerEvents: "none" }}></div>
 
-            <button onClick={onClose} style={{
-              position: "absolute", top: 18, right: 18,
-              background: "rgba(255,255,255,0.12)",
-              border: "none", borderRadius: "50%",
-              width: 32, height: 32, cursor: "pointer",
-              color: "#fff", fontSize: 16, display: "flex", 
-              alignItems: "center", justifyContent: "center",
-            }}>✕</button>
-
             {/* Brand Logo */}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 20 }}>
+            <div className="ticket-brand-logo" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 15 }}>
               <span style={{ fontSize: 22 }}>🌙</span>
               <span style={{ color: "#C9A84C", fontWeight: 800, fontSize: 14, letterSpacing: 2, textTransform: "uppercase" }}>Al Baith</span>
             </div>
 
             {/* Checkmark Icon */}
-            <div style={{
+            <div className="ticket-check-icon" style={{
               width: 44, height: 44,
               background: "rgba(201,168,76,0.12)",
               border: "2.5px solid #C9A84C",
@@ -191,8 +179,10 @@ export default function BookingConfirmationModal({ booking, onClose }) {
             </div>
           </div>
 
+          <div className="ticket-divider" style={{ position: "relative", height: 0, zIndex: 11 }}></div>
+
           {/* ── Body ── */}
-          <div style={{ padding: "12px 16px 16px", background: "#fff", borderRadius: "0 0 24px 24px" }}>
+          <div className="modal-ticket-body" style={{ background: "#fff", borderRadius: "20px 20px 24px 24px", marginTop: "-10px" }}>
 
             {/* Room Info */}
             <div style={{ textAlign: "center", marginBottom: 10, padding: "10px 14px" }}>
@@ -258,28 +248,53 @@ export default function BookingConfirmationModal({ booking, onClose }) {
             <div style={{ borderTop: "2px dashed #f0f0f0", margin: "0 -24px 24px" }}></div>
 
             {/* Barcode Section */}
-            <div style={{ textAlign: "center", marginBottom: 28 }}>
-              <canvas ref={barcodeRef} style={{ maxWidth: "90%", height: 40, borderRadius: 4 }} />
-              <p style={{ fontFamily: "monospace", fontSize: 9, color: "#aaa", marginTop: 2, marginBottom: 10, letterSpacing: 4, textTransform: "uppercase" }}>
+            <div className="barcode-section" style={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              alignItems: "center", 
+              width: "100%",
+              marginBottom: 10 
+            }}>
+              <canvas 
+                ref={barcodeRef} 
+                style={{ 
+                  maxWidth: "220px", 
+                  width: "100%", 
+                  height: 48, 
+                  borderRadius: 4 
+                }} 
+              />
+              <p style={{ 
+                fontFamily: "monospace", 
+                fontSize: 9, 
+                color: "#999", 
+                marginTop: 6, 
+                marginBottom: 10, 
+                letterSpacing: 4, 
+                textTransform: "uppercase",
+                textAlign: "center"
+              }}>
                 {bookingRef}
               </p>
             </div>
 
-            {/* Close Button */}
-            <button onClick={onClose} style={{
-              width: "100%", padding: "11px",
-              background: "linear-gradient(135deg, #1a3d2b, #2d6a4f)",
-              color: "#fff", fontWeight: 800, fontSize: 13,
-              border: "none", borderRadius: 10, cursor: "pointer",
-              letterSpacing: 1, textTransform: "uppercase",
-              boxShadow: "0 10px 20px rgba(45,106,79,0.2)",
-              transition: "transform 0.2s, background 0.2s",
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.02)"}
-            onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
-            >
-              RETURN HOME
-            </button>
+            {/* Return Home Button */}
+            <div style={{ padding: "10px 0 5px" }}>
+                <button onClick={onClose} style={{
+                width: "100%", padding: "12px",
+                background: "linear-gradient(135deg, #1a3d2b, #2d6a4f)",
+                color: "#fff", fontWeight: 800, fontSize: 13,
+                border: "none", borderRadius: 12, cursor: "pointer",
+                letterSpacing: 1, textTransform: "uppercase",
+                boxShadow: "0 10px 20px rgba(45,106,79,0.2)",
+                transition: "transform 0.2s, background 0.2s",
+                }}
+                onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.01)"}
+                onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                >
+                RETURN HOME
+                </button>
+            </div>
           </div>
         </div>
       </div>
@@ -298,12 +313,93 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           to { stroke-dashoffset: 0 }
         }
         
-        .modal-ticket-container::-webkit-scrollbar {
-          display: none;
-        }
         .modal-ticket-container {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+          max-height: 94vh;
+          overflow-y: auto;
+          -ms-overflow-style: none; /* IE and Edge */
+          scrollbar-width: none;    /* Firefox */
+        }
+        
+        .modal-ticket-header {
+          padding: 16px 18px 14px;
+        }
+
+        .modal-ticket-body {
+          padding: 24px 16px 16px;
+        }
+
+        .barcode-section {
+          margin-top: 5px;
+        }
+        
+        @media (min-width: 769px) {
+          .modal-ticket-container {
+            max-height: 90vh !important;
+          }
+          .modal-ticket-header {
+            padding: 8px 18px 4px !important;
+          }
+          .ticket-brand-logo {
+            margin-bottom: 8px !important;
+          }
+          .ticket-check-icon {
+            width: 34px !important;
+            height: 34px !important;
+            margin-bottom: 6px !important;
+          }
+          .ticket-check-icon svg {
+            width: 16px !important;
+            height: 16px !important;
+          }
+          .modal-ticket-header h2 {
+            font-size: 14px !important;
+          }
+          .modal-ticket-header p {
+            margin-bottom: 5px !important;
+          }
+          .modal-ticket-body {
+            padding: 10px 16px 10px !important;
+          }
+          .barcode-section {
+            margin-bottom: 2px !important;
+          }
+          .barcode-section canvas {
+            height: 38px !important;
+          }
+          .barcode-section p {
+            margin-top: 2px !important;
+            margin-bottom: 5px !important;
+          }
+        }
+        
+        .modal-ticket-container::-webkit-scrollbar {
+          display: none; /* Chrome, Safari and Opera */
+        }
+        
+        @media (max-width: 768px) {
+          .modal-ticket-container {
+            max-height: 92vh !important;
+          }
+        }
+
+        .ticket-divider::before,
+        .ticket-divider::after {
+          content: '';
+          position: absolute;
+          width: 32px;
+          height: 32px;
+          background: rgba(0, 0, 0, 0.55);
+          border-radius: 50%;
+          z-index: 10;
+          top: -16px;
+        }
+        
+        .ticket-divider::before {
+          left: -16px;
+        }
+        
+        .ticket-divider::after {
+          right: -16px;
         }
       `}</style>
     </>

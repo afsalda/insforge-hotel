@@ -4,7 +4,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ChevronLeft, CheckCircle2, Lock, Loader2, Star, Shield, MessageCircle } from 'lucide-react';
 import { getListingDetail } from './ListingDetailPage';
 import BookingConfirmationModal from '../components/BookingConfirmationModal';
-import { sendBookingNotifications } from '../utils/notify';
+
 
 /**
  * CheckoutPage — Razorpay 30% Deposit Flow
@@ -181,16 +181,8 @@ export default function CheckoutPage() {
                         setBookingStatus('success');
                         setStep(3);
 
-                        // Trigger WhatsApp notifications (non-blocking)
-                        sendBookingNotifications({
-                            customerName: guestName,
-                            customerPhone: "91" + guestPhone.replace(/\D/g, ''), // add country code and clean digits
-                            roomType: listing.title,
-                            checkIn: checkIn,
-                            checkOut: checkOut,
-                            totalAmount: total,
-                            bookingId: verifiedData.bookingNumber || verifiedData.paymentId || 'N/A',
-                        });
+                        // WhatsApp notifications are sent by the backend (verify-payment)
+                        // after successful Razorpay signature verification — no duplicate call needed.
                     } catch (verifyErr) {
                         setBookingStatus('error');
                         setErrors(prev => ({

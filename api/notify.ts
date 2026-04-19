@@ -3,6 +3,9 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 /**
  * Vercel Serverless Function — WhatsApp Notify
  * 
+ * DEPRECATED: Notifications are now sent automatically by verify-payment.ts after
+ * Razorpay signature verification. This endpoint is kept for manual/fallback use only.
+ * 
  * Sends booking confirmation to the customer and an alert to the hotel owner via WhatsApp Meta API.
  */
 
@@ -30,10 +33,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     bookingId,
   } = req.body;
 
-  const TOKEN = process.env.WHATSAPP_TOKEN;
+  console.warn("⚠️ /api/notify called — this endpoint is deprecated. Notifications should be sent by /api/verify-payment.");
+
+  const TOKEN = process.env.WHATSAPP_ACCESS_TOKEN;
   const PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID;
-  const OWNER = process.env.OWNER_WHATSAPP;
-  const API_URL = `https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`;
+  const OWNER = process.env.WHATSAPP_OWNER_PHONE;
+  const API_URL = `https://graph.facebook.com/v21.0/${PHONE_NUMBER_ID}/messages`;
 
   if (!TOKEN || !PHONE_NUMBER_ID || !OWNER) {
     console.error("Missing WhatsApp env vars:", { 
