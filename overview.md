@@ -1,87 +1,119 @@
-# WhatsApp Automation Overview — Al Baith Rest House
+# Project Overview: StayBnB (Final Hotel)
 
-This document provides a comprehensive technical overview of the WhatsApp notification system integrated into the Al Baith Rest House booking platform.
+StayBnB is a full-stack, high-premium vacation rental marketplace and hotel booking application. It is designed with a modern aesthetic, featuring smooth animations and a robust backend integration.
 
-## 🚀 Architecture and Trigger Flow
+## 🚀 Quick Links
+- **Client Root**: `client/`
+- **Server Root**: `server/`
+- **API (Serverless)**: `api/`
+- **Design System**: `design-system/`
+- **Project Configuration**: `package.json`, `gemini.md`, `AGENTS.md`
 
-The system uses a **Backend-Only Trigger** model to ensure reliability and prevent duplicate messages.
+---
 
-1.  **Payment Verification**: When a guest completes a Razorpay payment, the frontend calls the `/api/verify-payment` serverless function.
-2.  **Signature Check**: The backend verifies the Razorpay signature to ensure the payment is authentic.
-3.  **Notification Trigger**: On successful verification, the backend automatically triggers two WhatsApp messages via the **Meta WhatsApp Business API (Cloud API v21.0)**.
-4.  **Non-Blocking**: Notifications are sent asynchronously; if WhatsApp fails, the user still sees their booking confirmation on the website.
+## 🛠 Tech Stack
 
-```mermaid
-sequenceDiagram
-    participant Guest
-    participant Frontend
-    participant Razorpay
-    participant Backend (verify-payment.ts)
-    participant Meta API
+### Frontend
+- **Framework**: React.js (via Vite)
+- **Styling**: Tailwind CSS 3.4, Vanilla CSS
+- **Animations**: GSAP (GreenSock), Framer Motion
+- **Scrolling**: Lenis (Smooth Scroll)
+- **Routing**: React Router DOM (v6)
+- **State/Notifications**: React Hot Toast
 
-    Guest->>Frontend: Pay 30% Deposit
-    Frontend->>Razorpay: Open Payment Gateway
-    Razorpay-->>Frontend: Success (ID + Signature)
-    Frontend->>Backend: Verify Payment
-    Backend->>Backend: Check HMAC Signature
-    par Notify Customer
-        Backend->>Meta API: Send _booking_confirmed
-    and Notify Owner
-        Backend->>Meta API: Send new_booking_alert
-    end
-    Backend-->>Frontend: { success: true }
-    Frontend->>Guest: Show Success Modal
+### Backend & Infrastructure
+- **Serverless**: Vercel Functions (TypeScript)
+- **Node.js**: Express.js (Dedicated server in `server/`)
+- **BaaS**: **InsForge** (Database, Auth, AI, Realtime)
+- **Database**: PostgreSQL (via InsForge)
+- **Proxy**: custom proxy for InsForge in `api/insforge-proxy.ts`
+
+### Integrations
+- **Payments**: Razorpay (Live mode enabled)
+- **Email Notifications**: Brevo (Sendinblue)
+- **SMS/WhatsApp**: WhatsApp Business API (for booking alerts)
+
+---
+
+## 📂 Directory Structure
+
+```text
+.
+├── api/                # Vercel Serverless Functions (Prod Backend)
+│   ├── book-room.ts           # Room booking logic
+│   ├── create-booking.ts      # Initial booking creation
+│   ├── send-booking-email.ts # Email notification logic
+│   └── verify-payment.ts     # Razorpay webhook and verification
+├── client/             # React Frontend
+│   ├── src/
+│   │   ├── components/       # Reusable UI components
+│   │   ├── pages/            # Page-level components
+│   │   └── index.css         # Main styles (Tailwind + Custom)
+├── server/             # Express.js Backend (Internal/Legacy)
+│   ├── src/
+│   │   ├── routes/           # API routes
+│   │   ├── models/           # Data models
+│   │   └── controllers/      # Business logic
+├── packages/shared/    # Shared types and utilities
+└── design-system/      # Design tokens and visual assets
 ```
 
-## 🔑 Environment Variables (Standardized)
+---
 
-The following variables must be set in both `.env` (local) and **Vercel Dashboard** (production):
+## ✨ Key Features
 
-| Variable Name | Description | Example / Current Value |
+### 1. Booking Flow
+- Interactive room/apartment listings with high-quality media.
+- Real-time availability check (planned/integrated with InsForge).
+- Checkout system integrated with **Razorpay**.
+- Automatic booking confirmation via Email (Brevo) and WhatsApp.
+
+### 2. Admin Dashboard
+- Protected route (`/admin`) for property management.
+- Live scanner/check-in system (`scanner-card-stream.tsx`).
+- Booking management and analytics.
+
+### 3. User Experience
+- **Smooth Navigation**: Global smooth scroll using Lenis.
+- **Premium UI**: Custom "ticket-style" booking confirmations.
+- **Responsive**: Fully optimized for mobile (dedicated fixes for sticky elements).
+
+---
+
+## 🔗 Routing Table (Frontend)
+
+| Path | Component | Description |
 | :--- | :--- | :--- |
-| `WHATSAPP_ACCESS_TOKEN` | Meta Permanent Access Token | `EAATGo8...` |
-| `WHATSAPP_PHONE_NUMBER_ID` | WhatsApp Phone Number ID | `995916900282584` |
-| `WHATSAPP_OWNER_PHONE` | Number to receive owner alerts | `918589003444` |
+| `/` | `HomePage` | Hero section, featured properties |
+| `/rooms` | `RoomsPage` | Grid of available rooms |
+| `/rooms/:id` | `ListingDetailPage` | Detailed view of a specific room |
+| `/apartments` | `ApartmentsPage` | Multi-unit property listings |
+| `/checkout/:id` | `CheckoutPage` | Booking form and payment trigger |
+| `/login` | `AdminLoginPage` | Entry to admin panel |
+| `/admin` | `AdminDashboardPage` | Management tools |
+| `/terms` | `TermsConditions` | Legal terms |
+| `/privacy-policy` | `PrivacyPolicy` | Data privacy details |
 
-> [!IMPORTANT]
-> **Consolidation Fix**: Previously, the system was confused by mixed names like `WHATSAPP_TOKEN` and `OWNER_WHATSAPP`. These have all been unified to the names above.
+---
 
-## 📝 WhatsApp Templates
+## 🛡 Environment Variables (Reference)
+The project relies on the following key variables across `.env.local` and Vercel:
 
-The system uses two pre-approved Meta templates:
+- `VITE_INSFORGE_URL` / `VITE_INSFORGE_ANON_KEY`
+- `RAZORPAY_KEY_ID` / `RAZORPAY_KEY_SECRET`
+- `BREVO_API_KEY`
+- `WHATSAPP_API_TOKEN` / `WHATSAPP_PHONE_NUMBER_ID`
+- `ADMIN_SECRET_KEY`
 
-### 1. `_booking_confirmed` (Customer)
-Sent to the person who booked the room.
-*   **Variables**:
-    1.  `{{1}}`: Guest Name
-    2.  `{{2}}`: Listing/Room Title
-    3.  `{{3}}`: Check-in Date (Formatted: 18 Apr 2026)
-    4.  `{{4}}`: Check-out Date
-    5.  `{{5}}`: Deposit Amount Paid (e.g., ₹1050)
+---
 
-### 2. `new_booking_alert` (Owner)
-Sent to the hotel owner (`WHATSAPP_OWNER_PHONE`).
-*   **Variables**:
-    1.  `{{1}}`: Guest Name
-    2.  `{{2}}`: Room Title
-    3.  `{{3}}`: Check-in Date
-    4.  `{{4}}`: Check-out Date
+## 📝 Recent Progress
+- [x] Transitioned Razorpay to **Live Mode**.
+- [x] Fixed booking confirmation UI (ticket notches, centering).
+- [x] Implemented legal pages (Privacy, Terms, Cancellation).
+- [x] Standardized WhatsApp notification triggers in payment flow.
+- [x] Optimized mobile header and button overlaps.
 
-## 🛠️ Data Handling and Formatting
-
-*   **Phone Numbers**: Smart formatting handles both 10-digit inputs and prefixed numbers. It automatically prepends `91` if only 10 digits are provided and strips non-numeric characters.
-*   **Dates**: Dates are converted to the `en-IN` locale (e.g., "18 Apr 2026") before being sent to WhatsApp for better readability.
-*   **API Version**: Currently using **v21.0** of the Facebook Graph API via `api/utils/sendWhatsApp.js`.
-
-## 🔍 Logging and Troubleshooting
-
-To debug issues, check the **Vercel Logs** for the `verify-payment` function.
-
-*   **Success**: You will see `✅ Customer WhatsApp sent: message_id` and `✅ Owner WhatsApp sent: message_id`.
-*   **Failure**: Errors from the Meta API are logged with full detail.
-*   **Config Status**: On every payment verification, the system logs whether the 3 required environment variables are set (`✅ set` or `❌ missing`).
-
-## ⚠️ Known Fixes Applied (April 2026)
-1.  **Removed Duplicate Calls**: The frontend no longer calls `/api/notify`. All logic is now centralized in `verify-payment.ts`.
-2.  **Fixed Env Var Corruption**: Removed literal `\n` characters that were appended to secrets in the Vercel dashboard.
-3.  **Corrected Variable Names**: All code now points to `WHATSAPP_ACCESS_TOKEN` instead of the legacy `WHATSAPP_TOKEN`.
+---
+> [!NOTE]
+> This overview is automatically generated to maintain project coherence. For deep-dive technical rules, refer to `AGENTS.md` and `gemini.md`.

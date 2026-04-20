@@ -140,7 +140,32 @@ export default async function handler(
         }
 
 
-        // ─── Step 5: Return success ───
+        // ─── Step 5: Send booking confirmation email ───
+        try {
+            const baseUrl = process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}`
+                : 'http://localhost:3000';
+
+            await fetch(`${baseUrl}/api/send-booking-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    guestName: bookingDetails.guestName,
+                    guestEmail: bookingDetails.guestEmail,
+                    roomName: bookingDetails.listingTitle,
+                    checkIn: bookingDetails.checkInDate,
+                    checkOut: bookingDetails.checkOutDate,
+                    totalAmount: bookingDetails.totalPrice,
+                    bookingId: bookingDetails.bookingNumber,
+                    nights: bookingDetails.totalNights,
+                }),
+            });
+        } catch (emailError) {
+            // Email failure must never block the payment success response
+            console.error('Email notification failed (non-critical):', emailError);
+        }
+
+        // ─── Step 6: Return success ───
         return res.status(200).json({
             success: true,
             data: {

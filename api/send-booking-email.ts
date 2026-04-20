@@ -1,161 +1,92 @@
-import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { Resend } from 'resend';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-    if (req.method !== "POST") {
-        return res.status(405).json({ error: "Method not allowed" });
-    }
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-    const {
-        id,
-        booking_number,
-        guest_name,
-        guest_email,
-        guest_phone,
-        listing_title,
-        check_in_date,
-        check_out_date,
-        guests_count,
-        total_price,
-    } = req.body;
+export async function sendBookingEmails(bookingData: {
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  roomName: string;
+  checkIn: string;
+  checkOut: string;
+  totalAmount: number;
+  bookingId: string;
+  paymentId: string;
+}) {
+  const {
+    guestName, guestEmail, guestPhone,
+    roomName, checkIn, checkOut,
+    totalAmount, bookingId, paymentId
+  } = bookingData;
 
-    try {
-        const apiKey = process.env.RESEND_API_KEY;
-        if (!apiKey) {
-            console.warn("RESEND_API_KEY is not defined.");
-            return res.status(500).json({ error: "Email service not configured" });
-        }
+  const guestHtml = `
+    <div style="font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <div style="background: #1a3c5e; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+        <h1 style="color: #ffffff; margin: 0; font-size: 22px;">Booking Confirmed</h1>
+        <p style="color: #a8c4e0; margin: 8px 0 0;">Al Baith Rest House, Ernakulam</p>
+      </div>
+      <div style="background: #ffffff; border: 1px solid #e5e7eb; border-top: none; padding: 24px; border-radius: 0 0 8px 8px;">
+        <p style="color: #374151; font-size: 16px;">Dear ${guestName},</p>
+        <p style="color: #374151;">Your booking has been confirmed. Here are your details:</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0;">
+          <tr style="background: #f9fafb;">
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Booking ID</td>
+            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">${bookingId}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Room</td>
+            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">${roomName}</td>
+          </tr>
+          <tr style="background: #f9fafb;">
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Check-in</td>
+            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">${checkIn}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Check-out</td>
+            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">${checkOut}</td>
+          </tr>
+          <tr style="background: #f9fafb;">
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px;">Amount Paid</td>
+            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600;">₹${totalAmount}</td>
+          </tr>
+        </table>
+        <p style="color: #374151; font-size: 14px;">Payment ID: <span style="font-family: monospace;">${paymentId}</span></p>
+        <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 16px; margin-top: 16px;">
+          <p style="color: #0369a1; margin: 0; font-size: 14px;">📍 Al Baith Rest House, Ernakulam, Kerala<br>📞 24-hour front desk available for assistance</p>
+        </div>
+      </div>
+    </div>
+  `;
 
-        const displayId = booking_number || (id ? id.split("-")[0].toUpperCase() : "N/A");
-        const fromEmail = process.env.FROM_EMAIL || "noreply@albaith.in";
-        const hotelEmail = process.env.HOTEL_EMAIL || "albaith.booking@gmail.com";
+  const ownerHtml = `
+    <div style="font-family: Inter, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
+      <h2 style="color: #1a3c5e;">New Booking Alert</h2>
+      <table style="width: 100%; border-collapse: collapse;">
+        <tr><td style="padding: 8px; color: #6b7280;">Guest Name</td><td style="padding: 8px; font-weight: 600;">${guestName}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Email</td><td style="padding: 8px;">${guestEmail}</td></tr>
+        <tr><td style="padding: 8px; color: #6b7280;">Phone</td><td style="padding: 8px;">${guestPhone}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Room</td><td style="padding: 8px; font-weight: 600;">${roomName}</td></tr>
+        <tr><td style="padding: 8px; color: #6b7280;">Check-in</td><td style="padding: 8px;">${checkIn}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Check-out</td><td style="padding: 8px;">${checkOut}</td></tr>
+        <tr><td style="padding: 8px; color: #6b7280;">Amount</td><td style="padding: 8px; font-weight: 600;">₹${totalAmount}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Payment ID</td><td style="padding: 8px; font-family: monospace;">${paymentId}</td></tr>
+        <tr><td style="padding: 8px; color: #6b7280;">Booking ID</td><td style="padding: 8px; font-family: monospace;">${bookingId}</td></tr>
+      </table>
+    </div>
+  `;
 
-        // ... (ownerHtml and customerHtml remain the same)
-        const ownerHtml = `
-      <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
-          <div style="background:linear-gradient(135deg,#1a3c34 0%,#2d6a4f 100%);padding:32px 24px;text-align:center;">
-              <h1 style="color:#ffffff;margin:0;font-size:22px;letter-spacing:0.5px;">🔔 New Booking Alert</h1>
-              <p style="color:#a7f3d0;margin:8px 0 0;font-size:14px;">Al-Baith Resort</p>
-          </div>
-          <div style="padding:28px 24px;">
-              <p style="color:#374151;font-size:15px;margin:0 0 20px;">A new booking has been received. Here are the details:</p>
-              <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                  <tr style="border-bottom:1px solid #f3f4f6;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Booking Ref</td>
-                      <td style="padding:12px 8px;color:#111827;font-weight:700;">${displayId}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;background:#f9fafb;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Guest Name</td>
-                      <td style="padding:12px 8px;color:#111827;">${guest_name}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Email</td>
-                      <td style="padding:12px 8px;color:#111827;">${guest_email}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;background:#f9fafb;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Phone</td>
-                      <td style="padding:12px 8px;color:#111827;">${guest_phone || 'N/A'}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Room Type</td>
-                      <td style="padding:12px 8px;color:#111827;">${listing_title}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;background:#f9fafb;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Check-in</td>
-                      <td style="padding:12px 8px;color:#111827;">${check_in_date}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Check-out</td>
-                      <td style="padding:12px 8px;color:#111827;">${check_out_date || 'N/A'}</td>
-                  </tr>
-                  <tr style="border-bottom:1px solid #f3f4f6;background:#f9fafb;">
-                      <td style="padding:12px 8px;color:#6b7280;font-weight:600;">Guests</td>
-                      <td style="padding:12px 8px;color:#111827;">${guests_count}</td>
-                  </tr>
-                  <tr style="background:#ecfdf5;">
-                      <td style="padding:14px 8px;color:#065f46;font-weight:700;font-size:15px;">Total Price</td>
-                      <td style="padding:14px 8px;color:#065f46;font-weight:700;font-size:16px;">₹${total_price}</td>
-                  </tr>
-              </table>
-          </div>
-          <div style="background:#f9fafb;padding:16px 24px;text-align:center;border-top:1px solid #e5e7eb;">
-              <p style="color:#9ca3af;font-size:12px;margin:0;">Al-Baith Resort — Booking Management</p>
-          </div>
-      </div>`;
-
-        const customerHtml = `
-      <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:600px;margin:0 auto;background:#ffffff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;">
-          <div style="background:linear-gradient(135deg,#1a3c34 0%,#2d6a4f 100%);padding:40px 24px;text-align:center;">
-              <h1 style="color:#ffffff;margin:0;font-size:24px;">✅ Booking Confirmed!</h1>
-              <p style="color:#a7f3d0;margin:10px 0 0;font-size:14px;">Al-Baith Resort</p>
-          </div>
-          <div style="padding:28px 24px;">
-              <p style="color:#374151;font-size:15px;margin:0 0 6px;">Dear <strong>${guest_name}</strong>,</p>
-              <p style="color:#374151;font-size:15px;margin:0 0 24px;">Thank you for choosing <strong>Al-Baith Resort</strong>. Your booking has been confirmed successfully. Below are your reservation details:</p>
-              <div style="background:#f0fdf4;border-radius:10px;padding:20px;border:1px solid #bbf7d0;">
-                  <table style="width:100%;border-collapse:collapse;font-size:14px;">
-                      <tr style="border-bottom:1px solid #d1fae5;">
-                          <td style="padding:10px 8px;color:#6b7280;font-weight:600;">Booking Ref</td>
-                          <td style="padding:10px 8px;color:#111827;font-weight:700;">${displayId}</td>
-                      </tr>
-                      <tr style="border-bottom:1px solid #d1fae5;">
-                          <td style="padding:10px 8px;color:#6b7280;font-weight:600;">Room Type</td>
-                          <td style="padding:10px 8px;color:#111827;">${listing_title}</td>
-                      </tr>
-                      <tr style="border-bottom:1px solid #d1fae5;">
-                          <td style="padding:10px 8px;color:#6b7280;font-weight:600;">Check-in</td>
-                          <td style="padding:10px 8px;color:#111827;">${check_in_date}</td>
-                      </tr>
-                      <tr style="border-bottom:1px solid #d1fae5;">
-                          <td style="padding:10px 8px;color:#6b7280;font-weight:600;">Check-out</td>
-                          <td style="padding:10px 8px;color:#111827;">${check_out_date || 'N/A'}</td>
-                      </tr>
-                      <tr style="border-bottom:1px solid #d1fae5;">
-                          <td style="padding:10px 8px;color:#6b7280;font-weight:600;">Guests</td>
-                          <td style="padding:10px 8px;color:#111827;">${guests_count}</td>
-                      </tr>
-                      <tr>
-                          <td style="padding:12px 8px;color:#065f46;font-weight:700;font-size:15px;">Total Price</td>
-                          <td style="padding:12px 8px;color:#065f46;font-weight:700;font-size:16px;">₹${total_price}</td>
-                      </tr>
-                  </table>
-              </div>
-              <div style="margin-top:24px;padding:20px;background:#fffbeb;border-radius:10px;border:1px solid #fde68a;">
-                  <p style="color:#92400e;font-size:14px;margin:0;line-height:1.6;">
-                      📞 For any queries, reach us at <strong>${hotelEmail}</strong><br>
-                      We look forward to making your stay memorable!
-                  </p>
-              </div>
-          </div>
-          <div style="background:#1a3c34;padding:20px 24px;text-align:center;">
-              <p style="color:#a7f3d0;font-size:13px;margin:0;">Thank you for choosing Al-Baith Resort 🌿</p>
-              <p style="color:#6b7280;font-size:11px;margin:8px 0 0;">This is an automated confirmation email. Please do not reply.</p>
-          </div>
-      </div>`;
-
-        const sendEmail = (toEmail: string, subject: string, html: string) => {
-            return fetch("https://api.resend.com/emails", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    from: `Al-Baith Resort <${fromEmail}>`,
-                    to: [toEmail],
-                    subject,
-                    html,
-                }),
-            });
-        };
-
-        await Promise.allSettled([
-            sendEmail(hotelEmail, `New Booking Alert [${displayId}] – Al-Baith Resort`, ownerHtml),
-            sendEmail(guest_email, `Booking Confirmed [${displayId}] – Al-Baith Resort`, customerHtml),
-        ]);
-
-        return res.status(200).json({ success: true, message: "Emails successfully sent." });
-    } catch (err: any) {
-        console.error("send-booking-email error:", err.message || err);
-        return res.status(500).json({ error: "Internal Server Error" });
-    }
+  await Promise.all([
+    resend.emails.send({
+      from: 'Al Baith Rest House <bookings@albaith.in>',
+      to: guestEmail,
+      subject: `Booking Confirmed — ${roomName} | Al Baith Rest House`,
+      html: guestHtml,
+    }),
+    resend.emails.send({
+      from: 'Al Baith Bookings <bookings@albaith.in>',
+      to: 'albaith.booking@gmail.com',
+      subject: `New Booking: ${guestName} — ${roomName}`,
+      html: ownerHtml,
+    }),
+  ]);
 }
