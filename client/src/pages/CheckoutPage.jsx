@@ -56,6 +56,41 @@ export default function CheckoutPage() {
     const [bookingStatus, setBookingStatus] = useState('idle');
     const [confirmedBooking, setConfirmedBooking] = useState(null);
 
+    // Redirect-fallback: if Razorpay redirected back with query params, verify payment
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const paymentId = params.get('razorpay_payment_id');
+        const orderId = params.get('razorpay_order_id');
+        const signature = params.get('razorpay_signature');
+
+        if (paymentId && orderId && signature) {
+            const savedDetails = sessionStorage.getItem('pendingBooking');
+            const bookingDetails = savedDetails ? JSON.parse(savedDetails) : {};
+
+            fetch('/api/verify-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    razorpay_payment_id: paymentId,
+                    razorpay_order_id: orderId,
+                    razorpay_signature: signature,
+                    bookingDetails,
+                }),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    sessionStorage.removeItem('pendingBooking');
+                    setConfirmedBooking(data.data);
+                    setBookingStatus('success');
+                    setStep(3);
+                    window.history.replaceState({}, '', window.location.pathname);
+                }
+            })
+            .catch(err => console.error('Redirect verify failed:', err));
+        }
+    }, []);
+
     const depositAmount = Math.round(total * 0.3);
     const balanceAmount = total - depositAmount;
 
@@ -211,6 +246,19 @@ export default function CheckoutPage() {
                     api: response.error?.description || 'Payment failed. Please try again.',
                 }));
             });
+            sessionStorage.setItem('pendingBooking', JSON.stringify({
+                bookingNumber: orderData.bookingNumber,
+                guestName: guestName.trim(),
+                guestEmail: guestEmail.trim(),
+                guestPhone: guestPhone.trim(),
+                listingTitle: listing.title,
+                checkInDate: checkIn,
+                checkOutDate: checkOut,
+                totalPrice: total,
+                depositAmount: orderData.depositAmount,
+                guestsCount: guestsCount || 1,
+                totalNights: nights || 1,
+            }));
             rzp.open();
         } catch (err) {
             setBookingStatus('error');
