@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import crypto from "crypto";
 // @ts-ignore — JS utility module
 import { sendWhatsApp } from "./utils/sendWhatsApp.js";
+import { sendBookingEmails } from "./send-booking-email";
 
 /**
  * Vercel Serverless Function — Verify Payment
@@ -140,29 +141,23 @@ export default async function handler(
         }
 
 
-        // ─── Step 5: Send booking confirmation email ───
+        // ─── Step 5: Send booking confirmation emails (direct call, no HTTP) ───
         try {
-            const baseUrl = process.env.VERCEL_URL
-                ? `https://${process.env.VERCEL_URL}`
-                : 'http://localhost:3000';
-
-            await fetch(`${baseUrl}/api/send-booking-email`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    guestName: bookingDetails.guestName,
-                    guestEmail: bookingDetails.guestEmail,
-                    roomName: bookingDetails.listingTitle,
-                    checkIn: bookingDetails.checkInDate,
-                    checkOut: bookingDetails.checkOutDate,
-                    totalAmount: bookingDetails.totalPrice,
-                    bookingId: bookingDetails.bookingNumber,
-                    nights: bookingDetails.totalNights,
-                }),
+            const emailResult = await sendBookingEmails({
+                guestName: guestName || 'Guest',
+                guestEmail: guestEmail || '',
+                guestPhone: guestPhone || '',
+                roomName: listingTitle || 'Room',
+                checkIn: checkInDate || '',
+                checkOut: checkOutDate || '',
+                totalAmount: totalPrice || 0,
+                bookingId: bookingNumber || '',
+                paymentId: razorpay_payment_id || '',
             });
-        } catch (emailError) {
+            console.log('📧 Email result:', JSON.stringify(emailResult));
+        } catch (emailError: any) {
             // Email failure must never block the payment success response
-            console.error('Email notification failed (non-critical):', emailError);
+            console.error('❌ Email notification failed (non-critical):', emailError.message || emailError);
         }
 
         // ─── Step 6: Return success ───
