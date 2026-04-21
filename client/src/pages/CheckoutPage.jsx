@@ -134,9 +134,11 @@ export default function CheckoutPage() {
                 key: orderData.key || import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: 'Al Baith Rest House',
-                description: `30% Deposit — ${listing.title}`,
+                name: "StayBnB",
+                description: `Deposit for ${listing.title}`,
                 order_id: orderData.orderId,
+                callback_url: `${window.location.origin}/api/verify-payment`,
+                redirect: false,
                 prefill: {
                     name: guestName.trim(),
                     email: guestEmail.trim(),
@@ -146,15 +148,17 @@ export default function CheckoutPage() {
                     color: '#1a5c3a',
                 },
                 handler: async function (response) {
+                    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
+                    
                     // Step D: Verify payment on backend
                     try {
                         const verifyRes = await fetch('/api/verify-payment', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({
-                                razorpay_order_id: response.razorpay_order_id,
-                                razorpay_payment_id: response.razorpay_payment_id,
-                                razorpay_signature: response.razorpay_signature,
+                                razorpay_payment_id,
+                                razorpay_order_id,
+                                razorpay_signature,
                                 bookingDetails: {
                                     bookingNumber: orderData.bookingNumber,
                                     guestName: guestName.trim(),
@@ -177,17 +181,19 @@ export default function CheckoutPage() {
                         }
 
                         const { data: verifiedData } = await verifyRes.json();
+                        
+                        // Successfully verified -> Navigate/Show Success Screen
                         setConfirmedBooking(verifiedData);
                         setBookingStatus('success');
                         setStep(3);
 
-                        // WhatsApp notifications are sent by the backend (verify-payment)
-                        // after successful Razorpay signature verification — no duplicate call needed.
+                        // WhatsApp and Email notifications are triggered by the backend (verify-payment)
                     } catch (verifyErr) {
+                        console.error('Verification error:', verifyErr);
                         setBookingStatus('error');
                         setErrors(prev => ({
                             ...prev,
-                            api: `Payment received but verification failed. Your Ref: ${orderData.bookingNumber}. Please contact us with this reference.`,
+                            api: `Payment received but verification failed. Ref: ${orderData.bookingNumber}. Please contact us.`,
                         }));
                     }
                 },

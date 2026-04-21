@@ -52,29 +52,36 @@ const INSFORGE_URL = isProduction
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 const insforge = createClient({ baseUrl: INSFORGE_URL, anonKey: INSFORGE_ANON_KEY });
 
+/* ─── Ornamental SVG Divider (Arch/Keyhole) ─── */
 function OrnamentalDivider() {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    ref.current?.querySelectorAll('.svg-divider-draw').forEach(el => el.classList.add('visible'));
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0.5 }
+        );
+        if (ref.current) observer.observe(ref.current);
+        return () => observer.disconnect();
+    }, []);
+
     return (
-        <div className="ornamental-divider flex flex-col items-center gap-4 py-16">
-            <svg width="400" height="80" viewBox="0 0 400 80" fill="none" className="animate-gold-glow">
-                <path d="M20,60 Q20,10 200,10 Q380,10 380,60" stroke="var(--accent-gold)" strokeWidth="1" fill="none" opacity="0.4" />
-                <path d="M40,60 Q40,25 200,25 Q360,25 360,60" stroke="var(--accent-gold)" strokeWidth="1.5" fill="none" />
-                <path d="M180,25 L200,5 L220,25" stroke="var(--accent-gold)" strokeWidth="1.5" fill="none" />
-                <circle cx="200" cy="25" r="3" fill="var(--accent-gold)" />
-                <path d="M0,60 H400" stroke="var(--accent-gold)" strokeWidth="0.5" opacity="0.3" />
+        <div className="ornamental-divider" ref={ref}>
+            <svg width="200" height="60" viewBox="0 0 200 60" fill="none">
+                <path className="svg-divider-draw" d="M10,55 Q10,10 100,10 Q190,10 190,55" stroke="#C9A96E" strokeWidth="1.5" fill="none" />
+                <circle cx="100" cy="10" r="3" fill="#C9A96E" opacity="0.6" />
+                <line className="svg-divider-draw" x1="40" y1="55" x2="160" y2="55" stroke="#C9A96E" strokeWidth="0.8" />
+                <circle cx="40" cy="55" r="2" fill="#C9A96E" opacity="0.4" />
+                <circle cx="160" cy="55" r="2" fill="#C9A96E" opacity="0.4" />
             </svg>
         </div>
     );
 }
-
-function ScrollIndicator() {
-    return (
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 scroll-indicator">
-            <span className="text-[0.7rem] uppercase tracking-[0.3em] text-[var(--accent-gold)] font-medium">Scroll</span>
-            <div className="w-[1px] h-12 bg-gradient-to-b from-[var(--accent-gold)] to-transparent"></div>
-        </div>
-    );
-}
-
 
 /* ─── Star Rating SVG ─── */
 function StarIcon() {
@@ -330,12 +337,12 @@ export default function HomePage() {
                     </div>
 
                     <div className="hero-content">
-                        <div className="hero-text animate-float">
+                        <div className="hero-text">
                             <div className="hero-label-group">
-                                <span className="hero-top-label animate-gold-glow">Luxury Stays</span>
+                                <span className="hero-top-label">Luxury Stays</span>
                                 <div className="hero-gold-line"></div>
                             </div>
-                            <h1 className="hero-headline text-shadow-glow">
+                            <h1 className="hero-headline">
                                 {'Al Baith Rest House, Ernakulam'.split(' ').map((word, i) => (
                                     <span className="word" key={i}>
                                         <span className="hero-word">{word}</span>{' '}
@@ -347,11 +354,10 @@ export default function HomePage() {
                                 Comfortable Rooms Steps Away from Lakeshore Hospital, Ernakulam
                             </p>
                             <div className="hero-cta-row">
-                                <a href="#rooms" className="btn-primary font-inter-numbers shadow-gold-glow">EXPLORE ROOMS</a>
+                                <a href="#rooms" className="btn-primary font-inter-numbers">EXPLORE ROOMS</a>
                             </div>
                         </div>
                     </div>
-                    <ScrollIndicator />
                 </div>
             </section>
 
