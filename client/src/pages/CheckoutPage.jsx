@@ -134,10 +134,9 @@ export default function CheckoutPage() {
                 key: orderData.key || import.meta.env.VITE_RAZORPAY_KEY_ID,
                 amount: orderData.amount,
                 currency: orderData.currency,
-                name: "StayBnB",
+                name: 'Al Baith Rest House',
                 description: `Deposit for ${listing.title}`,
                 order_id: orderData.orderId,
-                callback_url: `${window.location.origin}/api/verify-payment`,
                 redirect: false,
                 prefill: {
                     name: guestName.trim(),
