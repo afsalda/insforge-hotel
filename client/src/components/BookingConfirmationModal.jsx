@@ -13,6 +13,12 @@ function playConfirmationSound() {
   if (!AudioContext) return;
   
   const ctx = new AudioContext();
+  
+  // Resume context if suspended (common on mobile/safari)
+  if (ctx.state === 'suspended') {
+    ctx.resume();
+  }
+
   const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
   const times = [0, 0.12, 0.24, 0.38];
 
@@ -86,29 +92,28 @@ export default function BookingConfirmationModal({ booking, onClose }) {
     setIsDownloading(true);
     
     try {
-      // Create a clone or just capture the current ref
-      // We use a higher scale for better PDF quality
+      // Small delay to ensure any UI updates are settled
+      await new Promise(r => setTimeout(r, 100));
+
       const canvas = await html2canvas(ticketRef.current, {
-        scale: 3,
+        scale: 2, // 2x is plenty for mobile and safer for memory
         useCORS: true,
+        allowTaint: true,
         backgroundColor: "#ffffff",
         logging: false,
-        onclone: (clonedDoc) => {
-          // Ensure any elements we want hidden are hidden in the clone
-          const btn = clonedDoc.querySelector('.download-btn-container');
-          if (btn) btn.style.display = 'none';
-        }
+        width: ticketRef.current.offsetWidth,
+        height: ticketRef.current.offsetHeight,
       });
       
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new jsPDF({
         orientation: 'portrait',
-        unit: 'px',
-        format: [canvas.width / 3, canvas.height / 3]
+        unit: 'pt',
+        format: [canvas.width / 2, canvas.height / 2]
       });
       
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width / 3, canvas.height / 3);
-      pdf.save(`Booking-${bookingRef}.pdf`);
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
+      pdf.save(`Booking-Receipt-${bookingRef}.pdf`);
     } catch (err) {
       console.error("PDF generation failed:", err);
     } finally {
