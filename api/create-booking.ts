@@ -60,10 +60,22 @@ export default async function handler(
         const depositAmount = Math.round(numericPrice * 0.3);
         const depositPaise = Math.max(100, Math.floor(depositAmount * 100));
 
-        // Generate booking reference
-        const year = new Date().getFullYear();
-        const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-        const bookingNumber = `ALB-${year}-${randomPart}`;
+        // Generate booking reference based on room type
+        const getPrefix = (rId: string, title: string) => {
+            const id = (rId || "").toLowerCase();
+            const t = (title || "").toLowerCase();
+            if (id === "standard" || t.includes("standard")) return "STD";
+            if (id === "deluxe" || t.includes("deluxe")) return "DLX";
+            if (id === "suite" || t.includes("suite")) return "STE";
+            if (id === "apt1" || t.includes("1bhk")) return "A1";
+            if (id === "apt2" || t.includes("2bhk")) return "A2";
+            if (id === "apt3" || t.includes("3bhk")) return "A3";
+            return "ALB";
+        };
+
+        const prefix = getPrefix(roomId, listingTitle);
+        const randomPart = Math.floor(1000 + Math.random() * 9000); // 4-digit random
+        const bookingNumber = `${prefix}-${randomPart}`;
 
         // Create Razorpay order
         const order = await razorpay.orders.create({

@@ -225,10 +225,21 @@ export async function sendBookingEmails(booking) {
 
 // CREATE
 export const createBooking = async (bookingData) => {
-    // Generate a standard, human-readable booking reference (Used for display/emails)
-    const year = new Date().getFullYear();
-    const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-    const bookingNumber = `ALB-${year}-${randomPart}`;
+    const getPrefix = (rId, title) => {
+        const id = (rId || "").toLowerCase();
+        const t = (title || "").toLowerCase();
+        if (id === "standard" || t.includes("standard")) return "STD";
+        if (id === "deluxe" || t.includes("deluxe")) return "DLX";
+        if (id === "suite" || t.includes("suite")) return "STE";
+        if (id === "apt1" || t.includes("1bhk")) return "A1";
+        if (id === "apt2" || t.includes("2bhk")) return "A2";
+        if (id === "apt3" || t.includes("3bhk")) return "A3";
+        return "ALB";
+    };
+
+    const prefix = getPrefix(bookingData.roomId, bookingData.listingTitle);
+    const randomPartNum = Math.floor(1000 + Math.random() * 9000);
+    const bookingNumber = `${prefix}-${randomPartNum}`;
 
     let enrichedData;
 
