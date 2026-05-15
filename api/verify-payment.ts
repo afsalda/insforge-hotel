@@ -106,13 +106,20 @@ export default async function handler(
         // ─── Step 3: Send WhatsApp to Customer ───
         if (customerPhone) {
             try {
-                const result = await sendWhatsApp(customerPhone, "_booking_confirmed", [
-                    guestName || "Guest",
-                    listingTitle || "Room",
-                    formattedCheckIn,
-                    formattedCheckOut,
-                    `₹${depositAmount || 0}`
-                ]);
+                const result = await sendWhatsApp(
+                    customerPhone,
+                    "_booking_confirmed",
+                    // Body parameters (5): name, room, check-in, check-out, amount
+                    [
+                        guestName || "Guest",
+                        listingTitle || "Room",
+                        formattedCheckIn,
+                        formattedCheckOut,
+                        `₹${depositAmount || 0}`
+                    ],
+                    // Header parameter (1): booking number / due amount
+                    [bookingNumber || "Confirmed"]
+                );
                 console.log("✅ Customer WhatsApp sent:", result?.messages?.[0]?.id || "ok");
             } catch (waErr: any) {
                 console.error("❌ Customer WhatsApp failed:", waErr.message);
@@ -122,19 +129,23 @@ export default async function handler(
             console.warn("⚠️ Customer phone empty — skipping customer notification");
         }
 
-        // ─── Step 4: Send WhatsApp to Hotel Owner ───
-        const ownerPhone = process.env.WHATSAPP_OWNER_PHONE;
-        if (ownerPhone) {
-            try {
-                const result = await sendWhatsApp(ownerPhone, "new_booking_alert", [
-                    guestName || "Guest",
-                    listingTitle || "Room",
-                    formattedCheckIn,
-                    formattedCheckOut
-                ]);
-                console.log("✅ Owner WhatsApp sent:", result?.messages?.[0]?.id || "ok");
-            } catch (waErr: any) {
-                console.error("❌ Owner WhatsApp failed:", waErr.message);
+        // ─── Step 4: Send WhatsApp to Hotel Owners ───
+        const ownerPhoneString = process.env.WHATSAPP_OWNER_PHONE;
+        if (ownerPhoneString) {
+            const ownerPhones = ownerPhoneString.split(",").map(p => p.trim()).filter(p => p.length > 0);
+            
+            for (const phone of ownerPhones) {
+                try {
+                    const result = await sendWhatsApp(phone, "new_booking_alert", [
+                        guestName || "Guest",
+                        listingTitle || "Room",
+                        formattedCheckIn,
+                        formattedCheckOut
+                    ]);
+                    console.log(`✅ Owner WhatsApp sent to ${phone}:`, result?.messages?.[0]?.id || "ok");
+                } catch (waErr: any) {
+                    console.error(`❌ Owner WhatsApp failed for ${phone}:`, waErr.message);
+                }
             }
         } else {
             console.warn("⚠️ WHATSAPP_OWNER_PHONE not set — owner notification skipped");
@@ -151,6 +162,7 @@ export default async function handler(
                 checkIn: checkInDate || '',
                 checkOut: checkOutDate || '',
                 totalAmount: totalPrice || 0,
+                paidAmount: depositAmount || 0,
                 bookingId: bookingNumber || '',
                 paymentId: razorpay_payment_id || '',
             });

@@ -5,12 +5,13 @@
  *
  * @param {string} to — Recipient phone in 91XXXXXXXXXX format (no +)
  * @param {string} templateName — Approved template name (e.g. "_booking_confirmed")
- * @param {Array} variables — Array of text variables for the template
+ * @param {Array} bodyVariables — Array of text variables for the BODY component
+ * @param {Array} [headerVariables] — Array of text variables for the HEADER component (if template has a header)
  * @returns {Promise<object>} — WhatsApp API response
  */
-export async function sendWhatsApp(to, templateName, variables = []) {
-    const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID;
-    const accessToken = process.env.WHATSAPP_ACCESS_TOKEN;
+export async function sendWhatsApp(to, templateName, bodyVariables = [], headerVariables = []) {
+    const phoneNumberId = (process.env.WHATSAPP_PHONE_NUMBER_ID || '').trim();
+    const accessToken = (process.env.WHATSAPP_ACCESS_TOKEN || '').trim();
 
     if (!phoneNumberId || !accessToken) {
         console.warn("⚠️ WhatsApp credentials not configured — skipping message");
@@ -19,11 +20,30 @@ export async function sendWhatsApp(to, templateName, variables = []) {
 
     const url = `https://graph.facebook.com/v21.0/${phoneNumberId}/messages`;
 
-    // Map simple variables array to Meta's specific parameters structure
-    const parameters = variables.map(v => ({
-        type: "text",
-        text: String(v)
-    }));
+    // Build template components array
+    const components = [];
+
+    // Add HEADER parameters if provided
+    if (headerVariables.length > 0) {
+        components.push({
+            type: "header",
+            parameters: headerVariables.map(v => ({
+                type: "text",
+                text: String(v)
+            }))
+        });
+    }
+
+    // Add BODY parameters
+    if (bodyVariables.length > 0) {
+        components.push({
+            type: "body",
+            parameters: bodyVariables.map(v => ({
+                type: "text",
+                text: String(v)
+            }))
+        });
+    }
 
     const body = {
         messaging_product: "whatsapp",
@@ -32,14 +52,12 @@ export async function sendWhatsApp(to, templateName, variables = []) {
         template: {
             name: templateName,
             language: { code: "en" },
-            components: [
-                {
-                    type: "body",
-                    parameters: parameters
-                }
-            ],
+            components,
         },
     };
+
+    console.log(`📤 Sending WhatsApp [${templateName}] to ${to}...`);
+    console.log('   Components:', JSON.stringify(components));
 
     const response = await fetch(url, {
         method: "POST",
@@ -60,4 +78,3 @@ export async function sendWhatsApp(to, templateName, variables = []) {
     console.log(`✅ WhatsApp sent to ${to} [${templateName}]`);
     return data;
 }
-

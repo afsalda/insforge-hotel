@@ -68,6 +68,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           language: { code: "en" },
           components: [
             {
+              type: "header",
+              parameters: [
+                { type: "text", text: bookingId || "Confirmed" },
+              ],
+            },
+            {
               type: "body",
               parameters: [
                 { type: "text", text: customerName },
@@ -82,47 +88,60 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }),
     });
 
-    // 2. Send alert to hotel owner
-    const ownerMsg = await fetch(API_URL, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: OWNER,
-        type: "template",
-        template: {
-          name: "new_booking_alert",
-          language: { code: "en" },
-          components: [
-            {
-              type: "body",
-              parameters: [
-                { type: "text", text: customerName },
-                { type: "text", text: roomType },
-                { type: "text", text: checkIn },
-                { type: "text", text: checkOut },
-              ],
-            },
-          ],
-        },
-      }),
-    });
+    // 2. Send alert to hotel owners
+    const OWNER_STRING = process.env.WHATSAPP_OWNER_PHONE;
+    let ownerResults = [];
+    
+    if (OWNER_STRING) {
+      const ownerPhones = OWNER_STRING.split(",").map(p => p.trim()).filter(p => p.length > 0);
+      
+      for (const phone of ownerPhones) {
+        try {
+          const ownerMsg = await fetch(API_URL, {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: phone,
+              type: "template",
+              template: {
+                name: "new_booking_alert",
+                language: { code: "en" },
+                components: [
+                  {
+                    type: "body",
+                    parameters: [
+                      { type: "text", text: customerName },
+                      { type: "text", text: roomType },
+                      { type: "text", text: checkIn },
+                      { type: "text", text: checkOut },
+                    ],
+                  },
+                ],
+              },
+            }),
+          });
+          const result = await ownerMsg.json();
+          ownerResults.push({ phone, result, ok: ownerMsg.ok });
+          if (!ownerMsg.ok) console.error(`Owner WhatsApp failed for ${phone}:`, result);
+        } catch (err: any) {
+          console.error(`Owner WhatsApp error for ${phone}:`, err.message);
+          ownerResults.push({ phone, error: err.message, ok: false });
+        }
+      }
+    }
 
     const customerResult = await customerMsg.json();
-    const ownerResult = await ownerMsg.json();
 
     // Log errors from Meta without crashing
     if (!customerMsg.ok) {
       console.error("Customer WhatsApp failed:", customerResult);
     }
-    if (!ownerMsg.ok) {
-      console.error("Owner WhatsApp failed:", ownerResult);
-    }
 
     return res.status(200).json({ 
       success: true, 
       customerResult, 
-      ownerResult 
+      ownerResults 
     });
   } catch (err: any) {
     console.error("WhatsApp notify error:", err);
