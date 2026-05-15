@@ -264,7 +264,7 @@ export default function ContactPage() {
                     font-size: 0.8rem;
                     font-weight: 600;
                     text-transform: uppercase;
-                    letter-spacing: 0.05em;
+                    letter-spacing: 0;
                     color: var(--accent-gold);
                     opacity: 0.8;
                     transition: opacity 0.3s ease;

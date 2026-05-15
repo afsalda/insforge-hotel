@@ -456,14 +456,14 @@ export default function CheckoutPage() {
                                         background: '#F8FAFC',
                                         borderRadius: '12px',
                                         padding: '16px',
-                                        marginBottom: '16px',
+                                        marginBottom: '12px',
                                         border: '1px solid #E2E8F0'
                                     }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                             <span style={{ color: '#713f12', fontSize: '0.9rem' }}>Total Booking Amount</span>
                                             <span style={{ color: '#713f12', fontWeight: 600 }}>₹{total}</span>
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                                             <span style={{ color: '#166534', fontSize: '0.9rem', fontWeight: 600 }}>
                                                 30% Deposit (Pay Now)
                                             </span>

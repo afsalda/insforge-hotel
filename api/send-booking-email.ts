@@ -14,14 +14,17 @@ export async function sendBookingEmails(bookingData: {
   checkIn: string;
   checkOut: string;
   totalAmount: number;
+  paidAmount: number;
   bookingId: string;
   paymentId: string;
 }) {
   const {
     guestName, guestEmail, guestPhone,
     roomName, checkIn, checkOut,
-    totalAmount, bookingId, paymentId
+    totalAmount, paidAmount, bookingId, paymentId
   } = bookingData;
+
+  const dueAmount = totalAmount - paidAmount;
 
   if (!process.env.RESEND_API_KEY) {
     console.error("❌ RESEND_API_KEY is not set — skipping emails");
@@ -60,8 +63,16 @@ export async function sendBookingEmails(bookingData: {
             <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">${checkOut}</td>
           </tr>
           <tr style="background: #f9fafb;">
-            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px;">Amount Paid</td>
-            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600;">₹${totalAmount}</td>
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Total Price</td>
+            <td style="padding: 10px 12px; color: #111827; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">₹${totalAmount}</td>
+          </tr>
+          <tr>
+            <td style="padding: 10px 12px; color: #6b7280; font-size: 14px; border-bottom: 1px solid #e5e7eb;">Amount Paid</td>
+            <td style="padding: 10px 12px; color: #16a34a; font-size: 14px; font-weight: 600; border-bottom: 1px solid #e5e7eb;">₹${paidAmount}</td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td style="padding: 10px 12px; color: #b91c1c; font-size: 14px; font-weight: 600;">Due Amount</td>
+            <td style="padding: 10px 12px; color: #b91c1c; font-size: 16px; font-weight: 700;">₹${dueAmount}</td>
           </tr>
         </table>
         <p style="color: #374151; font-size: 14px;">Payment ID: <span style="font-family: monospace;">${paymentId}</span></p>
@@ -82,7 +93,9 @@ export async function sendBookingEmails(bookingData: {
         <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Room</td><td style="padding: 8px; font-weight: 600;">${roomName}</td></tr>
         <tr><td style="padding: 8px; color: #6b7280;">Check-in</td><td style="padding: 8px;">${checkIn}</td></tr>
         <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Check-out</td><td style="padding: 8px;">${checkOut}</td></tr>
-        <tr><td style="padding: 8px; color: #6b7280;">Amount</td><td style="padding: 8px; font-weight: 600;">₹${totalAmount}</td></tr>
+        <tr><td style="padding: 8px; color: #6b7280;">Total Amount</td><td style="padding: 8px; font-weight: 600;">₹${totalAmount}</td></tr>
+        <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Paid Amount</td><td style="padding: 8px; font-weight: 600; color: #16a34a;">₹${paidAmount}</td></tr>
+        <tr><td style="padding: 8px; color: #b91c1c; font-weight: 600;">Due Amount</td><td style="padding: 8px; font-weight: 700; color: #b91c1c;">₹${dueAmount}</td></tr>
         <tr style="background:#f9fafb;"><td style="padding: 8px; color: #6b7280;">Payment ID</td><td style="padding: 8px; font-family: monospace;">${paymentId}</td></tr>
         <tr><td style="padding: 8px; color: #6b7280;">Booking ID</td><td style="padding: 8px; font-family: monospace;">${bookingId}</td></tr>
       </table>
@@ -151,6 +164,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       checkIn:     body.checkIn     || body.check_in_date || body.checkInDate || '',
       checkOut:    body.checkOut    || body.check_out_date || body.checkOutDate || '',
       totalAmount: body.totalAmount || body.total_price   || body.totalPrice || 0,
+      paidAmount:  body.paidAmount  || body.deposit_amount || body.depositAmount || 0,
       bookingId:   body.bookingId   || body.booking_number || body.bookingNumber || '',
       paymentId:   body.paymentId   || body.payment_id    || '',
     };

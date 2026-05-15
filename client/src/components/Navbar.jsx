@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import logoImg from '../assets/albaith_logo.png';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,14 +36,7 @@ export default function Navbar() {
     <>
       <nav className={`navbar ${(!isHomePage || scrolled) ? 'scrolled' : ''}`}>
         <Link to="/" className="navbar-logo">
-          {/* Gold Crescent + Star Icon */}
-          <svg className="logo-icon" viewBox="0 0 40 40" fill="none">
-            <path d="M20 4C13 4 8 10 8 17c0 7 5 13 12 13 -4-2-7-7-7-12s3-10 7-12z" fill="currentColor" />
-            <polygon points="33,8 34.2,11.6 38,11.6 35,14 36,17.6 33,15.2 30,17.6 31,14 28,11.6 31.8,11.6" fill="currentColor" />
-          </svg>
-          <span className="logo-text-group">
-            <span className="logo-name">AL BAITH</span>
-          </span>
+          <img src={logoImg} alt="Al Baith Logo" className="logo-icon" />
         </Link>
 
         <ul className="nav-links">

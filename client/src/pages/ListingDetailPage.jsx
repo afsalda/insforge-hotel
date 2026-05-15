@@ -420,7 +420,8 @@ export default function ListingDetailPage() {
     // DESKTOP VIEW
     if (!isMobile) {
         return (
-            <div style={{ width: '100%', backgroundColor: '#F9F8F6', paddingTop: '100px', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowX: 'hidden' }}>
+            <div style={{ width: '100%', backgroundColor: '#F9F8F6', paddingTop: '80px', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: 'visible' }}>
+
                 <div style={{ maxWidth: '1120px', margin: '0 auto', padding: '0 24px', width: '100%', display: 'flex', flexDirection: 'column', flex: 1 }}>
                     
                     {/* Back Arrow */}
@@ -434,8 +435,8 @@ export default function ListingDetailPage() {
                     </div>
 
                     {/* Title Section */}
-                    <div style={{ marginBottom: '8px' }}>
-                        <h1 style={{ fontSize: '42px', fontWeight: 400, color: '#1B3A2D', margin: 0, fontFamily: 'var(--font-heading)' }}>
+                    <div style={{ marginBottom: '12px' }}>
+                        <h1 style={{ fontSize: '42px', fontWeight: 400, color: '#1B3A2D', margin: 0, fontFamily: 'var(--font-heading)', lineHeight: '1.2' }}>
                             {listing.title}
                         </h1>
                     </div>
@@ -538,7 +539,7 @@ export default function ListingDetailPage() {
                             <hr style={{ border: 'none', borderTop: '1px solid #EEE', margin: '40px 0' }} />
 
                             <div>
-                                <h2 style={{ fontSize: '24px', fontWeight: 400, color: '#1B3A2D', margin: '0 0 24px 0', fontFamily: 'var(--font-heading)' }}>
+                                <h2 style={{ fontSize: '24px', fontWeight: 400, color: '#1B3A2D', margin: '0 0 12px 0', fontFamily: 'var(--font-heading)' }}>
                                     What We Offer
                                 </h2>
                                 <div style={{ 
@@ -563,7 +564,7 @@ export default function ListingDetailPage() {
                         </div>
 
                         {/* Right Column: Booking Card */}
-                        <div style={{ flex: 1, position: 'relative' }}>
+                        <div style={{ flex: 1, position: 'relative', overflow: 'visible' }}>
                             <div style={{ 
                                 position: 'sticky', 
                                 top: '100px', 
@@ -571,9 +572,11 @@ export default function ListingDetailPage() {
                                 borderRadius: '24px', 
                                 padding: '32px', 
                                 boxShadow: '0 10px 40px rgba(0,0,0,0.06)', 
-                                border: '1px solid #F0F0F0' 
+                                border: '1px solid #F0F0F0',
+                                zIndex: 10,
+                                overflow: 'visible'
                             }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                                     <div>
                                         <span style={{ fontSize: '28px', fontWeight: 600, color: '#1B3A2D' }}>₹{listing.price}</span>
                                         <span style={{ fontSize: '16px', color: '#666', marginLeft: '4px' }}>/night</span>
@@ -588,7 +591,7 @@ export default function ListingDetailPage() {
                                     border: '1px solid #DDD', 
                                     borderRadius: '12px', 
                                     overflow: 'visible',
-                                    marginBottom: '24px',
+                                    marginBottom: '16px',
                                     position: 'relative'
                                 }}>
                                     <div style={{ display: 'flex', borderBottom: '1px solid #DDD' }}>
@@ -672,21 +675,21 @@ export default function ListingDetailPage() {
                                 </div>
 
                                 {nights > 0 && (
-                                    <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444' }}>
-                                            <span style={{ textDecoration: 'underline' }}>₹{listing.price} x {nights} nights</span>
-                                            <span>₹{subtotal}</span>
+                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>₹{listing.price} x {nights} nights</span>
+                                            <span style={{ fontSize: '14px' }}>₹{subtotal}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444' }}>
-                                            <span style={{ textDecoration: 'underline' }}>Cleaning fee</span>
-                                            <span>₹{listing.cleaningFee}</span>
+                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>Cleaning fee</span>
+                                            <span style={{ fontSize: '14px' }}>₹{listing.cleaningFee}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444' }}>
-                                            <span style={{ textDecoration: 'underline' }}>Service fee</span>
-                                            <span>₹{listing.serviceFee}</span>
+                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>Service fee</span>
+                                            <span style={{ fontSize: '14px' }}>₹{listing.serviceFee}</span>
                                         </div>
                                         <hr style={{ border: 'none', borderTop: '1px solid #EEE', margin: '4px 0' }} />
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px', fontWeight: 600, color: '#1B3A2D' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: 600, color: '#1B3A2D' }}>
                                             <span>Total</span>
                                             <span>₹{total}</span>
                                         </div>
@@ -725,7 +728,8 @@ export default function ListingDetailPage() {
 
     // MOBILE VIEW
     return (
-        <div style={{ width: '100%', overflowX: 'hidden', backgroundColor: '#fcfcfc', paddingTop: '80px' }}>
+        <div style={{ width: '100%', overflowX: 'hidden', backgroundColor: '#fcfcfc', paddingTop: '60px' }}>
+
             {/* Image Section */}
             <div style={{ position: 'relative', width: '100%', height: '280px', overflow: 'hidden', borderRadius: '0 0 24px 24px' }}>
                 {/* Overlay Navigation/Action Icons */}
@@ -881,13 +885,13 @@ export default function ListingDetailPage() {
                     href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent("Al Baith Hotel " + listing.location)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#444444', fontSize: '0.9rem', marginBottom: '16px', textDecoration: 'none' }}
+                    style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#444444', fontSize: '0.9rem', marginBottom: '12px', textDecoration: 'none' }}
                 >
                     <MapPin size={16} />
                     <span style={{ textDecoration: 'underline' }}>{listing.location}</span>
                 </a>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '24px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <Star size={18} fill="#000000" color="#000000" />
                         <strong style={{ color: '#000000', fontSize: '1rem', fontWeight: 500 }}>{listing.rating}</strong>
@@ -898,7 +902,7 @@ export default function ListingDetailPage() {
                     </div>
                 </div>
 
-                <div style={{ marginBottom: '16px' }}>
+                <div style={{ marginBottom: '12px' }}>
                     <p style={{ 
                         fontSize: '0.95rem', 
                         lineHeight: '1.6', 
@@ -909,8 +913,8 @@ export default function ListingDetailPage() {
                     </p>
                 </div>
 
-                <div style={{ marginBottom: '32px' }}>
-                    <h2 style={{ fontSize: '1.2rem', fontWeight: 400, color: '#000000', marginBottom: '16px', fontFamily: 'var(--font-heading)' }}>What We Offer</h2>
+                <div style={{ marginBottom: '24px' }}>
+                    <h2 style={{ fontSize: '1.2rem', fontWeight: 400, color: '#000000', marginBottom: '10px', fontFamily: 'var(--font-heading)', letterSpacing: '0' }}>What We Offer</h2>
                     <div style={{ 
                         display: 'grid', 
                         gridTemplateColumns: 'repeat(4, 1fr)', 

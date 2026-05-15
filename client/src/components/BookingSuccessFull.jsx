@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import './BookingSuccessFull.css';
+import logoImg from '../assets/albaith_logo.png';
 
 function Barcode({ value }) {
   let seed = 0;
@@ -23,7 +24,8 @@ function Barcode({ value }) {
                 <rect key={i} x={x} y="4" width={bar.w} height={SVG_H - 8} fill="#1a3a2a" opacity="0.82" />
             );
         })}
-        <rect x={startX} y="4" width={total + 8} height="3" fill="#C9A84C" opacity="0.7" style={{ animation: 'barScan 2.4s ease-in-out infinite' }} />
+        <rect x={startX} y="4" width={total + 8} height="3" fill="#C9A84C" opacity="0.7" />
+
     </svg>
   );
 }
@@ -92,10 +94,7 @@ export default function BookingSuccessFull({
         {/* Nav */}
         <header className="bs-header">
           <div className="bs-logo">
-            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
-              <path d="M20 13A8 8 0 0 1 8 5a10 10 0 1 0 12 8z" fill="#C9A84C"/>
-              <circle cx="21" cy="6" r="1.5" fill="#C9A84C"/>
-            </svg>
+            <img src={logoImg} alt="Al Baith Logo" width="28" height="28" style={{ objectFit: 'contain' }} />
             <span className="bs-logo-text">AL BAITH</span>
           </div>
           <button className="bs-menu-btn" aria-label="Menu" onClick={onReturnHome}>

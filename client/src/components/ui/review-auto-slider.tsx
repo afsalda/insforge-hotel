@@ -78,7 +78,8 @@ export const ReviewAutoSlider = () => {
       `}</style>
             <section className="w-full py-16 overflow-hidden">
                 <div className="scroll-container w-full">
-                    <div className="infinite-scroll flex gap-6 w-max px-4">
+                    <div className="infinite-scroll flex gap-6 w-max px-4 py-8">
+
                         {duplicatedReviews.map((review, index) => (
                             <div key={index} className="review-card flex-shrink-0 w-72 bg-white/90 border border-gray-100 rounded-2xl shadow-md p-6 flex flex-col gap-3">
                                 <div className="flex items-center gap-1">

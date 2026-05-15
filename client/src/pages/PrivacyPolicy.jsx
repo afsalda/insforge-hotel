@@ -107,14 +107,7 @@ export default function PrivacyPolicy() {
                     />
                 </div>
                 
-                <button 
-                    className="checkout-back-btn" 
-                    onClick={() => window.history.back()} 
-                    aria-label="Go back"
-                    style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 9999 }}
-                >
-                    <ChevronLeft size={24} color="var(--accent-gold)" />
-                </button>
+
 
                 <div className="hero-content">
                     <div className="hero-text" style={{ textAlign: 'center' }}>

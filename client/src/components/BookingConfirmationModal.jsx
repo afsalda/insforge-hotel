@@ -92,30 +92,48 @@ export default function BookingConfirmationModal({ booking, onClose }) {
     setIsDownloading(true);
     
     try {
-      // Small delay to ensure any UI updates are settled
-      await new Promise(r => setTimeout(r, 100));
+      // Longer delay for mobile to ensure animations (0.4s) are complete
+      await new Promise(r => setTimeout(r, 500));
 
-      const canvas = await html2canvas(ticketRef.current, {
-        scale: 2, // 2x is plenty for mobile and safer for memory
+      const element = ticketRef.current;
+      const canvas = await html2canvas(element, {
+        scale: 2, 
         useCORS: true,
-        allowTaint: true,
-        backgroundColor: "#ffffff",
         logging: false,
-        width: ticketRef.current.offsetWidth,
-        height: ticketRef.current.offsetHeight,
+        backgroundColor: "#ffffff",
+        scrollX: 0,
+        scrollY: 0,
+        x: 0,
+        y: 0,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById("booking-ticket");
+          if (clonedElement) {
+            clonedElement.style.transform = "none";
+            clonedElement.style.animation = "none";
+            clonedElement.style.position = "relative";
+            clonedElement.style.top = "0";
+            clonedElement.style.left = "0";
+            clonedElement.style.margin = "0";
+            clonedElement.style.width = element.offsetWidth + "px";
+          }
+        }
       });
       
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const imgWidth = canvas.width / 2;
+      const imgHeight = canvas.height / 2;
+      
+      const imgData = canvas.toDataURL('image/jpeg', 0.9);
       const pdf = new jsPDF({
-        orientation: 'portrait',
+        orientation: 'p',
         unit: 'pt',
-        format: [canvas.width / 2, canvas.height / 2]
+        format: [imgWidth, imgHeight]
       });
       
-      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width / 2, canvas.height / 2);
+      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
       pdf.save(`Booking-Receipt-${bookingRef}.pdf`);
     } catch (err) {
       console.error("PDF generation failed:", err);
+      alert("Failed to generate PDF. Please try again or take a screenshot.");
     } finally {
       setIsDownloading(false);
     }
@@ -159,7 +177,6 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           className="modal-ticket-container"
           style={{
             position: "relative",
-            width: "min(380px, 94vw)",
             background: "#fff",
             borderRadius: "20px",
             zIndex: 10001,
@@ -171,7 +188,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
             overflow: "visible"
           }}
         >
-          <div ref={ticketRef} style={{ background: "#fff", borderRadius: "20px" }}>
+          <div id="booking-ticket" ref={ticketRef} style={{ background: "#fff", borderRadius: "20px" }}>
             {/* ── Header Area ── */}
             <div className="modal-ticket-header" style={{
             background: "linear-gradient(165deg, #1a3d2b 0%, #0a1a0f 100%)",
@@ -388,6 +405,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
         }
         
         .modal-ticket-container {
+          width: min(380px, 94vw);
           max-height: 94vh;
           overflow-y: auto;
           -ms-overflow-style: none; /* IE and Edge */
@@ -408,6 +426,8 @@ export default function BookingConfirmationModal({ booking, onClose }) {
         
         @media (min-width: 769px) {
           .modal-ticket-container {
+            width: 94vw !important;
+            max-width: 1200px !important;
             max-height: 90vh !important;
           }
           .modal-ticket-header {
@@ -439,6 +459,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
           }
           .barcode-section canvas {
             height: 38px !important;
+            max-width: 600px !important;
           }
           .barcode-section p {
             margin-top: 2px !important;

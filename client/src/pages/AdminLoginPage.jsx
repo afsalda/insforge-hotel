@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronLeft } from 'lucide-react';
 import { Hotel, Lock, User, Eye, EyeOff } from 'lucide-react';
+import logoImg from '../assets/albaith_logo.png';
 
 export default function AdminLoginPage() {
     const [email, setEmail] = useState('');
@@ -86,6 +87,11 @@ export default function AdminLoginPage() {
                     font-size: 1.8rem;
                     font-weight: 700;
                     margin-bottom: 12px;
+                }
+                .brand-logo img {
+                    width: 40px;
+                    height: 40px;
+                    object-fit: contain;
                 }
                 .login-subtitle {
                     color: var(--text-secondary);
@@ -190,7 +196,7 @@ export default function AdminLoginPage() {
                 </button>
                 <div className="login-header">
                     <div className="brand-logo">
-                        <Hotel size={32} strokeWidth={2.5} />
+                        <img src={logoImg} alt="Al Baith Logo" />
                         <span>Al Baith</span>
                     </div>
                     <p className="login-subtitle">Admin Management Portal</p>

@@ -100,14 +100,7 @@ export default function CancellationPolicy() {
                     />
                 </div>
                 
-                <button 
-                    className="checkout-back-btn" 
-                    onClick={() => window.history.back()} 
-                    aria-label="Go back"
-                    style={{ position: 'fixed', top: '110px', left: '20px', zIndex: 9999 }}
-                >
-                    <ChevronLeft size={24} color="var(--accent-gold)" />
-                </button>
+
 
                 <div className="hero-content">
                     <div className="hero-text" style={{ textAlign: 'center' }}>
@@ -471,7 +464,7 @@ export default function CancellationPolicy() {
                     font-family: var(--font-heading);
                     font-size: 1.6rem;
                     text-transform: uppercase;
-                    letter-spacing: 0.12em;
+                    letter-spacing: 0;
                     font-weight: 500;
                 }
 

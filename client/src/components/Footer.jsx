@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import logoImg from '../assets/albaith_logo.png';
 
 export default function Footer() {
     return (
@@ -9,10 +10,7 @@ export default function Footer() {
                 {/* Brand Column */}
                 <div className="footer-brand">
                     <div className="footer-logo">
-                        <svg width="28" height="28" viewBox="0 0 40 40" fill="none">
-                            <path d="M20 4C13 4 8 10 8 17c0 7 5 13 12 13 -4-2-7-7-7-12s3-10 7-12z" fill="#C9A96E" />
-                            <polygon points="33,8 34.2,11.6 38,11.6 35,14 36,17.6 33,15.2 30,17.6 31,14 28,11.6 31.8,11.6" fill="#C9A96E" />
-                        </svg>
+                        <img src={logoImg} alt="Al Baith Logo" width="32" height="32" style={{ objectFit: 'contain' }} />
                         <span className="footer-logo-text-group">
                             <span>Al Baith</span>
                         </span>

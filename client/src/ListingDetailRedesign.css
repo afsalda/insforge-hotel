@@ -102,19 +102,20 @@
 .room-title-h1 {
   font-family: var(--font-heading);
   font-size: 1.8rem;
-  font-weight: 400; /* Reduced boldness to match previous design */
+  font-weight: 400;
   color: var(--text-charcoal);
   margin-bottom: 4px;
   line-height: 1.2;
+  letter-spacing: 0;
 }
 
 .location-subrow {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   color: var(--text-muted);
   font-size: 0.95rem;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 .location-pin-icon {
@@ -125,7 +126,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 10px;
 }
 
 .rating-display {
@@ -159,7 +160,7 @@
 }
 
 .description-block {
-  margin-bottom: 32px;
+  margin-bottom: 16px;
 }
 
 .description-text-p {
@@ -192,9 +193,10 @@
 .amenities-heading-h2 {
   font-family: var(--font-heading);
   font-size: 1.15rem;
-  font-weight: 400; /* Reduced boldness */
-  margin-bottom: 12px;
+  font-weight: 400;
+  margin-bottom: 6px;
   color: var(--text-charcoal);
+  letter-spacing: 0;
 }
 
 .amenities-scroll-row {
@@ -218,7 +220,7 @@
   border-radius: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.02);
   align-items: center;
   justify-content: center;
@@ -269,6 +271,7 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
+  letter-spacing: 0;
 }
 
 .book-now-full-btn:hover {

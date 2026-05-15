@@ -33,6 +33,7 @@
   0%,100% { transform: translateY(0);   opacity: 0.8; }
   50%     { transform: translateY(44px); opacity: 0.25; }
 }
+
 @keyframes waBounce {
   0%,100% { transform: scale(1);    }
   40%     { transform: scale(1.2);  }
@@ -68,7 +69,7 @@
 .bs-logo-text {
   font-family: Georgia, serif;
   font-weight: 700; font-size: 18px;
-  color: #fff; letter-spacing: 0.15em;
+  color: #fff; letter-spacing: 0;
 }
 .bs-menu-btn { background: none; border: none; cursor: pointer; padding: 4px; }
 
@@ -88,6 +89,7 @@
   box-shadow: 0 24px 64px rgba(26,58,42,0.22), 0 4px 16px rgba(26,58,42,0.1);
   overflow: visible;
   animation: cardSlideUp 0.65s 0.1s both cubic-bezier(0.22,1,0.36,1);
+  touch-action: pan-y;
 }
 
 .bs-punch {
@@ -101,7 +103,10 @@
 /* ── Card header ── */
 .bs-card-header {
   background: linear-gradient(145deg, #1a3a2a 0%, #2d6a4f 100%);
-  border-radius: 24px 24px 0 0;
+  border-top-left-radius: 24px !important;
+  border-top-right-radius: 24px !important;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
   padding: 32px 28px 28px;
   text-align: center;
   position: relative; overflow: hidden;
@@ -135,7 +140,7 @@
   animation: fadeUp 0.5s 0.58s both ease-out;
 }
 .bs-card-sub {
-  margin: 6px 0 0; font-size: 14px; color: rgba(255,255,255,0.62);
+  margin: 8px 0 0; font-size: 14px; color: rgba(255,255,255,0.62);
   animation: fadeUp 0.5s 0.68s both ease-out;
 }
 
@@ -145,16 +150,16 @@
   background: rgba(201,168,76,0.11);
   border: 1.5px solid rgba(201,168,76,0.55);
   border-radius: 100px;
-  animation: fadeUp 0.5s 0.78s both ease-out, refPulse 2.5s 1.6s ease-in-out 2;
+  animation: fadeUp 0.5s 0.78s both ease-out;
 }
 .bs-ref-text {
   font-family: 'Courier New', monospace;
   font-size: 13px; font-weight: 700;
-  color: #C9A84C; letter-spacing: 0.06em;
+  color: #C9A84C; letter-spacing: 0;
 }
 
 /* ── Card body ── */
-.bs-card-body { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 18px; }
+.bs-card-body { padding: 24px 28px 28px; display: flex; flex-direction: column; gap: 12px; }
 
 .bs-room-name {
   text-align: center; font-weight: 700; font-size: 17px;
@@ -181,7 +186,7 @@
 /* payment box */
 .bs-payment-box {
   background: #f0f7f3; border-radius: 14px;
-  padding: 16px 18px; display: flex; flex-direction: column; gap: 11px;
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;
   animation: fadeUp 0.5s 1.0s both ease-out;
 }
 .bs-pay-row { display: flex; justify-content: space-between; align-items: center; }
@@ -210,7 +215,7 @@
 }
 .bs-barcode-val {
   font-family: 'Courier New', monospace;
-  font-size: 11px; letter-spacing: 0.3em; color: #5a7a6a;
+  font-size: 11px; letter-spacing: 0.05em; color: #5a7a6a;
 }
 
 /* CTA */
@@ -218,10 +223,102 @@
   width: 100%; padding: 15px 0;
   background: linear-gradient(135deg, #1a3a2a 0%, #2d6a4f 100%);
   color: #fff; border: none; border-radius: 12px;
-  font-size: 14px; font-weight: 700; letter-spacing: 0.12em;
+  font-size: 14px; font-weight: 700; letter-spacing: 0;
   cursor: pointer;
   transition: opacity 0.2s, transform 0.15s;
   animation: fadeUp 0.5s 1.28s both ease-out;
 }
 .bs-cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
 .bs-cta-btn:active { transform: translateY(0); }
+
+/* ── Mobile Overrides ── */
+@media (max-width: 480px) {
+  .bs-header {
+    padding: 12px 16px;
+  }
+  .bs-logo-text {
+    font-size: 16px;
+  }
+  .bs-main {
+    padding: 4px 12px 16px;
+  }
+  .bs-card {
+    border-radius: 18px !important;
+    max-width: 350px;
+  }
+  .bs-card-header {
+    border-top-left-radius: 18px !important;
+    border-top-right-radius: 18px !important;
+  }
+  .bs-card-header {
+    padding: 18px 18px 12px;
+  }
+  .bs-check-wrap {
+    width: 52px; height: 52px; margin-bottom: 8px;
+  }
+  .bs-check-circle {
+    width: 52px; height: 52px;
+  }
+  .bs-check-circle svg {
+    width: 24px; height: 24px;
+  }
+  .bs-card-title {
+    font-size: 19px;
+  }
+  .bs-card-sub {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+  .bs-ref-badge {
+    margin-top: 10px; padding: 3px 10px;
+  }
+  .bs-ref-text {
+    font-size: 11px;
+  }
+  .bs-card-body {
+    padding: 14px 18px 18px;
+    gap: 12px;
+  }
+  .bs-room-name {
+    font-size: 14px;
+  }
+  .bs-date-chip {
+    font-size: 11px;
+    padding: 2px 8px;
+  }
+  .bs-nights {
+    font-size: 10px;
+  }
+  .bs-payment-box {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+  .bs-pay-label {
+    font-size: 11px;
+  }
+  .bs-pay-value {
+    font-size: 13px;
+  }
+  .bs-pay-bal {
+    font-size: 14px;
+  }
+  .bs-wa-box {
+    padding: 8px 10px;
+    gap: 8px;
+  }
+  .bs-wa-text {
+    font-size: 11px;
+  }
+  .bs-barcode-wrap {
+    padding: 2px 0;
+    gap: 4px;
+  }
+  .bs-barcode-val {
+    font-size: 10px;
+  }
+  .bs-cta-btn {
+    padding: 11px 0;
+    font-size: 13px;
+  }
+}
+
