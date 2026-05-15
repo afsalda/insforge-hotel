@@ -321,6 +321,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
               </p>
             </div>
           </div>
+        </div>
 
           {/* Button Section - Outside ticketRef so it's not in the PDF */}
           <div className="modal-ticket-body" style={{ background: "#fff", borderRadius: "0 0 24px 24px", paddingTop: 0 }}>
