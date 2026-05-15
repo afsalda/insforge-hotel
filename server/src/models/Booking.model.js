@@ -268,6 +268,23 @@ export const createBooking = async (bookingData) => {
     }
 };
 
+// READ ONE
+export const getBookingById = async (id) => {
+    try {
+        const { data, error } = await db
+            .from(TABLE)
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (error) throw error;
+        return data;
+    } catch (error) {
+        console.error('Error fetching booking by ID:', error.message);
+        throw error;
+    }
+};
+
 // READ ALL
 export const getAllBookings = async () => {
     try {

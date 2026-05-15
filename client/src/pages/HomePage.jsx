@@ -343,16 +343,20 @@ export default function HomePage() {
                                 <div className="hero-gold-line"></div>
                             </div>
                             <h1 className="hero-headline">
-                                {'Al Baith Rest House, Ernakulam'.split(' ').map((word, i) => (
-                                    <span className="word" key={i}>
-                                        <span className="hero-word">{word}</span>{' '}
-                                    </span>
-                                ))}
+                                <span className="word" style={{ display: 'block' }}>
+                                    <span className="hero-word">Albaith</span>
+                                </span>
+                                <span className="word" style={{ display: 'block' }}>
+                                    <span className="hero-word">Resthouse</span>
+                                </span>
                             </h1>
+
+
                             <div className="hero-short-line"></div>
                             <p className="hero-subtext">
-                                Comfortable Rooms Steps Away from Lakeshore Hospital, Ernakulam
+                                Comfortable Rooms Steps Away from Lakeshore Hospital
                             </p>
+
                             <div className="hero-cta-row">
                                 <a href="#rooms" className="btn-primary font-inter-numbers">EXPLORE ROOMS</a>
                             </div>
@@ -508,31 +512,45 @@ export default function HomePage() {
             {/* ══════════════════════════════════════════
               ABOUT / DESCRIPTION SECTION
               ══════════════════════════════════════════ */}
-            <section className="testimonials-section" style={{ paddingTop: '80px', paddingBottom: '0px', overflow: 'hidden' }}>
-                <div className="section-header">
-                    <h2 className="section-title timeline-reveal">The Closest Comfortable Stay to Lakeshore Hospital</h2>
-                    <p className="section-subtitle" style={{ maxWidth: '720px', margin: '0 auto', lineHeight: '1.8' }}>
-                        <span style={{ display: 'block', transitionDelay: '0s' }} className="timeline-reveal">When a loved one is receiving care at Lakeshore Hospital in Ernakulam, the last thing you need is a long commute back to your hotel.</span>
-                        <span style={{ display: 'block', transitionDelay: '0.15s' }} className="timeline-reveal">Al Baith Rest House is located just a short distance from Lakeshore Hospital — making us the first choice for patient families, visiting doctors, and medical staff looking for accommodation in Ernakulam, Kochi.</span>
-                        <span style={{ display: 'block', transitionDelay: '0.3s' }} className="timeline-reveal">We offer clean AC rooms, free Wi-Fi, hot water, and daily housekeeping — everything you need for a comfortable stay during a difficult time.</span>
-                        <span style={{ display: 'block', transitionDelay: '0.45s' }} className="timeline-reveal">Book directly online or call us for immediate room availability.</span>
-                    </p>
+            <section className="testimonials-section" style={{ paddingTop: '100px', paddingBottom: '40px', overflow: 'hidden' }}>
+                <div className="section-header" style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
+                    <h2 className="section-title timeline-reveal" style={{ marginBottom: '32px' }}>The Closest Comfortable Stay to Lakeshore Hospital</h2>
+                    <div className="section-subtitle" style={{ maxWidth: '800px', margin: '0 auto', lineHeight: '1.8', color: 'var(--text-muted)' }}>
+                        <p style={{ marginBottom: '16px' }} className="timeline-reveal">
+                            When a loved one is receiving care at Lakeshore Hospital in Ernakulam, the last thing you need is a long commute back to your hotel.
+                        </p>
+                        <p style={{ marginBottom: '16px' }} className="timeline-reveal">
+                            Al Baith Rest House is located just a short distance from Lakeshore Hospital — making us the first choice for patient families, visiting doctors, and medical staff looking for accommodation in Ernakulam, Kochi.
+                        </p>
+                        <p style={{ marginBottom: '16px' }} className="timeline-reveal">
+                            We offer clean AC rooms, free Wi-Fi, hot water, and daily housekeeping — everything you need for a comfortable stay during a difficult time.
+                        </p>
+                    </div>
                 </div>
             </section>
+
+
 
             {/* ══════════════════════════════════════════
               LOCATION SECTION
               ══════════════════════════════════════════ */}
-            <section className="testimonials-section" style={{ paddingBottom: '80px', overflow: 'hidden' }}>
-                <div className="section-header">
-                    <h2 className="section-title timeline-reveal">How to Find Us — Ernakulam, Kerala</h2>
-                    <p className="section-subtitle" style={{ maxWidth: '720px', margin: '0 auto', lineHeight: '1.8' }}>
-                        <span style={{ display: 'block', transitionDelay: '0s' }} className="timeline-reveal">Al Baith Rest House is situated in Ernakulam, Kochi, Kerala — within close proximity to Lakeshore Hospital.</span>
-                        <span style={{ display: 'block', transitionDelay: '0.15s' }} className="timeline-reveal">We are easily reachable from Ernakulam Junction Railway Station, Cochin International Airport, and the Kochi Metro.</span>
-                        <span style={{ display: 'block', transitionDelay: '0.3s' }} className="timeline-reveal">Auto-rickshaws and cabs are available at all hours from our location.</span>
-                    </p>
+            <section className="testimonials-section" style={{ paddingTop: '40px', paddingBottom: '100px', overflow: 'hidden' }}>
+                <div className="section-header" style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto' }}>
+                    <h2 className="section-title timeline-reveal" style={{ marginBottom: '32px' }}>How to Find Us — Ernakulam, Kerala</h2>
+                    <div className="section-subtitle" style={{ maxWidth: '800px', margin: '0 auto', lineHeight: '1.8', color: 'var(--text-muted)' }}>
+                        <p style={{ marginBottom: '16px' }} className="timeline-reveal">
+                            Al Baith Rest House is situated in Ernakulam, Kochi, Kerala — within close proximity to Lakeshore Hospital.
+                        </p>
+                        <p style={{ marginBottom: '16px' }} className="timeline-reveal">
+                            We are easily reachable from Ernakulam Junction Railway Station, Cochin International Airport, and the Kochi Metro.
+                        </p>
+                        <p className="timeline-reveal">
+                            Auto-rickshaws and cabs are available at all hours from our location.
+                        </p>
+                    </div>
                 </div>
             </section>
+
 
         </div >
     );
