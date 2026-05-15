@@ -93,7 +93,7 @@ export default async function handler(
             console.error("SDK Insert Error:", error);
             // Fallback to offline sync data if insert failed
             insertedData = {
-                id: `vercel-${randomPart.toLowerCase()}`,
+                id: `vercel-${randomPartNum}`,
                 ...bookingData,
                 status: "confirmed_offline_sync",
                 created_at: new Date().toISOString(),

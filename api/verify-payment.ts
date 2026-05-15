@@ -109,15 +109,16 @@ export default async function handler(
                 const result = await sendWhatsApp(
                     customerPhone,
                     "_booking_confirmed",
-                    // Body parameters (5): name, room, check-in, check-out, amount
+                    // Body parameters (6): name, room, check-in, check-out, amount paid, due amount
                     [
                         guestName || "Guest",
                         listingTitle || "Room",
                         formattedCheckIn,
                         formattedCheckOut,
-                        `₹${depositAmount || 0}`
+                        `₹${depositAmount || 0}`,
+                        `₹${(totalPrice || 0) - (depositAmount || 0)}`
                     ],
-                    // Header parameter (1): booking number / due amount
+                    // Header parameter (1): booking number
                     [bookingNumber || "Confirmed"]
                 );
                 console.log("✅ Customer WhatsApp sent:", result?.messages?.[0]?.id || "ok");

@@ -81,6 +81,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 { type: "text", text: checkIn },
                 { type: "text", text: checkOut },
                 { type: "text", text: String(totalAmount) },
+                { type: "text", text: String(req.body.dueAmount || 0) },
               ],
             },
           ],
