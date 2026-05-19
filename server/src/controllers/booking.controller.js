@@ -60,13 +60,10 @@ export const createBooking = asyncHandler(async (req, res) => {
         throw ApiError.conflict('Selected dates are not available');
     }
 
-    // Rule #17: Price calculation
+    // Rule #17: Price calculation (Subtotal + 13% Tax)
     const pricing = calculateBookingTotal(
         nights,
-        listing.pricing_per_night,
-        listing.pricing_cleaning_fee,
-        PLATFORM_DEFAULTS.SERVICE_FEE_PERCENT,
-        0 // taxes — can be computed by region
+        listing.pricing_per_night
     );
 
     const platformFee = Math.round((pricing.total * PLATFORM_DEFAULTS.PLATFORM_COMMISSION_PERCENT) / 100);
@@ -94,8 +91,8 @@ export const createBooking = asyncHandler(async (req, res) => {
         pricing_nightly_rate: listing.pricing_per_night,
         pricing_nights: nights,
         pricing_subtotal: pricing.subtotal,
-        pricing_cleaning_fee: pricing.cleaningFee,
-        pricing_service_fee: pricing.serviceFee,
+        pricing_cleaning_fee: 0,
+        pricing_service_fee: 0,
         pricing_taxes: pricing.taxes,
         pricing_total: pricing.total,
         pricing_host_payout: hostPayout,

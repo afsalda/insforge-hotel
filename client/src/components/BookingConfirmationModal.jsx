@@ -15,30 +15,34 @@ function playConfirmationSound() {
   const ctx = new AudioContext();
   
   // Resume context if suspended (common on mobile/safari)
-  if (ctx.state === 'suspended') {
-    ctx.resume();
-  }
+  // We wrap the playback in the resume promise to ensure it only plays when ready
+  ctx.resume().then(() => {
+    // A more premium "success" chime: A major chord progression
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    const times = [0, 0.08, 0.16, 0.28];
 
-  const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
-  const times = [0, 0.12, 0.24, 0.38];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-  notes.forEach((freq, i) => {
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
 
-    osc.connect(gain);
-    gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + times[i]);
 
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(freq, ctx.currentTime + times[i]);
+      gain.gain.setValueAtTime(0, ctx.currentTime + times[i]);
+      // Increased volume for better audibility
+      gain.gain.linearRampToValueAtTime(0.6, ctx.currentTime + times[i] + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + times[i] + 0.4);
 
-    gain.gain.setValueAtTime(0, ctx.currentTime + times[i]);
-    gain.gain.linearRampToValueAtTime(0.3, ctx.currentTime + times[i] + 0.05);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + times[i] + 0.5);
-
-    osc.start(ctx.currentTime + times[i]);
-    osc.stop(ctx.currentTime + times[i] + 0.5);
-  });
+      osc.start(ctx.currentTime + times[i]);
+      osc.stop(ctx.currentTime + times[i] + 0.5);
+    });
+    
+    // Close context after playback to save resources
+    setTimeout(() => ctx.close(), 2000);
+  }).catch(e => console.warn("Audio context resume failed:", e));
 }
 
 export default function BookingConfirmationModal({ booking, onClose }) {
@@ -47,23 +51,28 @@ export default function BookingConfirmationModal({ booking, onClose }) {
   const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
-    // Play sound on mount
-    try {
-      playConfirmationSound();
-    } catch (e) {
-      console.warn("Audio playback failed:", e);
-    }
+    // Play sound on mount with a tiny delay to ensure everything is ready
+    const timer = setTimeout(() => {
+      try {
+        playConfirmationSound();
+      } catch (e) {
+        console.warn("Audio playback failed:", e);
+      }
+    }, 300);
 
     // Simple barcode renderer using canvas
     if (barcodeRef.current && booking?.ref) {
       drawBarcode(barcodeRef.current, booking.ref);
     }
+    
+    return () => clearTimeout(timer);
   }, [booking?.ref]);
 
   function drawBarcode(canvas, text) {
     const ctx = canvas.getContext("2d");
-    canvas.width = 240;
-    canvas.height = 60;
+    // Higher resolution for sharp PDF rendering
+    canvas.width = 600; 
+    canvas.height = 120;
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = "#1a3a2a";
@@ -76,68 +85,16 @@ export default function BookingConfirmationModal({ booking, onClose }) {
         return x - Math.floor(x);
     };
 
-    let x = 15;
-    for (let i = 0; i < 65; i++) {
-        const w = rng(i) > 0.6 ? 3 : 1.5;
+    let x = 40;
+    for (let i = 0; i < 75; i++) {
+        const w = rng(i) > 0.6 ? 6 : 3;
         if (rng(i + 100) > 0.25) {
-            ctx.fillRect(x, 5, w, 50);
+            ctx.fillRect(x, 10, w, 100);
         }
-        x += w + 2;
-        if (x > 225) break;
+        x += w + 4;
+        if (x > 560) break;
     }
   }
-
-  const handleDownloadPDF = async () => {
-    if (!ticketRef.current || isDownloading) return;
-    setIsDownloading(true);
-    
-    try {
-      // Longer delay for mobile to ensure animations (0.4s) are complete
-      await new Promise(r => setTimeout(r, 500));
-
-      const element = ticketRef.current;
-      const canvas = await html2canvas(element, {
-        scale: 2, 
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-        scrollX: 0,
-        scrollY: 0,
-        x: 0,
-        y: 0,
-        onclone: (clonedDoc) => {
-          const clonedElement = clonedDoc.getElementById("booking-ticket");
-          if (clonedElement) {
-            clonedElement.style.transform = "none";
-            clonedElement.style.animation = "none";
-            clonedElement.style.position = "relative";
-            clonedElement.style.top = "0";
-            clonedElement.style.left = "0";
-            clonedElement.style.margin = "0";
-            clonedElement.style.width = element.offsetWidth + "px";
-          }
-        }
-      });
-      
-      const imgWidth = canvas.width / 2;
-      const imgHeight = canvas.height / 2;
-      
-      const imgData = canvas.toDataURL('image/jpeg', 0.9);
-      const pdf = new jsPDF({
-        orientation: 'p',
-        unit: 'pt',
-        format: [imgWidth, imgHeight]
-      });
-      
-      pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-      pdf.save(`Booking-Receipt-${bookingRef}.pdf`);
-    } catch (err) {
-      console.error("PDF generation failed:", err);
-      alert("Failed to generate PDF. Please try again or take a screenshot.");
-    } finally {
-      setIsDownloading(false);
-    }
-  };
 
   const {
     guestName = "Guest",
@@ -151,6 +108,104 @@ export default function BookingConfirmationModal({ booking, onClose }) {
     balanceDue = 0,
     whatsappNumber = "",
   } = booking || {};
+
+  const handleDownloadPDF = async () => {
+    if (!ticketRef.current || isDownloading) return;
+    setIsDownloading(true);
+    
+    try {
+      const isMobile = window.innerWidth <= 768;
+      const element = ticketRef.current;
+      
+      // Delay to ensure any mount animations or font rendering is complete
+      await new Promise(r => setTimeout(r, isMobile ? 1500 : 800));
+
+      // Fixed width for capture to ensure consistent layout across different devices
+      const captureWidth = isMobile ? 480 : 800;
+      
+      const canvas = await html2canvas(element, {
+        scale: 2.0, // Reduced from 2.5 to save memory on mobile while keeping high quality
+        useCORS: true,
+        logging: true, // Enabled logging for debugging
+        backgroundColor: "#ffffff",
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: captureWidth,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.getElementById("booking-ticket");
+          if (clonedElement) {
+            // Force stable styles for capture
+            clonedElement.style.width = `${captureWidth}px`;
+            clonedElement.style.maxWidth = "none";
+            clonedElement.style.height = "auto";
+            clonedElement.style.transform = "none";
+            clonedElement.style.animation = "none";
+            clonedElement.style.position = "relative";
+            clonedElement.style.margin = "0";
+            clonedElement.style.padding = "0";
+            clonedElement.style.display = "block";
+            clonedElement.style.background = "#ffffff";
+            clonedElement.style.borderRadius = "0"; // Remove border radius for clean PDF edges
+            
+            // Hide the ticket-divider punch holes which look weird in PDF without backdrop
+            const style = clonedDoc.createElement('style');
+            style.innerHTML = `
+              .ticket-divider::before, .ticket-divider::after {
+                display: none !important;
+              }
+              * {
+                -webkit-print-color-adjust: exact !important;
+                color-adjust: exact !important;
+              }
+            `;
+            clonedDoc.head.appendChild(style);
+
+            // Fix visibility of nested elements
+            const allElements = clonedElement.querySelectorAll('*');
+            allElements.forEach(el => {
+                el.style.opacity = "1";
+                el.style.visibility = "visible";
+                if (el.tagName === 'svg' || el.tagName === 'canvas') {
+                    el.style.display = 'block';
+                }
+            });
+          }
+        }
+      });
+      
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      
+      if (!imgData || imgData === 'data:,') {
+        throw new Error("Generated canvas is empty");
+      }
+
+      const pdfWidth = captureWidth;
+      const pdfHeight = (canvas.height / canvas.width) * captureWidth;
+      
+      const pdf = new jsPDF({
+        orientation: pdfWidth > pdfHeight ? 'l' : 'p',
+        unit: 'pt',
+        format: [pdfWidth, pdfHeight]
+      });
+      
+      pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+      
+      const fileName = `Al-Baith-Booking-${bookingRef}.pdf`;
+      pdf.save(fileName);
+      
+      if (isMobile) {
+        setTimeout(() => {
+          alert("Ticket downloaded successfully!");
+        }, 300);
+      }
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      alert("Failed to generate PDF: " + err.message);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
 
   return (
     <>
@@ -342,8 +397,9 @@ export default function BookingConfirmationModal({ booking, onClose }) {
                 {bookingRef}
               </p>
             </div>
+            </div>
           </div>
-        </div>
+
 
           {/* Button Section - Outside ticketRef so it's not in the PDF */}
           <div className="modal-ticket-body" style={{ background: "#fff", borderRadius: "0 0 24px 24px", paddingTop: 0 }}>
@@ -426,8 +482,7 @@ export default function BookingConfirmationModal({ booking, onClose }) {
         
         @media (min-width: 769px) {
           .modal-ticket-container {
-            width: 94vw !important;
-            max-width: 1200px !important;
+            width: 700px !important;
             max-height: 90vh !important;
           }
           .modal-ticket-header {

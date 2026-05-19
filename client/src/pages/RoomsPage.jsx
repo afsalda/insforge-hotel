@@ -68,7 +68,6 @@ export default function RoomsPage() {
             // In a real app we fetch from 'listings' or 'room_types' table
             // For now we use the same fallback data as HomePage for consistency if DB fails
             const fallbackRooms = [
-                { id: 'test-room', name: 'Razorpay Test Room (₹1)', pricing_per_night: 1, details_max_guests: 1, description: 'SPECIAL TEST ROOM: Use this to test Razorpay integration with a 1 INR price.', amenity_ids: ['WiFi'], photos: ['https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1200'] },
                 { id: 'standard', name: 'Standard Room', pricing_per_night: 1500, details_max_guests: 2, description: 'A cozy and comfortable room with all essential amenities for a relaxing stay.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater'], photos: ['/images/webp/rooms/standard_1.webp'] },
                 { id: 'deluxe', name: 'Deluxe Room', pricing_per_night: 1800, details_max_guests: 3, description: 'A spacious king bed retreat with premium furnishings and city views.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Smart TV', 'King Bed'], photos: ['/images/webp/rooms/deluxe_1.webp'] },
                 { id: 'suite', name: 'Suite Room', pricing_per_night: 3500, details_max_guests: 4, description: 'Luxury suite with separate lounge, mini kitchen, and jacuzzi.', amenity_ids: ['WiFi', 'AC', 'Electric Kettle', 'Jacuzzi', 'Mini Kitchen'], photos: ['/images/webp/rooms/suite_1.webp'] },

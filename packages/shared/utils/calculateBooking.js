@@ -7,20 +7,15 @@
  * @param {number} taxPct - Tax percentage (default: 0).
  * @returns {object} Breakdown with subtotal, serviceFee, taxes, total.
  */
-export function calculateBookingTotal(nights, nightlyRate, cleaningFee = 0, serviceFeePct = 14, taxPct = 0) {
-    const subtotal = nights * nightlyRate;
-    const serviceFee = Math.round((subtotal * serviceFeePct) / 100);
-    const taxableAmount = subtotal + cleaningFee + serviceFee;
-    const taxes = Math.round((taxableAmount * taxPct) / 100);
-    const total = subtotal + cleaningFee + serviceFee + taxes;
+export function calculateBookingTotal(nights, nightlyRate) {
+    const taxIncludedRate = Math.round(nightlyRate * 1.13);
+    const total = taxIncludedRate * nights;
 
     return {
         nights,
-        nightlyRate,
-        subtotal,
-        cleaningFee,
-        serviceFee,
-        taxes,
+        nightlyRate: taxIncludedRate,
+        subtotal: total,
+        taxes: 0,
         total,
     };
 }

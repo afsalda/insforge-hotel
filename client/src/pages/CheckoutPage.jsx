@@ -36,7 +36,7 @@ export default function CheckoutPage() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { checkIn, checkOut, guestsCount, nights, total, subtotal, listing: stateListing } = location.state || {};
+    const { checkIn, checkOut, guestsCount, nights, total, subtotal, tax, listing: stateListing } = location.state || {};
     const listing = stateListing || getListingDetail(id);
 
     useEffect(() => {
@@ -556,16 +556,8 @@ export default function CheckoutPage() {
                             <div className="price-details-section">
                                 <h3 className="section-title-sm">Price Details</h3>
                                 <div className="price-row">
-                                    <span>₹{listing.price} × {nights} nights</span>
-                                    <span>₹{subtotal}</span>
-                                </div>
-                                <div className="price-row">
-                                    <span>Cleaning fee</span>
-                                    <span>₹{listing.cleaningFee}</span>
-                                </div>
-                                <div className="price-row">
-                                    <span>Service fee</span>
-                                    <span>₹{listing.serviceFee}</span>
+                                    <span>₹{Math.round(listing.price * 1.13)} × {nights} nights</span>
+                                    <span>₹{total}</span>
                                 </div>
                             </div>
 

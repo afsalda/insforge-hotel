@@ -1,0 +1,139 @@
+/* BookingConfirmationModal styles */
+@keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { transform: scale(0); opacity: 0 }
+  to   { transform: scale(1); opacity: 1 }
+}
+@keyframes drawCheck {
+  to { stroke-dashoffset: 0 }
+}
+
+.modal-ticket-container {
+  width: min(380px, 94vw);
+  max-height: 94vh;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.modal-ticket-header {
+  padding: 16px 18px 14px;
+}
+
+.modal-ticket-body {
+  padding: 24px 16px 16px;
+}
+
+.barcode-section {
+  margin-top: 5px;
+}
+
+@media (min-width: 769px) {
+  .modal-ticket-container {
+    width: 700px !important;
+    max-height: 90vh !important;
+  }
+  .modal-ticket-header {
+    padding: 8px 18px 4px !important;
+  }
+  .ticket-brand-logo {
+    margin-bottom: 8px !important;
+  }
+  .ticket-check-icon {
+    width: 34px !important;
+    height: 34px !important;
+    margin-bottom: 6px !important;
+  }
+  .ticket-check-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .modal-ticket-header h2 {
+    font-size: 14px !important;
+  }
+  .modal-ticket-header p {
+    margin-bottom: 5px !important;
+  }
+  .modal-ticket-body {
+    padding: 10px 16px 10px !important;
+  }
+  .barcode-section {
+    margin-bottom: 2px !important;
+  }
+  .barcode-section canvas {
+    height: 38px !important;
+    max-width: 600px !important;
+  }
+  .barcode-section p {
+    margin-top: 2px !important;
+    margin-bottom: 5px !important;
+  }
+}
+
+.modal-ticket-container::-webkit-scrollbar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .modal-ticket-container {
+    max-height: 96vh !important;
+  }
+  .modal-ticket-header {
+    padding: 14px 16px 12px !important;
+  }
+  .ticket-brand-logo {
+    margin-bottom: 10px !important;
+  }
+  .ticket-check-icon {
+    width: 38px !important;
+    height: 38px !important;
+    margin-bottom: 6px !important;
+  }
+  .modal-ticket-header h2 {
+    font-size: 15px !important;
+  }
+  .modal-ticket-header p {
+    margin-bottom: 8px !important;
+    font-size: 11px !important;
+  }
+  .modal-ticket-body {
+    padding: 16px 14px 14px !important;
+  }
+  .barcode-section {
+    margin-top: 2px !important;
+    margin-bottom: 6px !important;
+  }
+  .barcode-section canvas {
+    height: 40px !important;
+  }
+  .barcode-section p {
+    margin-top: 4px !important;
+    margin-bottom: 6px !important;
+    font-size: 8px !important;
+  }
+}
+
+.ticket-divider::before,
+.ticket-divider::after {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: rgba(0, 0, 0, 0.55);
+  border-radius: 50%;
+  z-index: 10;
+  top: -16px;
+}
+
+.ticket-divider::before {
+  left: -16px;
+}
+
+.ticket-divider::after {
+  right: -16px;
+}

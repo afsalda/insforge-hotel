@@ -11,6 +11,32 @@ const INSFORGE_URL = isProduction
 const INSFORGE_ANON_KEY = import.meta.env.VITE_INSFORGE_ANON_KEY || '';
 const insforge = createClient({ baseUrl: INSFORGE_URL, anonKey: INSFORGE_ANON_KEY });
 
+function playConfirmationSound() {
+  const AudioContext = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContext) return;
+  
+  const ctx = new AudioContext();
+  ctx.resume().then(() => {
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    const times = [0, 0.08, 0.16, 0.28];
+
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, ctx.currentTime + times[i]);
+      gain.gain.setValueAtTime(0, ctx.currentTime + times[i]);
+      gain.gain.linearRampToValueAtTime(0.5, ctx.currentTime + times[i] + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + times[i] + 0.4);
+      osc.start(ctx.currentTime + times[i]);
+      osc.stop(ctx.currentTime + times[i] + 0.5);
+    });
+    setTimeout(() => ctx.close(), 2000);
+  }).catch(() => {});
+}
+
 export default function RoomModal({ isOpen, onClose, room }) {
     const [view, setView] = useState('details'); // 'details', 'form', 'success'
     const [form, setForm] = useState({
@@ -183,6 +209,7 @@ export default function RoomModal({ isOpen, onClose, room }) {
             gsap.to(formRef.current, {
                 opacity: 0, duration: 0.3, onComplete: () => {
                     setView('success');
+                    try { playConfirmationSound(); } catch(e) {}
                     gsap.fromTo(successRef.current, { opacity: 0 }, { opacity: 1, duration: 0.5 });
                 }
             });

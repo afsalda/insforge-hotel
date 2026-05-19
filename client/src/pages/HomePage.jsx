@@ -114,7 +114,6 @@ function AnimatedCheckmark() {
 
 
 const ROOM_DATA = {
-    test_room: { id: 'test-room', name: 'Razorpay Test Room (₹1)', price: '₹1 / night', maxGuests: 1, desc: 'SPECIAL TEST ROOM: Use this to test Razorpay integration with a 1 INR price.', amenities: ['WiFi'], extraBedAvailable: false, img: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1200' },
     standard: { id: 'standard', name: 'Standard Room', price: '₹1,500 / night', maxGuests: 2, desc: 'A cozy and comfortable room with all essential amenities for a relaxing stay. Perfect for solo travelers or couples.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift'], extraBedAvailable: false, img: '/images/webp/rooms/standard_1.webp' },
     deluxe: { id: 'deluxe', name: 'Deluxe Room', price: '₹1,800 / night', maxGuests: 3, desc: 'A spacious king bed retreat with premium furnishings, city views, and optional extra bed for small families.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'King Bed', 'City View'], extraBedAvailable: true, img: '/images/webp/rooms/deluxe_1.webp' },
     suite: { id: 'suite', name: 'Suite Room', price: '₹3,500 / night', maxGuests: 4, desc: 'Luxury suite with separate lounge, mini kitchen, jacuzzi, and panoramic skyline views. 550 sq ft of pure elegance.', amenities: ['Free Wi-Fi', 'AC', 'Electric Kettle', 'Smart TV', 'Heater', 'Power Backup 24/7', 'Lift', 'Mini Kitchen', 'Mini Fridge', 'Jacuzzi', 'Panoramic View'], extraBedAvailable: true, img: '/images/webp/rooms/suite_1.webp' },
@@ -410,20 +409,21 @@ export default function HomePage() {
                                             pointerEvents: isActive ? 'auto' : 'none'
                                         }}
                                         transition={{
-                                            type: "spring", stiffness: 300, damping: 25
+                                            type: "spring", stiffness: 400, damping: 35, mass: 0.8
                                         }}
-                                        drag="x"
+                                        drag={isActive ? "x" : false}
                                         dragConstraints={{ left: 0, right: 0 }}
-                                        dragElastic={1}
+                                        dragElastic={0.8}
+                                        dragMomentum={false}
                                         onDragEnd={(e, { offset: dragOffset, velocity }) => {
                                             const swipe = swipePower(dragOffset.x, velocity.x);
-                                            if (swipe < -10000 || dragOffset.x < -100) {
+                                            if (swipe < -4000 || dragOffset.x < -50) {
                                                 paginateRoom(1);
-                                            } else if (swipe > 10000 || dragOffset.x > 100) {
+                                            } else if (swipe > 4000 || dragOffset.x > 50) {
                                                 paginateRoom(-1);
                                             }
                                         }}
-                                        style={{ position: 'absolute', touchAction: 'none' }}
+                                        style={{ position: 'absolute', touchAction: 'pan-y' }}
                                     >
                                         <motion.div
                                             initial={{ opacity: 0, y: 50, scale: 0.95 }}

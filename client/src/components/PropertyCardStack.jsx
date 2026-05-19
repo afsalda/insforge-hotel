@@ -7,7 +7,8 @@ const PropertyCardStack = ({ room, onClick }) => {
   const title = room?.name || room?.title || "Standard Room";
   const location = "Kerala, India"; 
   const imageUrl = room?.photos?.[0] || room?.img || "/images/webp/standard_room.webp";
-  const price = room?.pricing_per_night || (room?.price?.replace(/\D/g, "")) || 1500;
+  const basePrice = room?.pricing_per_night || (room?.price?.replace(/\D/g, "")) || 1500;
+  const price = Math.round(Number(basePrice) * 1.13);
   const rating = room?.rating || "4.9"; 
   const reviews = room?.reviews_count || room?.reviews || "6.8K"; 
   const guests = room?.details_max_guests || room?.maxGuests || 2;

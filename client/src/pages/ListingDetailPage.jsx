@@ -179,21 +179,6 @@ export const LISTING_DATA = {
             { label: 'Reserved Parking', icon: <Car size={24} /> }
         ],
         price: 5000, cleaningFee: 450, serviceFee: 500
-    },
-    'test-room': {
-        title: 'Razorpay Test Room',
-        location: 'Al Baith Hotel',
-        rating: 5.0, reviews: 0,
-        host: { name: 'Al Baith', years: 10, image: null, superhost: true },
-        images: [
-            'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1200'
-        ],
-        guests: 1, bedrooms: 1, beds: 1, baths: 1,
-        description: 'SPECIAL TEST ROOM: Use this to test Razorpay integration with a 1 INR price.',
-        amenities: [
-            { label: 'Razorpay Testing', icon: <KeyRound size={24} /> }
-        ],
-        price: 1, cleaningFee: 0, serviceFee: 0
     }
 };
 
@@ -283,8 +268,10 @@ export default function ListingDetailPage() {
     };
 
     const nights = calcNights(checkIn, checkOut);
-    const subtotal = listing.price * nights;
-    const total = subtotal + listing.cleaningFee + listing.serviceFee;
+    const taxIncludedRate = Math.round(listing.price * 1.13);
+    const total = taxIncludedRate * nights;
+    const subtotal = total;
+    const tax = 0;
 
     const handleReserve = (e) => {
         if (e) e.stopPropagation();
@@ -335,7 +322,7 @@ export default function ListingDetailPage() {
 
         try {
             navigate(`/checkout/${id}`, {
-                state: { checkIn, checkOut, guestsCount, nights, total, subtotal }
+                state: { checkIn, checkOut, guestsCount, nights, total, subtotal, tax }
             });
         } catch (err) {
             console.error('Navigation failed:', err);
@@ -578,7 +565,7 @@ export default function ListingDetailPage() {
                             }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                                     <div>
-                                        <span style={{ fontSize: '28px', fontWeight: 600, color: '#1B3A2D' }}>₹{listing.price}</span>
+                                        <span style={{ fontSize: '28px', fontWeight: 600, color: '#1B3A2D' }}>₹{Math.round(listing.price * 1.13)}</span>
                                         <span style={{ fontSize: '16px', color: '#666', marginLeft: '4px' }}>/night</span>
                                     </div>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '14px' }}>
@@ -677,16 +664,8 @@ export default function ListingDetailPage() {
                                 {nights > 0 && (
                                     <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444' }}>
-                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>₹{listing.price} x {nights} nights</span>
-                                            <span style={{ fontSize: '14px' }}>₹{subtotal}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444' }}>
-                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>Cleaning fee</span>
-                                            <span style={{ fontSize: '14px' }}>₹{listing.cleaningFee}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#444' }}>
-                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>Service fee</span>
-                                            <span style={{ fontSize: '14px' }}>₹{listing.serviceFee}</span>
+                                            <span style={{ textDecoration: 'underline', fontSize: '14px' }}>₹{Math.round(listing.price * 1.13)} x {nights} nights</span>
+                                            <span style={{ fontSize: '14px' }}>₹{total}</span>
                                         </div>
                                         <hr style={{ border: 'none', borderTop: '1px solid #EEE', margin: '4px 0' }} />
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: 600, color: '#1B3A2D' }}>
@@ -898,7 +877,7 @@ export default function ListingDetailPage() {
                         <span style={{ color: '#555555', fontSize: '0.9rem' }}>({listing.reviews} reviews)</span>
                     </div>
                     <div style={{ fontSize: '1.5rem', fontWeight: 500, color: '#000000' }}>
-                        ₹{listing.price}<span style={{ fontSize: '0.9rem', color: '#555555', fontWeight: 400 }}>/night</span>
+                        ₹{Math.round(listing.price * 1.13)}<span style={{ fontSize: '0.9rem', color: '#555555', fontWeight: 400 }}>/night</span>
                     </div>
                 </div>
 
